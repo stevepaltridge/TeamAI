@@ -1,0 +1,27 @@
+# OS / system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories and files
+*.swp
+*.swo
+*~
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/
+
+# Dependency directories (if any projects live here)
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Build output
+dist/
+build/
+*.egg-info/
