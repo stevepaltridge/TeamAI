@@ -31,7 +31,7 @@ MortgageTech (ICE Mortgage Technology ecosystem). We build web-based tools for E
 2. **Tiny changes, tested individually** — One edit → verify → next. Never batch untested changes.
 3. **Surgical fixes only** — Fix the reported issue. Don't refactor adjacent code.
 4. **Search before building** — Before writing new code: search the workspace, tests, scripts, archives, and git history. Adapt existing patterns first.
-5. **Simplest solution first** — Try the dumbest thing that could work before reaching for complexity.
+5. **Simplest solution first — MANDATORY** — Before writing ANY code, ask: "What is the fewest characters I can change to fix this?" Do that. Not a refactor. Not a helper function. Not a new abstraction. The literal smallest edit. If the task is "move a line up one row," cut the line and paste it one row up. Do NOT analyze the surrounding architecture, consider edge cases that weren't asked about, or think for more than 30 seconds about a simple mechanical edit. Overthinking simple tasks is a bug in your behavior.
 6. **Test visually before declaring done** — Every UI/CSS change needs visual verification (screenshots or browser preview).
 
 ### File Management
