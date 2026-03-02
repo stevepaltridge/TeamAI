@@ -47,17 +47,52 @@ TeamAI/
 └── README.md                      ← This file
 ```
 
-## Quick Start for Team Members
+## Developer Onboarding (One-Time Setup)
 
-### New Project Setup
-1. Copy `templates/project-template.md` to your project's `.github/copilot-instructions.md`
-2. Fill in project-specific paths, scripts, and rules
-3. Commit and push
+Do these 3 steps once and you're done. Takes ~2 minutes.
 
-### New Developer Setup
+### Step 1: Clone this repo
+
+```powershell
+git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/CopilotInstructions C:\Dev\TeamAI
+```
+
+Or from GitHub:
+```powershell
+git clone https://github.com/stevepaltridge/TeamAI.git C:\Dev\TeamAI
+```
+
+### Step 2: Add VS Code User Setting
+
+Open VS Code → `Ctrl+Shift+P` → **Preferences: Open User Settings (JSON)** → add this inside the `{}`:
+
+```json
+"github.copilot.chat.codeGeneration.instructions": [
+    {
+        "file": "C:/Dev/TeamAI/.github/copilot-instructions.md"
+    }
+]
+```
+
+This injects our org-wide AI rules into every Copilot chat, in every workspace, automatically.
+
+### Step 3: Open any project
+
+Any project with its own `.github/copilot-instructions.md` will automatically add project-specific rules on top of the org rules. No extra config needed.
+
+### Optional: Personal Layer
+
 1. Copy `templates/claude-template.md` to your workspace root as `claude.md`
 2. Add `claude.md` to your `.gitignore` (personal, not committed)
 3. Fill in your preferences and working state
+
+---
+
+## Quick Start for New Projects
+
+1. Copy `templates/project-template.md` to your project's `.github/copilot-instructions.md`
+2. Fill in project-specific paths, scripts, and rules
+3. Commit and push
 
 ## Updating Org Rules
 
