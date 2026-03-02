@@ -55,6 +55,19 @@ MortgageTech (ICE Mortgage Technology ecosystem). We build web-based tools for E
 
 ---
 
+## Encompass Knowledge Base
+
+When a user asks an Encompass configuration, admin, or development question:
+
+1. **Search `knowledge/`** in this TeamAI repo first — match question keywords against article tags and content
+2. **If found** → answer from the article, cite the source file
+3. **If not found** → check `knowledge/external-sources.md` for relevant URLs and attempt to fetch
+4. **If external source requires auth** → tell the user the specific URL/article number to look up, suggest they paste key content back for future reference
+5. **If no source available** → use domain knowledge, clearly state confidence level ("Based on general Encompass knowledge..." or "I'm not certain — verify in Encompass Settings")
+6. **Never fabricate** Encompass field IDs, menu paths, or admin settings. If unsure, say so.
+
+---
+
 ## Project-Specific Rules
 
 Each repository has its own `.github/copilot-instructions.md` with project-specific rules (file paths, scripts, deployment steps, firewalls). These are additive — org rules + repo rules both apply.
@@ -63,4 +76,4 @@ See the TeamAI repo README for the full instruction architecture.
 
 ---
 
-*MortgageTech AI Agent Instructions v1.0 — March 2, 2026*
+*MortgageTech AI Agent Instructions v1.1 — March 2, 2026*
