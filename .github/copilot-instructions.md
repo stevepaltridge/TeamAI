@@ -61,17 +61,28 @@ When a user asks an Encompass configuration, admin, or development question:
 
 1. **Search `knowledge/`** in this TeamAI repo first — match question keywords against article tags and content
 2. **If found** → answer from the article, cite the source file
-3. **If not found** → check `knowledge/external-sources.md` for relevant URLs
-4. **If external source requires auth** → run `node C:/Dev/TeamAI/scripts/ice-fetch.js <url>` to fetch through the credential proxy
-5. **If ice-fetch fails or .env not configured** → tell the user the specific URL/article number to look up manually
-6. **If no source available** → use domain knowledge, clearly state confidence level ("Based on general Encompass knowledge..." or "I'm not certain — verify in Encompass Settings")
-7. **Never fabricate** Encompass field IDs, menu paths, or admin settings. If unsure, say so.
+3. **If the answer can come from the Encompass API** → run `node C:/Dev/TeamAI/scripts/ice-api.js <command>` (see commands below)
+4. **If not found** → check `knowledge/external-sources.md` for relevant URLs
+5. **If external source requires auth** → run `node C:/Dev/TeamAI/scripts/ice-fetch.js <url>` to fetch web content through the browser proxy
+6. **If proxies fail or .env not configured** → tell the user the specific URL/article # to look up manually
+7. **If no source available** → use domain knowledge, clearly state confidence level
+8. **Never fabricate** Encompass field IDs, menu paths, or admin settings. If unsure, say so.
+
+### Proxy Tools
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `ice-api.js` | Encompass REST API (OAuth2) | `node C:/Dev/TeamAI/scripts/ice-api.js folders` |
+| `ice-api.js` | Field definitions | `node C:/Dev/TeamAI/scripts/ice-api.js field <fieldId>` |
+| `ice-api.js` | Business rules | `node C:/Dev/TeamAI/scripts/ice-api.js rules <type>` |
+| `ice-api.js` | Any API endpoint | `node C:/Dev/TeamAI/scripts/ice-api.js get <path>` |
+| `ice-fetch.js` | Auth-walled web pages | `node C:/Dev/TeamAI/scripts/ice-fetch.js <url>` |
 
 ## Credential Security — MANDATORY
 
 - **NEVER read, cat, type, or open** `.env` files. These contain auth credentials managed by the user.
 - **NEVER echo, print, or output** environment variables that may contain secrets.
-- **Use `ice-fetch.js` as a proxy** — it reads `.env` internally; you only see the fetched content on stdout.
+- **Use `ice-api.js` / `ice-fetch.js` as proxies** — they read `.env` internally; you only see results on stdout.
 - **NEVER suggest storing credentials** in any file that is committed to git.
 - If `.env` is missing, tell the user: "Copy `.env.template` to `.env` and fill in your ICE credentials."
 
@@ -85,4 +96,4 @@ See the TeamAI repo README for the full instruction architecture.
 
 ---
 
-*MortgageTech AI Agent Instructions v1.2 — March 2, 2026*
+*MortgageTech AI Agent Instructions v1.3 — March 2, 2026*
