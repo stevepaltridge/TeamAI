@@ -1,0 +1,12 @@
+# Credentials — NEVER commit
+.env
+
+# Dependencies
+node_modules/
+
+# Playwright browser cache
+playwright-browsers/
+
+# OS
+Thumbs.db
+.DS_Store

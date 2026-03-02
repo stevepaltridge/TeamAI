@@ -1,0 +1,14 @@
+{
+  "name": "teamai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MortgageTech AI team instructions and tools",
+  "scripts": {
+    "ice-fetch": "node scripts/ice-fetch.js",
+    "setup": "npm install && npx playwright install chromium"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0",
+    "playwright": "^1.42.0"
+  }
+}
