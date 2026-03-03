@@ -42,8 +42,16 @@ TeamAI/
 ├── templates/
 │   ├── project-template.md        ← Starter for new project repos (Layer 2)
 │   └── claude-template.md         ← Starter for developer workspace (Layer 3)
+├── scripts/
+│   ├── ice-api.js                 ← Encompass REST API proxy (OAuth2)
+│   └── ice-fetch.js               ← Auth-walled web page fetcher
+├── knowledge/
+│   ├── encompass-admin/            ← Admin reference articles
+│   ├── field-reference.md          ← Field ID quick reference
+│   └── external-sources.md         ← Tiered URL reference
 ├── docs/
-│   └── instruction-guide.md       ← How to customize for your project
+│   ├── instruction-guide.md       ← How to customize for your project
+│   └── team-onboarding.md         ← Team setup instructions (email-ready)
 └── README.md                      ← This file
 ```
 
@@ -114,4 +122,4 @@ AI agents have context limits. Keep instructions lean:
 
 ---
 
-*MortgageTech TeamAI v1.0 — March 2, 2026*
+*MortgageTech TeamAI v1.4 — March 2, 2026*
