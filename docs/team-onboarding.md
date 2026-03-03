@@ -45,11 +45,6 @@ Open a PowerShell terminal and run:
 git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/CopilotInstructions C:\Dev\TeamAI
 ```
 
-**Or from GitHub:**
-```powershell
-git clone https://github.com/stevepaltridge/TeamAI.git C:\Dev\TeamAI
-```
-
 > **Note:** If you don't have git installed, download from https://git-scm.com/download/win
 
 ### Step 4: Add Org-Wide AI Instructions to VS Code
@@ -164,14 +159,14 @@ The AI will automatically:
 
 These are one-time admin tasks that Steve will complete:
 
-- [x] Set up TeamAI repo on GitHub + Azure DevOps (dual-push)
+- [x] Set up TeamAI repo on Azure DevOps (+ GitHub mirror)
 - [x] Create org-wide AI instructions (Layer 1 v1.4)
 - [x] Build OAuth proxy for Encompass REST API (`ice-api.js`)
 - [x] Build browser proxy for auth-walled pages (`ice-fetch.js`)
 - [x] Configure MS365 Graph Search and validate pipeline
 - [ ] **Rename & share the OneDrive knowledge folder** — rename "GPTBlackBox" to "Encompass Knowledge Library" (or similar) and share with the org. **Action:** OneDrive web → folder → Rename → Share → "People in MortgageTech" → Read access. Until shared, only Steve's account can search it.
 - [ ] **Enable additional API products** on ICE Developer Connect (https://developer.icemortgagetechnology.com) for client ID `jnpknrc` — needed for field definitions, loans, pipeline, users, and business rules endpoints.
-- [ ] **Ensure all team members have Copilot licenses** — check GitHub org settings or contact GitHub support.
+- [ ] **Ensure all team members have Copilot licenses** — manage via https://github.com/orgs/MortgageTech/settings (GitHub is required for Copilot licensing only).
 
 ---
 

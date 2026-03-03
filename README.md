@@ -68,11 +68,6 @@ Do these 4 steps once and you're done. Takes ~5 minutes.
 git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/CopilotInstructions C:\Dev\TeamAI
 ```
 
-Or from GitHub:
-```powershell
-git clone https://github.com/stevepaltridge/TeamAI.git C:\Dev\TeamAI
-```
-
 ### Step 2: Add VS Code User Setting
 
 Open VS Code → `Ctrl+Shift+P` → **Preferences: Open User Settings (JSON)** → add this inside the `{}`:
