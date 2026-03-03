@@ -51,8 +51,8 @@ TeamAI/
 │   └── external-sources.md         ← Tiered URL reference
 ├── docs/
 │   ├── instruction-guide.md       ← How to customize for your project
-│   ├── onboarding-letter.md       ← Team setup letter (email-ready)
-│   └── team-onboarding.md         ← Detailed onboarding guide (full steps)
+│   └── team-onboarding.md         ← Full team setup guide (email-ready)
+├── .env.template                      ← Encompass API credential template
 └── README.md                      ← This file
 ```
 

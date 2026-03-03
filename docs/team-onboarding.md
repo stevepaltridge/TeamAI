@@ -221,8 +221,6 @@ This system is available to all @mortgagetech.com team members listed at [mortga
 | Jeannene Derback | Strategic Business Consultant |
 | Candice Jones | Strategic Business Consultant |
 | Kaley Kirsten | Strategic Business Consultant |
-| Ed Nitenday | SDK/API Developer |
-| Kris Drouet | Certified Encompass Admin |
 
 **Questions?** Ask Steve or open an issue in the TeamAI repo.
 
