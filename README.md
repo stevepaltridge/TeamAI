@@ -51,13 +51,16 @@ TeamAI/
 │   └── external-sources.md         ← Tiered URL reference
 ├── docs/
 │   ├── instruction-guide.md       ← How to customize for your project
-│   └── team-onboarding.md         ← Team setup instructions (email-ready)
+│   ├── onboarding-letter.md       ← Team setup letter (email-ready)
+│   └── team-onboarding.md         ← Detailed onboarding guide (full steps)
 └── README.md                      ← This file
 ```
 
 ## Developer Onboarding (One-Time Setup)
 
-Do these 3 steps once and you're done. Takes ~2 minutes.
+Do these 4 steps once and you're done. Takes ~5 minutes.
+
+> **Full setup guide with screenshots and troubleshooting:** See [docs/team-onboarding.md](docs/team-onboarding.md)
 
 ### Step 1: Clone this repo
 
@@ -84,7 +87,27 @@ Open VS Code → `Ctrl+Shift+P` → **Preferences: Open User Settings (JSON)** �
 
 This injects our org-wide AI rules into every Copilot chat, in every workspace, automatically.
 
-### Step 3: Open any project
+### Step 3: Configure MS365 MCP Server (Knowledge Search)
+
+This lets the AI search 12,700+ company knowledge articles via Microsoft Graph:
+
+In VS Code → `Ctrl+Shift+P` → **MCP: Open User Configuration** → add:
+
+```json
+{
+    "servers": {
+        "ms365": {
+            "type": "stdio",
+            "command": "npx",
+            "args": ["-y", "@softeria/ms-365-mcp-server", "--org-mode"]
+        }
+    }
+}
+```
+
+Sign in with your `@mortgagetech.com` account when prompted. Requires [Node.js](https://nodejs.org/) (LTS).
+
+### Step 4: Open any project
 
 Any project with its own `.github/copilot-instructions.md` will automatically add project-specific rules on top of the org rules. No extra config needed.
 

@@ -169,8 +169,7 @@ These are one-time admin tasks that Steve will complete:
 - [x] Build OAuth proxy for Encompass REST API (`ice-api.js`)
 - [x] Build browser proxy for auth-walled pages (`ice-fetch.js`)
 - [x] Configure MS365 Graph Search and validate pipeline
-- [ ] **Rename the "GPTBlackBox" OneDrive folder** to a professional name (e.g., "Encompass Knowledge Library") — this is where MasteringEncompass and EllieForum content lives.
-- [ ] **Share the renamed folder** with the organization — until shared, only Steve's account can search it. **Action:** Go to OneDrive web → renamed folder → Share → "People in MortgageTech" → Read access.
+- [ ] **Rename & share the OneDrive knowledge folder** — rename "GPTBlackBox" to "Encompass Knowledge Library" (or similar) and share with the org. **Action:** OneDrive web → folder → Rename → Share → "People in MortgageTech" → Read access. Until shared, only Steve's account can search it.
 - [ ] **Enable additional API products** on ICE Developer Connect (https://developer.icemortgagetechnology.com) for client ID `jnpknrc` — needed for field definitions, loans, pipeline, users, and business rules endpoints.
 - [ ] **Ensure all team members have Copilot licenses** — check GitHub org settings or contact GitHub support.
 
@@ -184,7 +183,7 @@ These are one-time admin tasks that Steve will complete:
 | `npx` not found | Install Node.js from https://nodejs.org/ (LTS version) |
 | `ice-api.js` gets "Invalid credentials" | Double-check your `.env` values. Client secret MUST be in double quotes |
 | `ice-api.js` returns 403 Forbidden | That API endpoint may not be enabled yet — Steve needs to enable it on Developer Connect |
-| Graph Search returns 0 results | Make sure Steve has shared the GPTBlackBox folder. Sign in again if your token expired |
+| Graph Search returns 0 results | Make sure Steve has shared the knowledge library folder. Sign in again if your token expired |
 | `git clone` fails | Install git from https://git-scm.com/download/win, or ask Steve for the repo as a zip |
 | VS Code doesn't load org instructions | Verify the path in Step 4 matches where you cloned: `C:/Dev/TeamAI/.github/copilot-instructions.md` |
 
