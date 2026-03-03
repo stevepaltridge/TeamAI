@@ -1,6 +1,6 @@
 # MortgageTech — AI Agent Instructions
 # Org-wide rules. Injected into every Copilot chat across all MortgageTech repos.
-# Version: 1.0 | March 2, 2026
+# Version: 1.4 | March 2, 2026
 
 ---
 
@@ -59,23 +59,43 @@ MortgageTech (ICE Mortgage Technology ecosystem). We build web-based tools for E
 
 When a user asks an Encompass configuration, admin, or development question:
 
-1. **Search `knowledge/`** in this TeamAI repo first — match question keywords against article tags and content
-2. **If found** → answer from the article, cite the source file
-3. **If the answer can come from the Encompass API** → run `node C:/Dev/TeamAI/scripts/ice-api.js <command>` (see commands below)
-4. **If not found** → check `knowledge/external-sources.md` for relevant URLs
-5. **If external source requires auth** → run `node C:/Dev/TeamAI/scripts/ice-fetch.js <url>` to fetch web content through the browser proxy
-6. **If proxies fail or .env not configured** → tell the user the specific URL/article # to look up manually
-7. **If no source available** → use domain knowledge, clearly state confidence level
-8. **Never fabricate** Encompass field IDs, menu paths, or admin settings. If unsure, say so.
+### Step 1 — Company Knowledge Search (Primary)
+Search ALL company OneDrive/SharePoint stores via MS365 Graph:
+```
+mcp_ms365_search-query(query: "<user's question keywords>", entityTypes: ["driveItem"], size: 5)
+```
+This searches **12,700+ indexed documents** across the entire company:
+- **MasteringEncompass** — 11,657 forum posts (.enriched.json with full text + metadata)
+- **EllieForum** — 1,018 Ellie Mae community posts
+- **Team docs** — training guides, admin playbooks, workflow configs on SharePoint + all team members' OneDrives
+
+**Reading search results:**
+- Search hits include `summary` with `<c0>`-highlighted terms — often sufficient to answer
+- For deeper content from `.json` or `.txt` files: download with `mcp_ms365_download-onedrive-file-content(driveId, driveItemId)` → get `@microsoft.graph.downloadUrl` → fetch via terminal: `Invoke-WebRequest -Uri $url -OutFile $env:TEMP/kb-hit.json; Get-Content $env:TEMP/kb-hit.json -Raw`
+- For `.docx` / `.pdf` files: summaries are usually enough; if not, give the user the `webUrl` to open directly
+
+### Step 2 — Local Quick Reference
+Search `knowledge/` in this TeamAI repo — match question keywords against article tags and content. If found, answer from the article and cite the source file.
+
+### Step 3 — Live API Data
+If the answer requires live Encompass instance data: `node C:/Dev/TeamAI/scripts/ice-api.js <command>`
+
+### Step 4 — Web Content
+If an external URL is needed: check `knowledge/external-sources.md`, then `node C:/Dev/TeamAI/scripts/ice-fetch.js <url>` for auth-walled pages.
+
+### Step 5 — Domain Knowledge
+If no source available, use domain knowledge. Clearly state confidence level. **Never fabricate** Encompass field IDs, menu paths, or admin settings.
+
+### Prerequisite
+Team members need the **MS 365 MCP Server** VS Code extension, signed into their `@mortgagetech.com` account. Without it, skip to Step 2.
 
 ### Proxy Tools
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `ice-api.js` | Encompass REST API (OAuth2) | `node C:/Dev/TeamAI/scripts/ice-api.js folders` |
-| `ice-api.js` | Field definitions | `node C:/Dev/TeamAI/scripts/ice-api.js field <fieldId>` |
-| `ice-api.js` | Business rules | `node C:/Dev/TeamAI/scripts/ice-api.js rules <type>` |
-| `ice-api.js` | Any API endpoint | `node C:/Dev/TeamAI/scripts/ice-api.js get <path>` |
+| Tool | Purpose | Usage |
+|------|---------|-------|
+| `mcp_ms365_search-query` | Company-wide doc search | `entityTypes: ["driveItem"]`, `size: 5` |
+| `mcp_ms365_download-onedrive-file-content` | Download file from any drive | `driveId` + `driveItemId` from search hit |
+| `ice-api.js` | Encompass REST API (OAuth2) | `node C:/Dev/TeamAI/scripts/ice-api.js folders\|field\|rules\|get` |
 | `ice-fetch.js` | Auth-walled web pages | `node C:/Dev/TeamAI/scripts/ice-fetch.js <url>` |
 
 ## Credential Security — MANDATORY
@@ -96,4 +116,4 @@ See the TeamAI repo README for the full instruction architecture.
 
 ---
 
-*MortgageTech AI Agent Instructions v1.3 — March 2, 2026*
+*MortgageTech AI Agent Instructions v1.4 — March 2, 2026*
