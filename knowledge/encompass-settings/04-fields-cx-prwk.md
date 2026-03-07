@@ -1,0 +1,126 @@
+# Custom Fields: CX.PRWK (120)
+
+> **Source**: Live from BE11146040 (REST API / SDK) — extracted 2026-03-02
+
+| Field ID | Description | Format | Options | ReadOnly |
+|----------|-------------|--------|---------|----------|
+| CX.PRWK.4506.BY | PRWK.4506.BY | STRING |  |  |
+| CX.PRWK.4506.ORD | 4506-T - Date Ordered | DATE |  |  |
+| CX.PRWK.4506.REC | PRWK.4506.REC | DATE |  |  |
+| CX.PRWK.APPR.BY | PRWK.APPR.BY | STRING |  |  |
+| CX.PRWK.APPR.ORD | Appraisal - Date Ordered | DATE |  |  |
+| CX.PRWK.APPR.REC | PRWK.APPR.REC | DATE |  |  |
+| CX.PRWK.CDREQ.BY | PRWK.CDREQ.BY | STRING |  |  |
+| CX.PRWK.CDREQ.ORD | PRWK.CDREQ.ORD | DATE |  |  |
+| CX.PRWK.CERTAPPR.BY | PRWK.CERTAPPR.BY | STRING |  |  |
+| CX.PRWK.CERTAPPR.ORD | Cert App Del - Date Ordered | DATE |  |  |
+| CX.PRWK.CERTAPPR.REC | PRWK.CERTAPPR.REC | DATE |  |  |
+| CX.PRWK.CHECKEDEMAILS | string of checked emails | STRING |  |  |
+| CX.PRWK.CLOSING.CUSTLTR.TRIG | Trigger to put closing information sheet into the print menu | X |  |  |
+| CX.PRWK.CLSREQ.BY | Closing Requested By | STRING |  |  |
+| CX.PRWK.CLSREQ.ORD | Closing Requested Date | DATE |  |  |
+| CX.PRWK.CONDOCS.BY | PRWK.CONDOCS.BY | STRING |  |  |
+| CX.PRWK.CONDOCS.ORD | Condo Qstnr - Date Ordered | DATE |  |  |
+| CX.PRWK.CONDOCS.REC | PRWK.CONDOCS.REC | DATE |  |  |
+| CX.PRWK.CONDS.SENT.BY | PRWK.CONDS.SENT.BY | STRING |  |  |
+| CX.PRWK.CONDS.SENT.ON | PRWK.CONDS.SENT.ON | STRING |  |  |
+| CX.PRWK.CONVMI.BY | PRWK.CONVMI.BY | STRING |  |  |
+| CX.PRWK.CONVMI.ORD | Mtg Ins - Date Ordered | DATE |  |  |
+| CX.PRWK.CONVMI.REC | PRWK.CONVMI.REC | DATE |  |  |
+| CX.PRWK.CRED.BY | PRWK.CRED.BY | STRING |  |  |
+| CX.PRWK.CRED.ORD | Credit Rpt - Date Ordered | DATE |  |  |
+| CX.PRWK.CREDIT.ORDERED.BY | PRWK.CREDIT.ORDERED.BY | STRING |  |  |
+| CX.PRWK.CREDSUP.BY | PRWK.CREDSUP.BY | STRING |  |  |
+| CX.PRWK.CREDSUP.ORD | Credit Supplement Ordered | DATE |  |  |
+| CX.PRWK.CREDSUP.REC | Credit Supplement Received | DATE |  |  |
+| CX.PRWK.DOLP.BY | PRWK.DOLP.BY | STRING |  |  |
+| CX.PRWK.DOLP.ORD | DO/DU/LP - Date Ordered | DATE |  |  |
+| CX.PRWK.DOLP.REC | PRWK.DOLP.REC | DATE |  |  |
+| CX.PRWK.EMAIL.HOME.BORR.TRIG | PRWK.EMAIL.HOME.BORR.TRIG | X |  |  |
+| CX.PRWK.EMAIL.HOME.COB.TRIG | PRWK.EMAIL.HOME.COB.TRIG | X |  |  |
+| CX.PRWK.EMAIL.LO.TRIG | CX.PRWK.EMAIL.LO.TRIG | X |  |  |
+| CX.PRWK.EMAIL.OTHER | CX.PRWK.EMAIL.OTHER | STRING |  |  |
+| CX.PRWK.EMAIL.OTHER.TRIG | CX.PRWK.EMAIL.OTHER.TRIG | X |  |  |
+| CX.PRWK.EMAIL.TEXT | CX.PRWK.EMAIL.TEXT | STRING |  |  |
+| CX.PRWK.EMAIL.WORK.BORR.TRIG | PRWK.EMAIL.WORK.BORR.TRIG | X |  |  |
+| CX.PRWK.EMAIL.WORK.COBO.TRIG | PRWK.EMAIL.WORK.COB.TRIG | X |  |  |
+| CX.PRWK.EMAILCONDS.TRIGGER | PRWK.EMAILCONDS.TRIGGER | X |  |  |
+| CX.PRWK.FHACASE.BY | CX.PRWK.FHACASE.BY | STRING |  |  |
+| CX.PRWK.FHACASE.ORD | FHA Case Assignment - Ordered Date | DATE |  |  |
+| CX.PRWK.FHACON.BY | PRWK.FHACON.BY | STRING |  |  |
+| CX.PRWK.FHACON.ORD | FHA Conn - Date Ordered | DATE |  |  |
+| CX.PRWK.FHACON.REC | PRWK.FHACON.rec | DATE |  |  |
+| CX.PRWK.FLOOD.BY | PRWK.FLOOD.BY | STRING |  |  |
+| CX.PRWK.FLOOD.ORD | Flood Cert - Date Ordered | DATE |  |  |
+| CX.PRWK.FLOOD.REC | PRWK.FLOOD.REC | DATE |  |  |
+| CX.PRWK.FRAUDGUARD.BY | CX.PRWK.FRAUDGUARD.BY | STRING |  |  |
+| CX.PRWK.FRAUDGUARD.ORD | CX.PRWK.FRAUDGUARD.ORD | DATE |  |  |
+| CX.PRWK.FRAUDGUARD.REC | CX.PRWK.FRAUDGUARD.REC | DATE |  |  |
+| CX.PRWK.HMDA.BY | PRWK.HMDA.BY | STRING |  |  |
+| CX.PRWK.HMDA.ORD | HMDA Wksht - Date Ordered | DATE |  |  |
+| CX.PRWK.HMDA.REC | PRWK.HMDA.REC | DATE |  |  |
+| CX.PRWK.HOABIND.BY | PRWK.HOABIND.BY | STRING |  |  |
+| CX.PRWK.HOABIND.ORD | Walls In - Date Ordered | DATE |  |  |
+| CX.PRWK.HOABIND.REC | PRWK.HOABIND.REC | DATE |  |  |
+| CX.PRWK.ILAPLD.BY | CX.PRWK.ILAPLD.BY | STRING |  |  |
+| CX.PRWK.ILAPLD.ORD | IL-APLD Ordered Date | DATE |  |  |
+| CX.PRWK.INSBIN.BY | PRWK.INSBIN.BY | STRING |  |  |
+| CX.PRWK.INSBIN.ORD | Ins Binder - Date Ordered | DATE |  |  |
+| CX.PRWK.INSBIN.REC | PRWK.INSBIN.REC | DATE |  |  |
+| CX.PRWK.LDPGSA.BY | PRWK.LDPGSA.BY | STRING |  |  |
+| CX.PRWK.LDPGSA.ORD | LDP/GSA - Date Ordered | DATE |  |  |
+| CX.PRWK.LDPGSA.REC | PRWK.LDPGSA.REC | DATE |  |  |
+| CX.PRWK.NMLS.BY | PRWK.NMLS.BY | STRING |  |  |
+| CX.PRWK.NMLS.ORD | NMLS Verif - Date Ordered | DATE |  |  |
+| CX.PRWK.NMLS.REC | PRWK.NMLS.REC | DATE |  |  |
+| CX.PRWK.ORDAVM.BY | PRWK.ORDAVM.BY | STRING |  |  |
+| CX.PRWK.ORDAVM.ORD | AVM Order Date | DATE |  |  |
+| CX.PRWK.PAYOFF.BY | PRWK.PAYOFF.BY | STRING |  |  |
+| CX.PRWK.PAYOFF.ORD | Payoff - Date Ordered | DATE |  |  |
+| CX.PRWK.PAYOFF.REC | PRWK.PAYOFF.REC | DATE |  |  |
+| CX.PRWK.PROJREQ.BY | PRWK.PROJREQ.BY | STRING |  |  |
+| CX.PRWK.PROJREQ.ORD | Proj Apprv - Date Ordered | DATE |  |  |
+| CX.PRWK.PROJREQ.REC | PRWK.PROJREQ.REC | DATE |  |  |
+| CX.PRWK.RELIC.BY | PRWK.RELIC.BY | STRING |  |  |
+| CX.PRWK.RELIC.ORD | PRWK.RELIC.ORD | DATE |  |  |
+| CX.PRWK.RESUB.BY | Resubmit after closing by | STRING |  |  |
+| CX.PRWK.RESUB.ON | Resubmit after closing on Date | STRING |  |  |
+| CX.PRWK.SCHEDCL.BY | PRWK.SCHEDCL.BY | STRING |  |  |
+| CX.PRWK.SCHEDCL.ON | PRWK.SCHEDCL.ON | DATE |  |  |
+| CX.PRWK.SECALCS.BY | PRWK.SECALCS.BY | STRING |  |  |
+| CX.PRWK.SECALCS.ORD | Self Emp Calcs - Date Ordered | DATE |  |  |
+| CX.PRWK.SECALCS.REC | PRWK.SECALCS.REC | DATE |  |  |
+| CX.PRWK.SELLERSFIG.BY | PRWK.SELLERSFIG.BY | STRING |  |  |
+| CX.PRWK.SELLERSFIG.ORD | PRWK.SELLERSFIG.ORD | DATE |  |  |
+| CX.PRWK.SEPROOF.BY | PRWK.SEPROOF.BY | STRING |  |  |
+| CX.PRWK.SEPROOF.ORD | Self Emp Proof - Date Ordered | DATE |  |  |
+| CX.PRWK.SEPROOF.REC | PRWK.SEPROOF.REC | DATE |  |  |
+| CX.PRWK.TBDPREQUAL | TBD Prequalification | X |  |  |
+| CX.PRWK.TITL.BY | PRWK.TITL.BY | STRING |  |  |
+| CX.PRWK.TITL.ORD | Title&Closing - Date Ordered | DATE |  |  |
+| CX.PRWK.TITL.REC | PRWK.TITL.REC | DATE |  |  |
+| CX.PRWK.TITLPURCH.BY | PRWK.TITLPURCH.BY | STRING |  |  |
+| CX.PRWK.TITLPURCH.ORD | PRWK.TITLPURCH.ORD | DATE |  |  |
+| CX.PRWK.UCDP.BY | UCDP Portal Checked | STRING |  |  |
+| CX.PRWK.UCDP.ORD | UCDP Ordered | DATE |  |  |
+| CX.PRWK.UCDP.REC | UCDP Received | DATE |  |  |
+| CX.PRWK.USPS.BY | USPS Checked By | STRING |  |  |
+| CX.PRWK.USPS.ORD | USPS Ordered Date | DATE |  |  |
+| CX.PRWK.USPS.REC | USPS Received On | DATE |  |  |
+| CX.PRWK.VAAPPR.BY | VA APPRAISAL ORDERED BY | STRING |  |  |
+| CX.PRWK.VAAPPR.ORD | VA APPRAISAL ORDERED DATE | DATE |  |  |
+| CX.PRWK.VACONN.BY | PRWK.VACONN.BY | STRING |  |  |
+| CX.PRWK.VACONN.ORD | VA Conn - Date Ordered | DATE |  |  |
+| CX.PRWK.VACONN.REC | PRWK.VACONN.REC | DATE |  |  |
+| CX.PRWK.VAVERIF.BY | PRWK.VAVERIF.BY | STRING |  |  |
+| CX.PRWK.VAVERIF.ORD | VA Inc Verif - Date Ordered | DATE |  |  |
+| CX.PRWK.VAVERIF.REC | PRWK.VAVERIF.REC | DATE |  |  |
+| CX.PRWK.VOE.BY | PRWK.VOE.BY | STRING |  |  |
+| CX.PRWK.VOE.ORD | Full VOE - Date Ordered | DATE |  |  |
+| CX.PRWK.VOE.REC | PRWK.VOE.REC | DATE |  |  |
+| CX.PRWK.VVOE.BY | PRWK.VVOE.BY | STRING |  |  |
+| CX.PRWK.VVOE.ORD | Verbal VOE - Date Ordered | DATE |  |  |
+| CX.PRWK.VVOE.REC | PRWK.VVOE.REC | DATE |  |  |
+| CX.PRWK.W2CALCS.BY | PRWK.W2CALCS.BY | STRING |  |  |
+| CX.PRWK.W2CALCS.ORD | Inc Calcs - Date Ordered | DATE |  |  |
+| CX.PRWK.W2CALCS.REC | PRWK.W2CALCS.REC | DATE |  |  |

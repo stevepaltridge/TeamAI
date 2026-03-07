@@ -7,6 +7,15 @@ node_modules/
 # Playwright browser cache
 playwright-browsers/
 
+# Extracted instance data (large, client-specific)
+data/
+
+# Runtime logs
+guardrails.log
+
+# Local workspace files
+*.code-workspace
+
 # OS
 Thumbs.db
 .DS_Store

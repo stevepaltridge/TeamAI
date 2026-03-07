@@ -2,7 +2,7 @@
   "_meta": {
     "project": "TeamAI",
     "created": "2026-03-05T00:00:00.000Z",
-    "updated": "2026-03-05T00:00:00.000Z",
+    "updated": "2026-03-06T10:14:16.047Z",
     "note": "Guardrails manifest — tracks golden/silver file hashes for tamper detection"
   },
   "files": {}
