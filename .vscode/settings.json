@@ -1,0 +1,40 @@
+{
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/data": true,
+		"**/.git": true,
+		"**/playwright-browsers": true
+	},
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/data": true,
+		"**/*.pdf": true,
+		"**/package-lock.json": true
+	},
+	"files.watcherExclude": {
+		"**/node_modules/**": true,
+		"**/data/**": true,
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/playwright-browsers/**": true
+	},
+	"github.copilot.enable": {
+		"*": true
+	},
+	"chat.mcp.gallery.enabled": false,
+	"chat.agent.maxRequests": 100,
+	"files.autoSave": "afterDelay",
+	"files.autoSaveDelay": 2000,
+	"editor.defaultFormatter": null,
+	"[markdown]": {
+		"editor.wordWrap": "on",
+		"editor.quickSuggestions": {
+			"other": false,
+			"comments": false,
+			"strings": false
+		}
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
+	}
+}
