@@ -42,7 +42,7 @@ If you don't already have it:
 Open a PowerShell terminal and run:
 
 ```powershell
-git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/CopilotInstructions C:\Dev\TeamAI
+git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/TeamAI C:\Dev\TeamAI
 ```
 
 > **Note:** If you don't have git installed, download from https://git-scm.com/download/win
@@ -188,7 +188,7 @@ These are one-time admin tasks that Steve will complete:
 
 | What | Where / Command |
 |------|-----------------|
-| TeamAI repo (Azure DevOps) | https://dev.azure.com/MtgTechTeam/TeamAI/_git/CopilotInstructions |
+| TeamAI repo (Azure DevOps) | https://dev.azure.com/MtgTechTeam/TeamAI/_git/TeamAI |
 | TeamAI repo (GitHub) | https://github.com/stevepaltridge/TeamAI |
 | VS Code download | https://code.visualstudio.com/download |
 | Node.js download | https://nodejs.org/ |
