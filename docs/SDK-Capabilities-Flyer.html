@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MortgageTech — TeamAI Platform & SDK Capabilities</title>
+<style>
+/* ── GLOBAL ─────────────────────────────────────────────── */
+@page { size: letter; margin: 0; }
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:    #0d1b2a;
+  --navy2:   #1b2838;
+  --navy3:   #243447;
+  --teal:    #4ecdc4;
+  --teal-d:  #3ba89f;
+  --gold:    #EC881E;
+  --gold-l:  #F0A53B;
+  --red:     #ff6b6b;
+  --green:   #51cf66;
+  --white:   #ffffff;
+  --gray:    #94a3b8;
+  --gray-l:  #cbd5e1;
+  --page-w:  8.5in;
+  --page-h:  11in;
+}
+html { font-size: 11px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #111;
+  color: var(--white);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+code, .mono {
+  font-family: 'Cascadia Code', 'Consolas', 'Fira Code', monospace;
+  font-size: 0.92em;
+}
+
+/* ── PAGE SYSTEM ────────────────────────────────────────── */
+.page {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  background: var(--navy);
+  margin: 1rem auto;
+  padding: 0.55in 0.6in 0.5in;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+  box-shadow: 0 4px 40px rgba(0,0,0,.6);
+}
+.page::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--teal), var(--gold), var(--teal));
+}
+@media print {
+  body { background: none; }
+  .page { margin: 0; box-shadow: none; }
+}
+
+/* ── LOGO ───────────────────────────────────────────────── */
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.35in;
+}
+.logo-row svg { height: 36px; width: auto; }
+
+/* Gear animation fix — keyframes exist, now we APPLY them */
+.logo-row .gear1 {
+  transform-origin: 22px 54px;
+  animation: spin1 4s linear infinite;
+}
+.logo-row .gear2 {
+  transform-origin: 35px 15.5px;
+  animation: spin2 4s linear infinite;
+}
+@keyframes spin1 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes spin2 { from { transform: rotate(22deg); } to { transform: rotate(-338deg); } }
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────── */
+h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 0.15in;
+}
+h1 .teal { color: var(--teal); }
+h1 .gold { color: var(--gold); }
+h2 {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 0.12in;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.06in;
+}
+h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 0.04in;
+}
+p, li { color: var(--gray-l); font-size: 1rem; }
+.subtitle {
+  font-size: 1.15rem;
+  color: var(--gray);
+  margin-bottom: 0.2in;
+  line-height: 1.35;
+}
+
+/* ── BADGE ──────────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--gold), var(--gold-l));
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.15em 0.6em;
+  border-radius: 3px;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+}
+.badge-teal {
+  background: linear-gradient(135deg, var(--teal-d), var(--teal));
+}
+.badge-red {
+  background: var(--red);
+}
+
+/* ── COMPARISON STRIP ── */
+.compare-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  margin-bottom: 0.2in;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.compare-left {
+  background: #2a1520;
+  border-left: 3px solid var(--red);
+  padding: 0.18in 0.2in;
+}
+.compare-right {
+  background: #152a20;
+  border-left: 3px solid var(--green);
+  padding: 0.18in 0.2in;
+}
+.compare-strip h4 { margin-bottom: 0.04in; }
+.compare-left h4 { color: var(--red); }
+.compare-right h4 { color: var(--green); }
+.compare-strip code {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--gray-l);
+  margin-top: 0.03in;
+}
+
+/* ── STAT ROW ── */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0.12in;
+  margin-bottom: 0.2in;
+}
+.stat-box {
+  background: var(--navy2);
+  border-radius: 5px;
+  padding: 0.12in 0.15in;
+  text-align: center;
+  border: 1px solid rgba(78,205,196,.12);
+}
+.stat-box .num {
+  display: block;
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--teal);
+  line-height: 1.1;
+}
+.stat-box .label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--gray);
+  margin-top: 0.02in;
+}
+
+/* ── GRID LAYOUTS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.15in; margin-bottom: 0.18in; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.15in; margin-bottom: 0.18in; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.12in; margin-bottom: 0.18in; }
+
+.card {
+  background: var(--navy2);
+  border: 1px solid rgba(78,205,196,.15);
+  border-radius: 6px;
+  padding: 0.15in 0.18in;
+}
+.card h4 { color: var(--teal); margin-bottom: 0.05in; }
+.card p, .card li { font-size: 0.9rem; color: var(--gray-l); }
+.card ul { padding-left: 1em; margin-top: 0.03in; }
+.card li { margin-bottom: 0.02in; }
+
+/* ── TABLE ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-bottom: 0.15in;
+}
+.data-table th {
+  background: var(--navy3);
+  color: var(--teal);
+  text-align: left;
+  padding: 0.06in 0.1in;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid var(--teal);
+}
+.data-table td {
+  padding: 0.05in 0.1in;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  color: var(--gray-l);
+  vertical-align: top;
+}
+.data-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.05em 0.45em;
+  border-radius: 3px;
+  margin-right: 0.04in;
+  vertical-align: middle;
+}
+.tag-sdk   { background: rgba(78,205,196,.18); color: var(--teal); }
+.tag-rest  { background: rgba(236,136,30,.18); color: var(--gold-l); }
+.tag-bra   { background: rgba(255,107,107,.18); color: var(--red); }
+.tag-xlsx  { background: rgba(81,207,102,.18); color: var(--green); }
+.tag-web   { background: rgba(148,163,184,.22); color: var(--gray-l); }
+
+/* ── INFRA STRIP ── */
+.infra-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.12in;
+  margin-bottom: 0.15in;
+}
+.infra-box {
+  background: var(--navy3);
+  border-top: 2px solid var(--teal);
+  border-radius: 0 0 5px 5px;
+  padding: 0.1in 0.12in;
+  text-align: center;
+}
+.infra-box .mono {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--teal);
+  font-weight: 600;
+}
+.infra-box span:last-child {
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+
+/* ── ARCHITECTURE LAYERS ── */
+.arch-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1in;
+  margin-bottom: 0.18in;
+}
+.arch-layer {
+  display: flex;
+  align-items: center;
+  gap: 0.15in;
+  background: var(--navy2);
+  border-radius: 5px;
+  padding: 0.1in 0.18in;
+  border-left: 3px solid var(--teal);
+}
+.arch-layer .num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--teal);
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.arch-layer .content { flex: 1; }
+.arch-layer .content strong { color: var(--white); }
+.arch-layer .content p { font-size: 0.88rem; color: var(--gray); margin-top: 0.01in; }
+
+/* Gold layer variant */
+.arch-layer.gold { border-left-color: var(--gold); }
+.arch-layer.gold .num { color: var(--gold); }
+
+/* ── PIPELINE CARDS ── */
+.pipeline {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.15in;
+  margin-bottom: 0.15in;
+}
+.pipeline .card { border-top: 2px solid var(--gold); position: relative; }
+.pipeline .card .phase {
+  position: absolute;
+  top: 0.08in;
+  right: 0.1in;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── FOOTER ── */
+.page-footer {
+  position: absolute;
+  bottom: 0.3in;
+  left: 0.6in;
+  right: 0.6in;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.08in;
+  border-top: 1px solid rgba(78,205,196,.15);
+}
+.page-footer span {
+  font-size: 0.72rem;
+  color: var(--gray);
+}
+
+/* ── HR DIVIDER ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(78,205,196,.3), transparent);
+  margin: 0.15in 0;
+}
+
+/* ── SMALL TEXT ── */
+.small { font-size: 0.82rem; }
+.xs { font-size: 0.72rem; }
+.teal { color: var(--teal); }
+.gold { color: var(--gold); }
+.red { color: var(--red); }
+.green { color: var(--green); }
+.bold { font-weight: 700; }
+.mt { margin-top: 0.12in; }
+.mb { margin-bottom: 0.12in; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 1 — COVER / PLATFORM OVERVIEW
+     ════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="logo-row">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 76.37">
+      <style>
+        .st0{fill:#FFFFFF} .st1{fill:#C7802F}
+        .st2{fill:url(#grad1)}
+      </style>
+      <defs>
+        <linearGradient id="grad1" x1="348.06" y1="40.99" x2="486.01" y2="40.99" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#EC881E"/><stop offset="1" stop-color="#F0A53B"/>
+        </linearGradient>
+      </defs>
+      <g>
+        <g>
+          <g>
+            <path class="st0 gear1" d="M44,49.71l-0.01-0.04h0c-0.16-0.9-0.38-1.78-0.65-2.63c-2.17,0.47-4.04,0.05-4.63-1.19c-0.59-1.24,0.28-2.95,2.02-4.33c-0.47-0.73-0.99-1.42-1.55-2.08l0,0l-0.05-0.06c-0.09-0.11-0.18-0.21-0.28-0.32c-0.06-0.07-0.12-0.14-0.19-0.21c-0.1-0.12-0.21-0.23-0.32-0.34l-0.16-0.17c-0.13-0.14-0.27-0.27-0.4-0.41l-0.09-0.09c-0.17-0.17-0.34-0.33-0.52-0.49l-0.07,0.06c-0.9,0.8-1.86,1.33-2.72,1.5c-0.69,0.14-1.32,0.06-1.81-0.28c-1.12-0.77-1.23-2.66-0.44-4.7l0.02-0.06c-1.63-0.82-3.36-1.45-5.16-1.86c-0.3,0.92-0.71,1.72-1.2,2.3c-0.11,0.13-0.23,0.25-0.34,0.36c-0.55,0.52-1.17,0.8-1.8,0.75c-0.19-0.02-0.37-0.06-0.55-0.13c-0.85-0.35-1.54-1.31-1.93-2.61c-0.11-0.36-0.19-0.75-0.25-1.17v0c-0.9,0.05-1.82,0.16-2.73,0.32l0,0l-0.04,0.01v0c-0.9,0.16-1.78,0.38-2.63,0.65c0.47,2.17,0.05,4.04-1.19,4.63c-1.24,0.59-2.96-0.28-4.33-2.02c-0.73,0.47-1.42,0.99-2.08,1.55l0,0l-0.06,0.05c-0.1,0.08-0.2,0.17-0.3,0.26c-0.08,0.07-0.16,0.14-0.23,0.21c-0.11,0.1-0.22,0.2-0.33,0.3l-0.19,0.18c-0.13,0.13-0.27,0.26-0.4,0.39l-0.1,0.1c-0.17,0.17-0.33,0.34-0.49,0.52l0.1,0.12c1.34,1.53,1.88,3.19,1.29,4.3l-0.11,0.18c-0.11,0.16-0.25,0.3-0.4,0.42c-0.32,0.25-0.73,0.41-1.19,0.48c-0.89,0.14-2-0.03-3.16-0.49h0c-0.82,1.63-1.45,3.36-1.86,5.16v0c1.06,0.34,1.94,0.83,2.54,1.41l0.05,0.05c0.57,0.57,0.88,1.22,0.82,1.88c-0.01,0.17-0.05,0.34-0.11,0.5C3.39,53.78,1.92,54.61,0,54.9c0.05,0.9,0.16,1.82,0.32,2.73c0.17,0.91,0.39,1.81,0.66,2.67c0.27-0.06,0.54-0.1,0.8-0.13c1.56-0.19,2.88,0.12,3.55,0.9c0.11,0.13,0.21,0.27,0.28,0.43c0.29,0.61,0.22,1.33-0.12,2.06L5.47,63.6c-0.36,0.76-1.01,1.53-1.88,2.21v0c1.01,1.55,2.21,2.95,3.55,4.18c1.64-1.49,3.47-2.06,4.6-1.28l0.06,0.05c1.07,0.81,1.16,2.69,0.36,4.71l0,0l0,0c1.63,0.82,3.36,1.45,5.16,1.86c0.25-0.79,0.6-1.49,1-2.04c0.28-0.39,0.59-0.71,0.93-0.94c0.45-0.32,0.93-0.48,1.42-0.44c1.03,0.08,1.87,1.01,2.37,2.39l0.05,0.14c0.02,0.07,0.05,0.14,0.07,0.21c0.11,0.36,0.19,0.75,0.25,1.17v0c0.53-0.03,1.05-0.08,1.58-0.15c0.38-0.05,0.77-0.11,1.15-0.18c0.33-0.06,0.66-0.13,0.98-0.2c0.57-0.13,1.14-0.28,1.69-0.45c-0.47-2.17-0.05-4.04,1.19-4.63c1.24-0.59,2.95,0.28,4.33,2.02c1.55-1.01,2.95-2.21,4.18-3.55v0c-1.49-1.64-2.06-3.47-1.28-4.6l0.12-0.15c0.84-0.98,2.67-1.05,4.64-0.27h0c0.04-0.08,0.08-0.17,0.12-0.25c0.55-1.12,1.01-2.28,1.36-3.49c0.14-0.47,0.26-0.95,0.37-1.43v0c-0.79-0.25-1.49-0.59-2.04-0.99c-0.4-0.29-0.71-0.6-0.95-0.94c-0.31-0.45-0.47-0.92-0.43-1.41c0.11-1.37,1.72-2.42,3.91-2.74c-0.03-0.54-0.08-1.07-0.15-1.61C44.12,50.45,44.07,50.08,44,49.71z M35.13,53.02c0.01,0.15,0.01,0.3,0.02,0.44v0.16c0,0.16,0,0.31,0,0.47l-0.01,0.11c-0.04,0.94-0.18,1.85-0.41,2.74l-0.02,0.1c-0.04,0.14-0.08,0.28-0.12,0.42l-0.05,0.16c-0.04,0.13-0.09,0.26-0.13,0.38l-0.07,0.19c-0.04,0.12-0.09,0.24-0.14,0.35l-0.08,0.21c-0.05,0.11-0.1,0.22-0.15,0.33c-0.03,0.07-0.07,0.14-0.1,0.22c-0.05,0.11-0.1,0.21-0.16,0.32c-0.04,0.07-0.08,0.15-0.12,0.22c-0.05,0.1-0.11,0.2-0.17,0.3c-0.04,0.08-0.09,0.15-0.13,0.23c-0.06,0.09-0.11,0.19-0.17,0.28c-0.05,0.08-0.1,0.15-0.15,0.23c-0.06,0.09-0.12,0.18-0.18,0.26c-0.06,0.08-0.11,0.16-0.17,0.24c-0.06,0.08-0.12,0.16-0.18,0.24c-0.07,0.08-0.13,0.17-0.2,0.25c-0.06,0.07-0.11,0.14-0.17,0.21c-0.09,0.1-0.18,0.2-0.27,0.31l-0.13,0.14c-0.14,0.15-0.28,0.29-0.42,0.43l-0.12,0.11c-0.11,0.1-0.22,0.21-0.33,0.3l-0.16,0.13c-0.1,0.09-0.2,0.17-0.31,0.26l-0.18,0.14c-0.1,0.08-0.2,0.16-0.31,0.24l-0.19,0.13c-0.1,0.07-0.21,0.15-0.31,0.22l-0.2,0.13c-0.11,0.07-0.22,0.14-0.33,0.2l-0.2,0.12c-0.11,0.06-0.22,0.13-0.34,0.19l-0.2,0.11c-0.12,0.06-0.24,0.12-0.36,0.17l-0.21,0.1c-0.12,0.06-0.25,0.11-0.37,0.16l-0.2,0.08c-0.13,0.05-0.27,0.1-0.4,0.15l-0.19,0.07c-0.15,0.05-0.3,0.1-0.45,0.14l-0.16,0.05c-0.18,0.05-0.36,0.1-0.54,0.14l-0.08,0.02c-0.21,0.05-0.43,0.09-0.65,0.13c-2.51,0.46-4.98,0.15-7.19-0.74c-3.99-1.62-7.08-5.18-7.91-9.72c-0.08-0.43-0.13-0.87-0.17-1.3l0-0.03c-0.02-0.2-0.03-0.41-0.03-0.61l0-0.06c0-0.2-0.01-0.4,0-0.59l0-0.06c0.01-0.2,0.01-0.39,0.03-0.58l0.01-0.06c0.02-0.19,0.03-0.39,0.06-0.58l0.01-0.05c0.02-0.2,0.05-0.39,0.09-0.58l0.01-0.03c0.03-0.18,0.07-0.37,0.11-0.55l0.02-0.08c0.04-0.17,0.08-0.34,0.13-0.51l0.03-0.12c0.05-0.16,0.09-0.32,0.15-0.48l0.05-0.14c0.05-0.15,0.1-0.3,0.16-0.45l0.06-0.16c0.06-0.15,0.12-0.29,0.18-0.43l0.07-0.16c0.06-0.14,0.13-0.28,0.19-0.41l0.08-0.16c0.06-0.11,0.12-0.23,0.18-0.34c0.04-0.07,0.08-0.14,0.12-0.21c0.06-0.11,0.12-0.21,0.18-0.31l0.13-0.21c0.07-0.11,0.14-0.21,0.21-0.32l0.12-0.17c0.08-0.12,0.17-0.23,0.25-0.34l0.13-0.17c1.89-2.43,4.66-4.21,7.93-4.8c0.52-0.09,1.03-0.15,1.55-0.19c1.41-0.09,2.8,0.06,4.11,0.41l0.02,0.01c0.37,0.1,0.73,0.21,1.09,0.34l0.01,0c0.17,0.06,0.33,0.13,0.5,0.2l0.07,0.03c0.16,0.07,0.31,0.13,0.47,0.21l0.08,0.04c0.16,0.07,0.31,0.15,0.46,0.23l0.04,0.02c0.14,0.07,0.28,0.15,0.41,0.23l0.1,0.06c0.13,0.08,0.27,0.16,0.4,0.25l0.12,0.08c0.13,0.08,0.26,0.17,0.38,0.26l0.11,0.08c0.11,0.08,0.21,0.16,0.32,0.24l0.09,0.07c2.42,1.89,4.18,4.65,4.77,7.9C35.04,51.91,35.10,52.47,35.13,53.02z"/>
+            <path class="st1 gear2" d="M50.57,12.75l0-0.03h0c-0.11-0.63-0.27-1.24-0.45-1.84c-1.52,0.33-2.83,0.04-3.24-0.83s0.2-2.07,1.42-3.03c-0.33-0.51-0.7-1-1.08-1.46h0l-0.04-0.04c-0.06-0.08-0.13-0.15-0.19-0.22l-0.13-0.15c-0.07-0.08-0.15-0.16-0.22-0.24l-0.11-0.12c-0.09-0.1-0.19-0.19-0.28-0.29l-0.06-0.06c-0.12-0.12-0.24-0.23-0.36-0.34l-0.05,0.05c-0.63,0.56-1.3,0.93-1.9,1.05c-0.48,0.1-0.92,0.04-1.27-0.2c-0.78-0.54-0.86-1.86-0.3-3.29l0.01-0.04c-1.14-0.58-2.35-1.02-3.62-1.3c-0.21,0.65-0.5,1.2-0.84,1.61c-0.08,0.09-0.16,0.18-0.24,0.26c-0.38,0.36-0.82,0.56-1.26,0.52c-0.13-0.01-0.26-0.04-0.39-0.09c-0.6-0.24-1.08-0.92-1.35-1.83C34.51,0.56,34.45,0.29,34.41,0c-0.63,0.04-1.27,0.11-1.91,0.23h0l-0.03,0.01c-0.63,0.11-1.24,0.27-1.84,0.45c0.33,1.52,0.04,2.83-0.83,3.24c-0.87,0.41-2.07-0.2-3.03-1.42c-0.51,0.33-1,0.7-1.46,1.08l0,0l-0.04,0.04c-0.07,0.06-0.14,0.12-0.21,0.18l-0.16,0.14c-0.08,0.07-0.15,0.14-0.23,0.21l-0.13,0.12c-0.09,0.09-0.19,0.18-0.28,0.28l-0.07,0.07C24.06,4.75,23.94,4.87,23.83,5l0.07,0.08c0.93,1.07,1.32,2.24,0.9,3.01l-0.08,0.13c-0.08,0.11-0.17,0.21-0.28,0.29c-0.22,0.17-0.51,0.29-0.84,0.34c-0.62,0.1-1.4-0.02-2.22-0.34c-0.58,1.14-1.02,2.35-1.3,3.62c0.74,0.24,1.36,0.58,1.78,0.99l0.03,0.04c0.4,0.4,0.62,0.85,0.58,1.32c-0.01,0.12-0.04,0.24-0.08,0.35c-0.29,0.78-1.32,1.37-2.67,1.57c0.04,0.63,0.11,1.27,0.23,1.91c0.12,0.64,0.27,1.26,0.46,1.87c0.19-0.04,0.38-0.07,0.56-0.09c1.09-0.13,2.02,0.08,2.49,0.63c0.08,0.09,0.14,0.19,0.19,0.3c0.2,0.42,0.16,0.93-0.08,1.44l-0.02,0.04c-0.25,0.53-0.71,1.07-1.32,1.55c0.71,1.08,1.55,2.07,2.49,2.93c1.15-1.04,2.43-1.45,3.22-0.9L28,26.1c0.75,0.57,0.81,1.88,0.25,3.3c1.14,0.58,2.35,1.02,3.62,1.3c0.18-0.56,0.42-1.04,0.7-1.43c0.2-0.27,0.42-0.5,0.65-0.66c0.31-0.22,0.65-0.33,1-0.31c0.72,0.06,1.31,0.71,1.66,1.68l0.03,0.1l0.05,0.15c0.08,0.26,0.14,0.53,0.18,0.82c0.37-0.02,0.74-0.06,1.11-0.1c0.27-0.03,0.54-0.07,0.8-0.12c0.23-0.04,0.46-0.09,0.69-0.14c0.4-0.09,0.8-0.2,1.18-0.32c-0.33-1.52-0.04-2.83,0.83-3.24c0.87-0.41,2.07,0.2,3.03,1.42c1.08-0.71,2.07-1.55,2.93-2.49c-1.04-1.15-1.45-2.43-0.9-3.22l0.08-0.1c0.59-0.69,1.87-0.73,3.25-0.19l0.09-0.18c0.38-0.78,0.7-1.6,0.95-2.44c0.1-0.33,0.18-0.66,0.26-1c-0.55-0.18-1.04-0.42-1.43-0.7c-0.28-0.2-0.5-0.42-0.67-0.66c-0.22-0.31-0.33-0.65-0.3-0.99c0.08-0.96,1.21-1.69,2.74-1.92c-0.02-0.38-0.06-0.75-0.11-1.13C50.65,13.28,50.62,13.02,50.57,12.75z M44.35,15.07c0.01,0.1,0.01,0.21,0.01,0.31v0.11c0,0.11,0,0.22,0,0.33l0,0.08c-0.03,0.66-0.12,1.3-0.28,1.92l-0.02,0.07c-0.03,0.1-0.06,0.2-0.09,0.29l-0.03,0.11c-0.03,0.09-0.06,0.18-0.09,0.27l-0.05,0.13c-0.03,0.08-0.06,0.17-0.1,0.25l-0.06,0.14c-0.03,0.08-0.07,0.16-0.1,0.23l-0.07,0.15c-0.04,0.07-0.07,0.15-0.11,0.22l-0.08,0.16c-0.04,0.07-0.08,0.14-0.12,0.21l-0.09,0.16l-0.12,0.2l-0.11,0.16l-0.13,0.18l-0.12,0.17l-0.13,0.17l-0.14,0.18l-0.12,0.15c-0.06,0.07-0.13,0.14-0.19,0.21l-0.09,0.1c-0.1,0.1-0.19,0.2-0.29,0.3l-0.08,0.08c-0.08,0.07-0.15,0.14-0.23,0.21l-0.11,0.09c-0.07,0.06-0.14,0.12-0.22,0.18l-0.12,0.1c-0.07,0.06-0.14,0.11-0.22,0.17l-0.13,0.09c-0.07,0.05-0.15,0.1-0.22,0.15l-0.14,0.09c-0.08,0.05-0.15,0.1-0.23,0.14l-0.14,0.08c-0.08,0.05-0.16,0.09-0.24,0.13l-0.14,0.08c-0.08,0.04-0.16,0.08-0.25,0.12l-0.14,0.07c-0.09,0.04-0.17,0.08-0.26,0.11l-0.14,0.06c-0.09,0.04-0.19,0.07-0.28,0.11l-0.13,0.05c-0.1,0.04-0.21,0.07-0.31,0.1l-0.11,0.03c-0.13,0.04-0.25,0.07-0.38,0.1l-0.05,0.01c-0.15,0.04-0.3,0.07-0.45,0.09c-1.76,0.32-3.49,0.11-5.03-0.52c-2.79-1.13-4.96-3.63-5.54-6.81c-0.06-0.3-0.09-0.61-0.12-0.91l0-0.02c-0.01-0.14-0.02-0.29-0.02-0.43l0-0.04c0-0.14,0-0.28,0-0.42l0-0.05c0-0.14,0.01-0.27,0.02-0.41l0-0.05c0.01-0.14,0.02-0.27,0.04-0.41l0-0.04c0.02-0.14,0.04-0.27,0.06-0.41l0-0.02c0.02-0.13,0.05-0.26,0.08-0.38l0.01-0.06c0.03-0.12,0.06-0.24,0.09-0.36l0.02-0.08c0.03-0.11,0.07-0.22,0.1-0.34l0.03-0.1c0.04-0.11,0.07-0.21,0.11-0.32l0.04-0.11c0.04-0.1,0.08-0.2,0.12-0.3l0.05-0.11c0.04-0.1,0.09-0.19,0.14-0.29l0.06-0.11c0.04-0.08,0.08-0.16,0.13-0.24l0.08-0.15c0.04-0.07,0.09-0.15,0.13-0.22l0.09-0.14c0.05-0.08,0.1-0.15,0.15-0.23l0.08-0.12c0.06-0.08,0.12-0.16,0.18-0.24l0.09-0.12c1.33-1.71,3.26-2.95,5.55-3.36c0.36-0.07,0.72-0.11,1.08-0.13c0.99-0.06,1.96,0.04,2.88,0.29l0.02,0c0.26,0.07,0.51,0.15,0.76,0.24l0.01,0c0.12,0.04,0.23,0.09,0.35,0.14l0.05,0.02c0.11,0.05,0.22,0.09,0.33,0.15l0.06,0.03c0.11,0.05,0.22,0.11,0.32,0.16l0.03,0.01c0.1,0.05,0.19,0.11,0.29,0.16l0.07,0.04c0.09,0.06,0.19,0.11,0.28,0.17l0.08,0.05c0.09,0.06,0.18,0.12,0.27,0.18l0.08,0.06c0.08,0.05,0.15,0.11,0.22,0.17l0.07,0.05c1.69,1.33,2.93,3.25,3.34,5.54C44.29,14.3,44.33,14.69,44.35,15.07z"/>
+          </g>
+          <g>
+            <g>
+              <path class="st0" d="M102.38,64.1L102.32,28L86.37,59.47h-3L67.47,28v36.1h-4.75v-43.8h6.19l16.02,31.53l15.95-31.53h6.13v43.8H102.38z"/>
+              <path class="st0" d="M149.74,47.59c0,9.89-6.94,16.71-16.71,16.71s-16.71-6.82-16.71-16.71c0-9.82,6.94-16.58,16.71-16.58S149.74,37.76,149.74,47.59z M121.21,47.65c0,7.26,4.94,12.26,11.82,12.26c6.88,0,11.82-5.01,11.82-12.26c0-7.19-4.94-12.2-11.82-12.2C126.15,35.45,121.21,40.45,121.21,47.65z"/>
+              <path class="st0" d="M163.19,38.45c2.19-4.82,6.26-7.45,11.83-7.51v4.94c-6.94-0.12-11.26,4.19-11.83,10.7V64.1h-4.88V31.13h4.88V38.45z"/>
+              <path class="st0" d="M198.6,61.85c-2.31,1.56-4.82,2.44-7.45,2.5c-4.82,0-8.38-2.88-8.38-9.38V36.14h-4.75v-3.94h4.75v-8.7h4.82v8.7l10.45-0.06v4h-10.45v17.96c0,4,1.56,5.51,4.38,5.51c1.69,0,3.44-0.56,5.26-1.69L198.6,61.85z"/>
+              <path class="st0" d="M234.2,60.66c0,9.63-6.57,15.7-16.58,15.7c-5.19-0.06-9.51-1.75-13.51-4.75l2.25-3.75c3.25,2.69,6.69,4.13,11.07,4.19c7.19,0,11.89-4.38,11.89-11.26v-5c-2.32,4.38-6.57,6.88-12.14,6.88c-8.88,0-15.02-6.57-15.02-15.95c0-9.2,6.07-15.7,14.89-15.77c5.63,0,9.89,2.5,12.26,6.88v-6.69h4.88V60.66z M229.32,46.9c0-6.88-4.69-11.7-11.26-11.7c-6.63,0-11.26,4.88-11.32,11.7c0.06,6.76,4.69,11.64,11.32,11.64C224.63,58.54,229.32,53.65,229.32,46.9z"/>
+              <path class="st0" d="M265.73,59.04c-2.63,3.57-6.82,5.32-12.08,5.32c-6.82,0-11.2-4.38-11.2-10.07c0-5.76,4.57-9.38,12.33-9.45h10.82v-1.94c0-4.82-3-7.7-8.82-7.7c-3.63,0-7.01,1.38-10.45,3.75l-2.06-3.57c4.25-2.82,7.82-4.44,13.45-4.44c8.13,0,12.64,4.32,12.7,11.39l0.06,21.77h-4.75V59.04z M265.67,52.72v-3.94h-10.26c-5.51,0-8.38,1.69-8.38,5.32s2.94,6.01,7.57,6.01C260.16,60.1,264.42,57.28,265.67,52.72z"/>
+              <path class="st0" d="M310.09,60.66c0,9.63-6.57,15.7-16.58,15.7c-5.19-0.06-9.51-1.75-13.51-4.75l2.25-3.75c3.25,2.69,6.69,4.13,11.07,4.19c7.19,0,11.89-4.38,11.89-11.26v-5c-2.31,4.38-6.57,6.88-12.14,6.88c-8.88,0-15.02-6.57-15.02-15.95c0-9.2,6.07-15.7,14.89-15.77c5.63,0,9.89,2.5,12.26,6.88v-6.69h4.88V60.66z M305.21,46.9c0-6.88-4.69-11.7-11.26-11.7c-6.63,0-11.26,4.88-11.32,11.7c0.06,6.76,4.69,11.64,11.32,11.64C300.51,58.54,305.21,53.65,305.21,46.9z"/>
+              <path class="st0" d="M349.56,49.53h-26.9c0.88,6.44,5.57,10.51,11.95,10.51c4.07,0,7.63-1.44,10.2-4.13l2.69,2.88c-3.13,3.5-7.76,5.51-13.26,5.51c-9.7,0-16.39-6.82-16.39-16.64c0-9.82,6.76-16.64,16.33-16.64C344.81,30.94,350.06,38.33,349.56,49.53z M345.18,45.52c-0.31-6.32-4.57-10.32-11.01-10.32c-6.26,0-10.76,4.07-11.51,10.32H345.18z"/>
+              <path class="st2" d="M367.33,25.12V64.1h-5.01V25.12h-14.27v-4.82h33.6v4.82H367.33z M412,49.53h-26.9c0.88,6.44,5.57,10.51,11.95,10.51c4.07,0,7.63-1.44,10.2-4.13l2.69,2.88c-3.13,3.5-7.76,5.51-13.26,5.51c-9.7,0-16.39-6.82-16.39-16.64c0-9.82,6.76-16.64,16.33-16.64C407.25,30.94,412.5,38.33,412,49.53z M407.62,45.52c-0.31-6.32-4.57-10.32-11.01-10.32c-6.26,0-10.76,4.07-11.51,10.32H407.62z M446.1,35.89l-2.69,3.44c-2.5-2.38-5.82-3.82-9.82-3.82c-6.82,0-11.7,4.94-11.7,12.14c0,7.2,4.88,12.2,11.7,12.2c4.32,0,7.88-1.5,10.2-4.26l2.82,3c-2.94,3.57-7.51,5.69-13.2,5.69c-9.57,0-16.33-6.82-16.33-16.64c0-9.82,6.82-16.64,16.33-16.64C438.71,30.94,443.09,32.76,446.1,35.89z M486.01,43.77V64.1h-4.88V45.08c0-5.82-3.5-9.26-9.32-9.26c-7.01,0.06-11.14,5-11.14,12.08v16.2h-4.88V17.68h4.88v20.84c2.25-5.13,6.76-7.51,12.83-7.57C481.38,30.94,486.01,35.82,486.01,43.77z"/>
+            </g>
+          </g>
+        </g>
+        <g>
+          <path class="st0" d="M500,20.01c0,3.88-3.13,7.16-7.14,7.16c-3.99,0-7.07-3.23-7.07-7.12c0-3.88,3.11-7.16,7.12-7.16C496.89,12.9,500,16.11,500,20.01z M498.8,20.01c0-3.21-2.56-5.86-5.9-5.86c-3.36,0-5.92,2.69-5.92,5.9c0,3.21,2.54,5.86,5.88,5.86C496.22,25.91,498.8,23.22,498.8,20.01z M494.44,21l1.64,2.37h-1.39l-1.32-2.14h-0.31h-1.66v2.14h-1.2v-7.09h2.85c1.85,0,2.88,0.88,2.88,2.43C495.93,19.82,495.4,20.62,494.44,21z M493.05,20.22c1.09,0,1.74-0.55,1.74-1.49c0-0.94-0.65-1.45-1.74-1.45h-1.66v2.94H493.05z"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <h1><span class="teal">TeamAI</span> Platform<br>&amp; SDK Capabilities</h1>
+  <p class="subtitle">
+    AI-powered Encompass administration intelligence — built on full SDK write access,
+    live data extraction, and 116+ knowledge base documents for ICE Mortgage Technology.
+  </p>
+
+  <div class="divider"></div>
+
+  <!-- PLATFORM AT A GLANCE -->
+  <h2>Platform at a Glance</h2>
+  <div class="stat-row">
+    <div class="stat-box"><span class="num">116+</span><span class="label">KB Documents</span></div>
+    <div class="stat-box"><span class="num">41</span><span class="label">Data Files (~41 MB)</span></div>
+    <div class="stat-box"><span class="num">52</span><span class="label">KB Sections</span></div>
+    <div class="stat-box"><span class="num">4</span><span class="label">Core Scripts</span></div>
+    <div class="stat-box"><span class="num">12,700+</span><span class="label">SharePoint Docs</span></div>
+    <div class="stat-box"><span class="num">v25.4</span><span class="label">Encompass SDK</span></div>
+  </div>
+
+  <!-- THREE-LAYER ARCHITECTURE -->
+  <h2>Three-Layer AI Architecture</h2>
+  <div class="arch-layers">
+    <div class="arch-layer">
+      <div class="num">1</div>
+      <div class="content">
+        <strong>Repository Instructions</strong> &nbsp;<span class="tag tag-web">.github/copilot-instructions.md</span>
+        <p>Top-level BREADCRUMB — complete knowledge map with data inventory, strategic vision, and recovery keyword <code>TEAMAI-KNOWLEDGE-MAP-2026</code></p>
+      </div>
+    </div>
+    <div class="arch-layer gold">
+      <div class="num">2</div>
+      <div class="content">
+        <strong>Knowledge Base</strong> &nbsp;<span class="tag tag-sdk">knowledge/encompass-settings/</span>
+        <p>52 numbered markdown files covering all Encompass admin areas — from users &amp; orgs to business rules, custom fields, and loan pipeline</p>
+      </div>
+    </div>
+    <div class="arch-layer">
+      <div class="num">3</div>
+      <div class="content">
+        <strong>Live Data Layer</strong> &nbsp;<span class="tag tag-rest">data/be11146040/</span>
+        <p>41 JSON files (~41 MB) extracted via SDK &amp; REST API — the raw source for all analysis and knowledge generation</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTANCE ID -->
+  <div class="card" style="border-left: 3px solid var(--gold);">
+    <h4 style="color: var(--gold);">Target Instance</h4>
+    <p><strong style="color:var(--white)">BE11146040</strong> — Bayshore Mortgage Funding / MortgageTech &nbsp;|&nbsp; Client ID: <code>jnpknrc</code> &nbsp;|&nbsp; SDK v25.4 at <code>c:\Dev\Encompass254\</code></p>
+  </div>
+
+  <div class="page-footer">
+    <span>MortgageTech &copy; 2025 — Confidential</span>
+    <span>Page 1 of 6</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 2 — SDK WRITE CAPABILITIES
+     ════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="logo-row">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 76.37" style="height:28px">
+      <style>.s0{fill:#FFF}.s1{fill:#C7802F}.s2{fill:url(#g2)}.g1a{transform-origin:22px 54px;animation:sa 4s linear infinite}.g2a{transform-origin:35px 15.5px;animation:sb 4s linear infinite}@keyframes sa{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes sb{from{transform:rotate(22deg)}to{transform:rotate(-338deg)}}</style>
+      <defs><linearGradient id="g2" x1="348" y1="41" x2="486" y2="41" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EC881E"/><stop offset="1" stop-color="#F0A53B"/></linearGradient></defs>
+      <g><g><g><path class="s0 g1a" d="M44,49.71l-0.01-0.04c-0.16-0.9-0.38-1.78-0.65-2.63c-2.17,0.47-4.04,0.05-4.63-1.19c-0.59-1.24,0.28-2.95,2.02-4.33c-0.47-0.73-0.99-1.42-1.55-2.08l-0.05-0.06c-0.09-0.11-0.18-0.21-0.28-0.32l-0.19-0.21c-0.1-0.12-0.21-0.23-0.32-0.34l-0.16-0.17c-0.13-0.14-0.27-0.27-0.4-0.41l-0.09-0.09c-0.17-0.17-0.34-0.33-0.52-0.49l-0.07,0.06c-0.9,0.8-1.86,1.33-2.72,1.5c-0.69,0.14-1.32,0.06-1.81-0.28c-1.12-0.77-1.23-2.66-0.44-4.7l0.02-0.06c-1.63-0.82-3.36-1.45-5.16-1.86c-0.3,0.92-0.71,1.72-1.2,2.3c-0.11,0.13-0.23,0.25-0.34,0.36c-0.55,0.52-1.17,0.8-1.8,0.75c-0.19-0.02-0.37-0.06-0.55-0.13c-0.85-0.35-1.54-1.31-1.93-2.61c-0.11-0.36-0.19-0.75-0.25-1.17c-0.9,0.05-1.82,0.16-2.73,0.32l-0.04,0.01c-0.9,0.16-1.78,0.38-2.63,0.65c0.47,2.17,0.05,4.04-1.19,4.63c-1.24,0.59-2.96-0.28-4.33-2.02c-0.73,0.47-1.42,0.99-2.08,1.55l-0.06,0.05c-0.1,0.08-0.2,0.17-0.3,0.26l-0.23,0.21c-0.11,0.1-0.22,0.2-0.33,0.3l-0.19,0.18c-0.13,0.13-0.27,0.26-0.4,0.39l-0.1,0.1c-0.17,0.17-0.33,0.34-0.49,0.52l0.1,0.12c1.34,1.53,1.88,3.19,1.29,4.3l-0.11,0.18c-0.11,0.16-0.25,0.3-0.4,0.42c-0.32,0.25-0.73,0.41-1.19,0.48c-0.89,0.14-2-0.03-3.16-0.49c-0.82,1.63-1.45,3.36-1.86,5.16c1.06,0.34,1.94,0.83,2.54,1.41l0.05,0.05c0.57,0.57,0.88,1.22,0.82,1.88c-0.01,0.17-0.05,0.34-0.11,0.5C3.39,53.78,1.92,54.61,0,54.9c0.05,0.9,0.16,1.82,0.32,2.73c0.17,0.91,0.39,1.81,0.66,2.67c0.27-0.06,0.54-0.1,0.8-0.13c1.56-0.19,2.88,0.12,3.55,0.9c0.11,0.13,0.21,0.27,0.28,0.43c0.29,0.61,0.22,1.33-0.12,2.06l-0.02,0.04c-0.36,0.76-1.01,1.53-1.88,2.21c1.01,1.55,2.21,2.95,3.55,4.18c1.64-1.49,3.47-2.06,4.6-1.28l0.06,0.05c1.07,0.81,1.16,2.69,0.36,4.71c1.63,0.82,3.36,1.45,5.16,1.86c0.25-0.79,0.6-1.49,1-2.04c0.28-0.39,0.59-0.71,0.93-0.94c0.45-0.32,0.93-0.48,1.42-0.44c1.03,0.08,1.87,1.01,2.37,2.39l0.05,0.14c0.02,0.07,0.05,0.14,0.07,0.21c0.11,0.36,0.19,0.75,0.25,1.17c0.53-0.03,1.05-0.08,1.58-0.15c0.38-0.05,0.77-0.11,1.15-0.18c0.33-0.06,0.66-0.13,0.98-0.2c0.57-0.13,1.14-0.28,1.69-0.45c-0.47-2.17-0.05-4.04,1.19-4.63c1.24-0.59,2.95,0.28,4.33,2.02c1.55-1.01,2.95-2.21,4.18-3.55c-1.49-1.64-2.06-3.47-1.28-4.6l0.12-0.15c0.84-0.98,2.67-1.05,4.64-0.27c0.04-0.08,0.08-0.17,0.12-0.25c0.55-1.12,1.01-2.28,1.36-3.49c0.14-0.47,0.26-0.95,0.37-1.43c-0.79-0.25-1.49-0.59-2.04-0.99c-0.4-0.29-0.71-0.6-0.95-0.94c-0.31-0.45-0.47-0.92-0.43-1.41c0.11-1.37,1.72-2.42,3.91-2.74c-0.03-0.54-0.08-1.07-0.15-1.61C44.12,50.45,44.07,50.08,44,49.71z"/><path class="s1 g2a" d="M50.57,12.75l0-0.03c-0.11-0.63-0.27-1.24-0.45-1.84c-1.52,0.33-2.83,0.04-3.24-0.83s0.2-2.07,1.42-3.03c-0.33-0.51-0.7-1-1.08-1.46l-0.04-0.04c-0.06-0.08-0.13-0.15-0.19-0.22l-0.13-0.15c-0.07-0.08-0.15-0.16-0.22-0.24l-0.11-0.12c-0.09-0.1-0.19-0.19-0.28-0.29l-0.06-0.06c-0.12-0.12-0.24-0.23-0.36-0.34l-0.05,0.05c-0.63,0.56-1.3,0.93-1.9,1.05c-0.48,0.1-0.92,0.04-1.27-0.2c-0.78-0.54-0.86-1.86-0.3-3.29l0.01-0.04c-1.14-0.58-2.35-1.02-3.62-1.3c-0.21,0.65-0.5,1.2-0.84,1.61c-0.08,0.09-0.16,0.18-0.24,0.26c-0.38,0.36-0.82,0.56-1.26,0.52c-0.13-0.01-0.26-0.04-0.39-0.09c-0.6-0.24-1.08-0.92-1.35-1.83C34.51,0.56,34.45,0.29,34.41,0c-0.63,0.04-1.27,0.11-1.91,0.23l-0.03,0.01c-0.63,0.11-1.24,0.27-1.84,0.45c0.33,1.52,0.04,2.83-0.83,3.24c-0.87,0.41-2.07-0.2-3.03-1.42c-0.51,0.33-1,0.7-1.46,1.08l-0.04,0.04c-0.07,0.06-0.14,0.12-0.21,0.18l-0.16,0.14c-0.08,0.07-0.15,0.14-0.23,0.21l-0.13,0.12c-0.09,0.09-0.19,0.18-0.28,0.28l-0.07,0.07c-0.12,0.12-0.23,0.24-0.34,0.37l0.07,0.08c0.93,1.07,1.32,2.24,0.9,3.01l-0.08,0.13c-0.08,0.11-0.17,0.21-0.28,0.29c-0.22,0.17-0.51,0.29-0.84,0.34c-0.62,0.1-1.4-0.02-2.22-0.34c-0.58,1.14-1.02,2.35-1.3,3.62c0.74,0.24,1.36,0.58,1.78,0.99l0.03,0.04c0.4,0.4,0.62,0.85,0.58,1.32c-0.01,0.12-0.04,0.24-0.08,0.35c-0.29,0.78-1.32,1.37-2.67,1.57c0.04,0.63,0.11,1.27,0.23,1.91c0.12,0.64,0.27,1.26,0.46,1.87c0.19-0.04,0.38-0.07,0.56-0.09c1.09-0.13,2.02,0.08,2.49,0.63c0.08,0.09,0.14,0.19,0.19,0.3c0.2,0.42,0.16,0.93-0.08,1.44l-0.02,0.04c-0.25,0.53-0.71,1.07-1.32,1.55c0.71,1.08,1.55,2.07,2.49,2.93c1.15-1.04,2.43-1.45,3.22-0.9l0.06,0.04c0.75,0.57,0.81,1.88,0.25,3.3c1.14,0.58,2.35,1.02,3.62,1.3c0.18-0.56,0.42-1.04,0.7-1.43c0.2-0.27,0.42-0.5,0.65-0.66c0.31-0.22,0.65-0.33,1-0.31c0.72,0.06,1.31,0.71,1.66,1.68l0.03,0.1,0.05,0.15c0.08,0.26,0.14,0.53,0.18,0.82c0.37-0.02,0.74-0.06,1.11-0.1c0.27-0.03,0.54-0.07,0.8-0.12c0.23-0.04,0.46-0.09,0.69-0.14c0.4-0.09,0.8-0.2,1.18-0.32c-0.33-1.52-0.04-2.83,0.83-3.24c0.87-0.41,2.07,0.2,3.03,1.42c1.08-0.71,2.07-1.55,2.93-2.49c-1.04-1.15-1.45-2.43-0.9-3.22l0.08-0.1c0.59-0.69,1.87-0.73,3.25-0.19l0.09-0.18c0.38-0.78,0.7-1.6,0.95-2.44c0.1-0.33,0.18-0.66,0.26-1c-0.55-0.18-1.04-0.42-1.43-0.7c-0.28-0.2-0.5-0.42-0.67-0.66c-0.22-0.31-0.33-0.65-0.3-0.99c0.08-0.96,1.21-1.69,2.74-1.92c-0.02-0.38-0.06-0.75-0.11-1.13C50.65,13.28,50.62,13.02,50.57,12.75z"/></g><g><g><path class="s0" d="M102.38,64.1L102.32,28L86.37,59.47h-3L67.47,28v36.1h-4.75v-43.8h6.19l16.02,31.53l15.95-31.53h6.13v43.8H102.38z"/><path class="s0" d="M149.74,47.59c0,9.89-6.94,16.71-16.71,16.71s-16.71-6.82-16.71-16.71c0-9.82,6.94-16.58,16.71-16.58S149.74,37.76,149.74,47.59z"/><path class="s0" d="M163.19,38.45c2.19-4.82,6.26-7.45,11.83-7.51v4.94c-6.94-0.12-11.26,4.19-11.83,10.7V64.1h-4.88V31.13h4.88V38.45z"/><path class="s0" d="M198.6,61.85c-2.31,1.56-4.82,2.44-7.45,2.5c-4.82,0-8.38-2.88-8.38-9.38V36.14h-4.75v-3.94h4.75v-8.7h4.82v8.7l10.45-0.06v4h-10.45v17.96c0,4,1.56,5.51,4.38,5.51c1.69,0,3.44-0.56,5.26-1.69L198.6,61.85z"/><path class="s2" d="M367.33,25.12V64.1h-5.01V25.12h-14.27v-4.82h33.6v4.82H367.33z M412,49.53h-26.9c0.88,6.44,5.57,10.51,11.95,10.51c4.07,0,7.63-1.44,10.2-4.13l2.69,2.88c-3.13,3.5-7.76,5.51-13.26,5.51c-9.7,0-16.39-6.82-16.39-16.64c0-9.82,6.76-16.64,16.33-16.64C407.25,30.94,412.5,38.33,412,49.53z M446.1,35.89l-2.69,3.44c-2.5-2.38-5.82-3.82-9.82-3.82c-6.82,0-11.7,4.94-11.7,12.14c0,7.2,4.88,12.2,11.7,12.2c4.32,0,7.88-1.5,10.2-4.26l2.82,3c-2.94,3.57-7.51,5.69-13.2,5.69c-9.57,0-16.33-6.82-16.33-16.64c0-9.82,6.82-16.64,16.33-16.64C438.71,30.94,443.09,32.76,446.1,35.89z M486.01,43.77V64.1h-4.88V45.08c0-5.82-3.5-9.26-9.32-9.26c-7.01,0.06-11.14,5-11.14,12.08v16.2h-4.88V17.68h4.88v20.84c2.25-5.13,6.76-7.51,12.83-7.57C481.38,30.94,486.01,35.82,486.01,43.77z"/></g></g></g></g>
+    </svg>
+    <span style="font-size:1rem;color:var(--gray);margin-left:auto;">SDK Write Capabilities</span>
+  </div>
+
+  <h1>Encompass SDK — <span class="teal">Full Write Access</span> Unlocked</h1>
+  <p class="subtitle">SDK v25.4 bypasses every REST API 403 wall. Full CRUD on settings the API can only read — or can't touch at all. <span class="badge">SDK v25.4</span></p>
+
+  <!-- COMPARISON -->
+  <div class="compare-strip">
+    <div class="compare-left">
+      <h4>REST API &nbsp;<span class="badge badge-red" style="font-size:.7rem">403 FORBIDDEN</span></h4>
+      <p style="font-size:.88rem;color:var(--gray-l)">Read-only on most admin settings. Cannot create or modify business rules, custom fields, milestones, access templates, or server config.</p>
+      <code>GET /encompass/v3/settings/... &rarr; 200 OK (read)</code>
+      <code>PATCH /encompass/v3/settings/... &rarr; 403 Forbidden</code>
+    </div>
+    <div class="compare-right">
+      <h4>SDK v25.4 &nbsp;<span class="badge badge-teal" style="font-size:.7rem">FULL CRUD</span></h4>
+      <p style="font-size:.88rem;color:var(--gray-l)">Complete read/write/create/delete access to all Encompass admin settings via <code>Session.ConfigurationManager</code> and related managers.</p>
+      <code>session.ConfigurationManager &rarr; Full Access</code>
+      <code>Create &bull; Read &bull; Update &bull; Delete</code>
+    </div>
+  </div>
+
+  <!-- SDK STATS -->
+  <div class="stat-row">
+    <div class="stat-box"><span class="num">6</span><span class="label">Rule Types</span></div>
+    <div class="stat-box"><span class="num">5</span><span class="label">Managers</span></div>
+    <div class="stat-box"><span class="num">17,357</span><span class="label">Custom Fields</span></div>
+    <div class="stat-box"><span class="num">3,080+</span><span class="label">Calc Fields</span></div>
+    <div class="stat-box"><span class="num">24</span><span class="label">Categories</span></div>
+    <div class="stat-box"><span class="num">6</span><span class="label">Bugs Found</span></div>
+  </div>
+
+  <!-- CAPABILITY GRID -->
+  <h2>SDK Write Capability Matrix</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h4>Business Rules</h4>
+      <p><span class="tag tag-sdk">SDK</span> Full CRUD</p>
+      <ul>
+        <li>Field Data Entry rules</li>
+        <li>Field Access rules</li>
+        <li>Loan Access rules</li>
+        <li>Loan Action rules (advanced)</li>
+        <li>Field Trigger rules</li>
+        <li>Print/Form rules</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Custom Fields</h4>
+      <p><span class="tag tag-sdk">SDK</span> <span class="tag tag-rest">REST</span></p>
+      <ul>
+        <li>17,357 custom fields</li>
+        <li>3,080+ calculated fields</li>
+        <li>Create/modify/delete</li>
+        <li>Field audit trails</li>
+        <li>Format &amp; validation rules</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Milestones</h4>
+      <p><span class="tag tag-sdk">SDK</span> Full CRUD</p>
+      <ul>
+        <li>54 milestones</li>
+        <li>36 milestone requirements</li>
+        <li>Completion conditions</li>
+        <li>Role assignments</li>
+        <li>Duration settings</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Loan Folders &amp; Access</h4>
+      <p><span class="tag tag-sdk">SDK</span> Full CRUD</p>
+      <ul>
+        <li>Folder management</li>
+        <li>Loan templates</li>
+        <li>Access control lists</li>
+        <li>User/role permissions</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Documents &amp; Templates</h4>
+      <p><span class="tag tag-sdk">SDK</span> Full CRUD</p>
+      <ul>
+        <li>268 document definitions</li>
+        <li>130 task definitions</li>
+        <li>88 alert settings</li>
+        <li>411 custom forms</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Server &amp; System</h4>
+      <p><span class="tag tag-sdk">SDK</span> Full CRUD</p>
+      <ul>
+        <li>Server configuration</li>
+        <li>System-level settings</li>
+        <li>External service configs</li>
+        <li>Notification templates</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>MortgageTech &copy; 2025 — Confidential</span>
+    <span>Page 2 of 6</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 3 — KNOWLEDGE BASE & DATA LAYER
+     ════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="logo-row">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 76.37" style="height:28px">
+      <style>.s0b{fill:#FFF}.s1b{fill:#C7802F}.s2b{fill:url(#g3)}.g1b{transform-origin:22px 54px;animation:sc 4s linear infinite}.g2b{transform-origin:35px 15.5px;animation:sd 4s linear infinite}@keyframes sc{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes sd{from{transform:rotate(22deg)}to{transform:rotate(-338deg)}}</style>
+      <defs><linearGradient id="g3" x1="348" y1="41" x2="486" y2="41" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EC881E"/><stop offset="1" stop-color="#F0A53B"/></linearGradient></defs>
+      <g><g><g><path class="s0b g1b" d="M44,49.71l-0.01-0.04c-0.16-0.9-0.38-1.78-0.65-2.63c-2.17,0.47-4.04,0.05-4.63-1.19c-0.59-1.24,0.28-2.95,2.02-4.33c-0.47-0.73-0.99-1.42-1.55-2.08l-0.05-0.06c-0.09-0.11-0.18-0.21-0.28-0.32l-0.19-0.21c-0.1-0.12-0.21-0.23-0.32-0.34l-0.16-0.17c-0.13-0.14-0.27-0.27-0.4-0.41l-0.09-0.09c-0.17-0.17-0.34-0.33-0.52-0.49l-0.07,0.06c-0.9,0.8-1.86,1.33-2.72,1.5c-0.69,0.14-1.32,0.06-1.81-0.28c-1.12-0.77-1.23-2.66-0.44-4.7l0.02-0.06c-1.63-0.82-3.36-1.45-5.16-1.86c-0.3,0.92-0.71,1.72-1.2,2.3c-0.11,0.13-0.23,0.25-0.34,0.36c-0.55,0.52-1.17,0.8-1.8,0.75c-0.19-0.02-0.37-0.06-0.55-0.13c-0.85-0.35-1.54-1.31-1.93-2.61c-0.11-0.36-0.19-0.75-0.25-1.17c-0.9,0.05-1.82,0.16-2.73,0.32l-0.04,0.01c-0.9,0.16-1.78,0.38-2.63,0.65c0.47,2.17,0.05,4.04-1.19,4.63c-1.24,0.59-2.96-0.28-4.33-2.02c-0.73,0.47-1.42,0.99-2.08,1.55l-0.06,0.05c-0.1,0.08-0.2,0.17-0.3,0.26l-0.23,0.21c-0.11,0.1-0.22,0.2-0.33,0.3l-0.19,0.18c-0.13,0.13-0.27,0.26-0.4,0.39l-0.1,0.1c-0.17,0.17-0.33,0.34-0.49,0.52l0.1,0.12c1.34,1.53,1.88,3.19,1.29,4.3l-0.11,0.18c-0.11,0.16-0.25,0.3-0.4,0.42c-0.32,0.25-0.73,0.41-1.19,0.48c-0.89,0.14-2-0.03-3.16-0.49c-0.82,1.63-1.45,3.36-1.86,5.16c1.06,0.34,1.94,0.83,2.54,1.41l0.05,0.05c0.57,0.57,0.88,1.22,0.82,1.88c-0.01,0.17-0.05,0.34-0.11,0.5C3.39,53.78,1.92,54.61,0,54.9c0.05,0.9,0.16,1.82,0.32,2.73c0.17,0.91,0.39,1.81,0.66,2.67c0.27-0.06,0.54-0.1,0.8-0.13c1.56-0.19,2.88,0.12,3.55,0.9c0.11,0.13,0.21,0.27,0.28,0.43c0.29,0.61,0.22,1.33-0.12,2.06l-0.02,0.04c-0.36,0.76-1.01,1.53-1.88,2.21c1.01,1.55,2.21,2.95,3.55,4.18c1.64-1.49,3.47-2.06,4.6-1.28l0.06,0.05c1.07,0.81,1.16,2.69,0.36,4.71c1.63,0.82,3.36,1.45,5.16,1.86c0.25-0.79,0.6-1.49,1-2.04c0.28-0.39,0.59-0.71,0.93-0.94c0.45-0.32,0.93-0.48,1.42-0.44c1.03,0.08,1.87,1.01,2.37,2.39l0.05,0.14c0.02,0.07,0.05,0.14,0.07,0.21c0.11,0.36,0.19,0.75,0.25,1.17c0.53-0.03,1.05-0.08,1.58-0.15c0.38-0.05,0.77-0.11,1.15-0.18c0.33-0.06,0.66-0.13,0.98-0.2c0.57-0.13,1.14-0.28,1.69-0.45c-0.47-2.17-0.05-4.04,1.19-4.63c1.24-0.59,2.95,0.28,4.33,2.02c1.55-1.01,2.95-2.21,4.18-3.55c-1.49-1.64-2.06-3.47-1.28-4.6l0.12-0.15c0.84-0.98,2.67-1.05,4.64-0.27c0.04-0.08,0.08-0.17,0.12-0.25c0.55-1.12,1.01-2.28,1.36-3.49c0.14-0.47,0.26-0.95,0.37-1.43c-0.79-0.25-1.49-0.59-2.04-0.99c-0.4-0.29-0.71-0.6-0.95-0.94c-0.31-0.45-0.47-0.92-0.43-1.41c0.11-1.37,1.72-2.42,3.91-2.74c-0.03-0.54-0.08-1.07-0.15-1.61C44.12,50.45,44.07,50.08,44,49.71z"/><path class="s1b g2b" d="M50.57,12.75l0-0.03c-0.11-0.63-0.27-1.24-0.45-1.84c-1.52,0.33-2.83,0.04-3.24-0.83s0.2-2.07,1.42-3.03c-0.33-0.51-0.7-1-1.08-1.46l-0.04-0.04c-0.06-0.08-0.13-0.15-0.19-0.22l-0.13-0.15c-0.07-0.08-0.15-0.16-0.22-0.24l-0.11-0.12c-0.09-0.1-0.19-0.19-0.28-0.29l-0.06-0.06c-0.12-0.12-0.24-0.23-0.36-0.34l-0.05,0.05c-0.63,0.56-1.3,0.93-1.9,1.05c-0.48,0.1-0.92,0.04-1.27-0.2c-0.78-0.54-0.86-1.86-0.3-3.29l0.01-0.04c-1.14-0.58-2.35-1.02-3.62-1.3c-0.21,0.65-0.5,1.2-0.84,1.61c-0.08,0.09-0.16,0.18-0.24,0.26c-0.38,0.36-0.82,0.56-1.26,0.52c-0.13-0.01-0.26-0.04-0.39-0.09c-0.6-0.24-1.08-0.92-1.35-1.83C34.51,0.56,34.45,0.29,34.41,0c-0.63,0.04-1.27,0.11-1.91,0.23l-0.03,0.01c-0.63,0.11-1.24,0.27-1.84,0.45c0.33,1.52,0.04,2.83-0.83,3.24c-0.87,0.41-2.07-0.2-3.03-1.42c-0.51,0.33-1,0.7-1.46,1.08l-0.04,0.04c-0.07,0.06-0.14,0.12-0.21,0.18l-0.16,0.14c-0.08,0.07-0.15,0.14-0.23,0.21l-0.13,0.12c-0.09,0.09-0.19,0.18-0.28,0.28l-0.07,0.07c-0.12,0.12-0.23,0.24-0.34,0.37l0.07,0.08c0.93,1.07,1.32,2.24,0.9,3.01l-0.08,0.13c-0.08,0.11-0.17,0.21-0.28,0.29c-0.22,0.17-0.51,0.29-0.84,0.34c-0.62,0.1-1.4-0.02-2.22-0.34c-0.58,1.14-1.02,2.35-1.3,3.62c0.74,0.24,1.36,0.58,1.78,0.99l0.03,0.04c0.4,0.4,0.62,0.85,0.58,1.32c-0.01,0.12-0.04,0.24-0.08,0.35c-0.29,0.78-1.32,1.37-2.67,1.57c0.04,0.63,0.11,1.27,0.23,1.91c0.12,0.64,0.27,1.26,0.46,1.87c0.19-0.04,0.38-0.07,0.56-0.09c1.09-0.13,2.02,0.08,2.49,0.63c0.08,0.09,0.14,0.19,0.19,0.3c0.2,0.42,0.16,0.93-0.08,1.44l-0.02,0.04c-0.25,0.53-0.71,1.07-1.32,1.55c0.71,1.08,1.55,2.07,2.49,2.93c1.15-1.04,2.43-1.45,3.22-0.9l0.06,0.04c0.75,0.57,0.81,1.88,0.25,3.3c1.14,0.58,2.35,1.02,3.62,1.3c0.18-0.56,0.42-1.04,0.7-1.43c0.2-0.27,0.42-0.5,0.65-0.66c0.31-0.22,0.65-0.33,1-0.31c0.72,0.06,1.31,0.71,1.66,1.68l0.03,0.1,0.05,0.15c0.08,0.26,0.14,0.53,0.18,0.82c0.37-0.02,0.74-0.06,1.11-0.1c0.27-0.03,0.54-0.07,0.8-0.12c0.23-0.04,0.46-0.09,0.69-0.14c0.4-0.09,0.8-0.2,1.18-0.32c-0.33-1.52-0.04-2.83,0.83-3.24c0.87-0.41,2.07,0.2,3.03,1.42c1.08-0.71,2.07-1.55,2.93-2.49c-1.04-1.15-1.45-2.43-0.9-3.22l0.08-0.1c0.59-0.69,1.87-0.73,3.25-0.19l0.09-0.18c0.38-0.78,0.7-1.6,0.95-2.44c0.1-0.33,0.18-0.66,0.26-1c-0.55-0.18-1.04-0.42-1.43-0.7c-0.28-0.2-0.5-0.42-0.67-0.66c-0.22-0.31-0.33-0.65-0.3-0.99c0.08-0.96,1.21-1.69,2.74-1.92c-0.02-0.38-0.06-0.75-0.11-1.13C50.65,13.28,50.62,13.02,50.57,12.75z"/></g></g></g>
+    </svg>
+    <span style="font-size:1rem;color:var(--gray);margin-left:auto;">Knowledge Base &amp; Data</span>
+  </div>
+
+  <h1>Knowledge Base &amp;<br><span class="gold">Data Intelligence</span></h1>
+  <p class="subtitle">52 structured markdown files covering every Encompass admin area, built from 41 raw JSON extracts totaling ~41 MB.</p>
+
+  <!-- INSTANCE QUICK STATS -->
+  <h2>Instance Quick Stats — BE11146040</h2>
+  <div class="stat-row" style="grid-template-columns: repeat(6, 1fr);">
+    <div class="stat-box"><span class="num">53</span><span class="label">Users</span></div>
+    <div class="stat-box"><span class="num">74</span><span class="label">Organizations</span></div>
+    <div class="stat-box"><span class="num">90</span><span class="label">Personas</span></div>
+    <div class="stat-box"><span class="num">17,357</span><span class="label">Custom Fields</span></div>
+    <div class="stat-box"><span class="num">396</span><span class="label">Field Triggers</span></div>
+    <div class="stat-box"><span class="num">126</span><span class="label">Data Entry Rules</span></div>
+  </div>
+  <div class="stat-row" style="grid-template-columns: repeat(6, 1fr);">
+    <div class="stat-box"><span class="num">58</span><span class="label">Field Access</span></div>
+    <div class="stat-box"><span class="num">17</span><span class="label">Loan Access</span></div>
+    <div class="stat-box"><span class="num">18</span><span class="label">Print Forms</span></div>
+    <div class="stat-box"><span class="num">54</span><span class="label">Milestones</span></div>
+    <div class="stat-box"><span class="num">268</span><span class="label">Documents</span></div>
+    <div class="stat-box"><span class="num">411</span><span class="label">Custom Forms</span></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- KB STRUCTURE -->
+  <h2>Knowledge Base Structure</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h4>High-Impact Sections</h4>
+      <table class="data-table" style="margin:0">
+        <tr><td><code>01</code></td><td>Users &amp; Contacts</td><td class="small teal">24.2 KB</td></tr>
+        <tr><td><code>02</code></td><td>Organizations</td><td class="small teal">20.3 KB</td></tr>
+        <tr><td><code>04</code></td><td>Personas</td><td class="small teal">51.2 KB</td></tr>
+        <tr><td><code>05</code></td><td>Custom Fields</td><td class="small teal">497.3 KB</td></tr>
+        <tr><td><code>07</code></td><td>Data Entry Rules</td><td class="small teal">109.1 KB</td></tr>
+        <tr><td><code>08</code></td><td>Field Access Rules</td><td class="small teal">66.2 KB</td></tr>
+        <tr><td><code>10</code></td><td>Field Trigger Rules</td><td class="small teal">302.1 KB</td></tr>
+        <tr><td><code>12</code></td><td>Milestones</td><td class="small teal">61.2 KB</td></tr>
+        <tr><td><code>14</code></td><td>Documents</td><td class="small teal">211.9 KB</td></tr>
+        <tr><td><code>16</code></td><td>Tasks</td><td class="small teal">68.1 KB</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>Additional Sections</h4>
+      <table class="data-table" style="margin:0">
+        <tr><td><code>17</code></td><td>Alerts</td><td class="small teal">10.2 KB</td></tr>
+        <tr><td><code>18</code></td><td>Custom Forms</td><td class="small teal">28.1 KB</td></tr>
+        <tr><td><code>20</code></td><td>Loan Programs</td><td class="small teal">26.4 KB</td></tr>
+        <tr><td><code>22</code></td><td>Closing Costs</td><td class="small teal">1.2 KB</td></tr>
+        <tr><td><code>24</code></td><td>Templates</td><td class="small teal">65.0 KB</td></tr>
+        <tr><td><code>26</code></td><td>Channels</td><td class="small teal">3.5 KB</td></tr>
+        <tr><td><code>30</code></td><td>Loan Folders</td><td class="small teal">3.9 KB</td></tr>
+        <tr><td><code>33</code></td><td>Trigger Configs</td><td class="small teal">18.5 KB</td></tr>
+        <tr><td><code>50</code></td><td>Cross-reference Index</td><td class="small teal">45.8 KB</td></tr>
+        <tr><td><code>52</code></td><td>KB Changelog</td><td class="small teal">8.9 KB</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- DATA SOURCES -->
+  <h3>Data Source Tags</h3>
+  <p style="margin-bottom: .08in">
+    <span class="tag tag-sdk">SDK</span> Encompass SDK v25.4 &nbsp;&nbsp;
+    <span class="tag tag-rest">REST</span> ICE REST API &nbsp;&nbsp;
+    <span class="tag tag-bra">BRA</span> Business Rule Archive &nbsp;&nbsp;
+    <span class="tag tag-xlsx">XLSX</span> Exported Spreadsheets &nbsp;&nbsp;
+    <span class="tag tag-web">WEB</span> Scraped Content
+  </p>
+
+  <div class="page-footer">
+    <span>MortgageTech &copy; 2025 — Confidential</span>
+    <span>Page 3 of 6</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 4 — AUTOMATION SCRIPTS & EXTERNAL INTELLIGENCE
+     ════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="logo-row">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 76.37" style="height:28px">
+      <style>.s0c{fill:#FFF}.s1c{fill:#C7802F}.s2c{fill:url(#g4)}.g1c{transform-origin:22px 54px;animation:se 4s linear infinite}.g2c{transform-origin:35px 15.5px;animation:sf 4s linear infinite}@keyframes se{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes sf{from{transform:rotate(22deg)}to{transform:rotate(-338deg)}}</style>
+      <defs><linearGradient id="g4" x1="348" y1="41" x2="486" y2="41" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EC881E"/><stop offset="1" stop-color="#F0A53B"/></linearGradient></defs>
+      <g><g><g><path class="s0c g1c" d="M44,49.71l-0.01-0.04c-0.16-0.9-0.38-1.78-0.65-2.63c-2.17,0.47-4.04,0.05-4.63-1.19c-0.59-1.24,0.28-2.95,2.02-4.33c-0.47-0.73-0.99-1.42-1.55-2.08l-0.05-0.06c-0.09-0.11-0.18-0.21-0.28-0.32l-0.19-0.21c-0.1-0.12-0.21-0.23-0.32-0.34l-0.16-0.17c-0.13-0.14-0.27-0.27-0.4-0.41l-0.09-0.09c-0.17-0.17-0.34-0.33-0.52-0.49l-0.07,0.06c-0.9,0.8-1.86,1.33-2.72,1.5c-0.69,0.14-1.32,0.06-1.81-0.28c-1.12-0.77-1.23-2.66-0.44-4.7l0.02-0.06c-1.63-0.82-3.36-1.45-5.16-1.86c-0.3,0.92-0.71,1.72-1.2,2.3c-0.11,0.13-0.23,0.25-0.34,0.36c-0.55,0.52-1.17,0.8-1.8,0.75c-0.19-0.02-0.37-0.06-0.55-0.13c-0.85-0.35-1.54-1.31-1.93-2.61c-0.11-0.36-0.19-0.75-0.25-1.17c-0.9,0.05-1.82,0.16-2.73,0.32l-0.04,0.01c-0.9,0.16-1.78,0.38-2.63,0.65c0.47,2.17,0.05,4.04-1.19,4.63c-1.24,0.59-2.96-0.28-4.33-2.02c-0.73,0.47-1.42,0.99-2.08,1.55l-0.06,0.05c-0.1,0.08-0.2,0.17-0.3,0.26l-0.23,0.21c-0.11,0.1-0.22,0.2-0.33,0.3l-0.19,0.18c-0.13,0.13-0.27,0.26-0.4,0.39l-0.1,0.1c-0.17,0.17-0.33,0.34-0.49,0.52l0.1,0.12c1.34,1.53,1.88,3.19,1.29,4.3l-0.11,0.18c-0.11,0.16-0.25,0.3-0.4,0.42c-0.32,0.25-0.73,0.41-1.19,0.48c-0.89,0.14-2-0.03-3.16-0.49c-0.82,1.63-1.45,3.36-1.86,5.16c1.06,0.34,1.94,0.83,2.54,1.41l0.05,0.05c0.57,0.57,0.88,1.22,0.82,1.88c-0.01,0.17-0.05,0.34-0.11,0.5C3.39,53.78,1.92,54.61,0,54.9c0.05,0.9,0.16,1.82,0.32,2.73c0.17,0.91,0.39,1.81,0.66,2.67c0.27-0.06,0.54-0.1,0.8-0.13c1.56-0.19,2.88,0.12,3.55,0.9c0.11,0.13,0.21,0.27,0.28,0.43c0.29,0.61,0.22,1.33-0.12,2.06l-0.02,0.04c-0.36,0.76-1.01,1.53-1.88,2.21c1.01,1.55,2.21,2.95,3.55,4.18c1.64-1.49,3.47-2.06,4.6-1.28l0.06,0.05c1.07,0.81,1.16,2.69,0.36,4.71c1.63,0.82,3.36,1.45,5.16,1.86c0.25-0.79,0.6-1.49,1-2.04c0.28-0.39,0.59-0.71,0.93-0.94c0.45-0.32,0.93-0.48,1.42-0.44c1.03,0.08,1.87,1.01,2.37,2.39l0.05,0.14c0.02,0.07,0.05,0.14,0.07,0.21c0.11,0.36,0.19,0.75,0.25,1.17c0.53-0.03,1.05-0.08,1.58-0.15c0.38-0.05,0.77-0.11,1.15-0.18c0.33-0.06,0.66-0.13,0.98-0.2c0.57-0.13,1.14-0.28,1.69-0.45c-0.47-2.17-0.05-4.04,1.19-4.63c1.24-0.59,2.95,0.28,4.33,2.02c1.55-1.01,2.95-2.21,4.18-3.55c-1.49-1.64-2.06-3.47-1.28-4.6l0.12-0.15c0.84-0.98,2.67-1.05,4.64-0.27c0.04-0.08,0.08-0.17,0.12-0.25c0.55-1.12,1.01-2.28,1.36-3.49c0.14-0.47,0.26-0.95,0.37-1.43c-0.79-0.25-1.49-0.59-2.04-0.99c-0.4-0.29-0.71-0.6-0.95-0.94c-0.31-0.45-0.47-0.92-0.43-1.41c0.11-1.37,1.72-2.42,3.91-2.74c-0.03-0.54-0.08-1.07-0.15-1.61C44.12,50.45,44.07,50.08,44,49.71z"/><path class="s1c g2c" d="M50.57,12.75l0-0.03c-0.11-0.63-0.27-1.24-0.45-1.84c-1.52,0.33-2.83,0.04-3.24-0.83s0.2-2.07,1.42-3.03c-0.33-0.51-0.7-1-1.08-1.46l-0.04-0.04c-0.06-0.08-0.13-0.15-0.19-0.22l-0.13-0.15c-0.07-0.08-0.15-0.16-0.22-0.24l-0.11-0.12c-0.09-0.1-0.19-0.19-0.28-0.29l-0.06-0.06c-0.12-0.12-0.24-0.23-0.36-0.34l-0.05,0.05c-0.63,0.56-1.3,0.93-1.9,1.05c-0.48,0.1-0.92,0.04-1.27-0.2c-0.78-0.54-0.86-1.86-0.3-3.29l0.01-0.04c-1.14-0.58-2.35-1.02-3.62-1.3c-0.21,0.65-0.5,1.2-0.84,1.61c-0.08,0.09-0.16,0.18-0.24,0.26c-0.38,0.36-0.82,0.56-1.26,0.52c-0.13-0.01-0.26-0.04-0.39-0.09c-0.6-0.24-1.08-0.92-1.35-1.83C34.51,0.56,34.45,0.29,34.41,0c-0.63,0.04-1.27,0.11-1.91,0.23l-0.03,0.01c-0.63,0.11-1.24,0.27-1.84,0.45c0.33,1.52,0.04,2.83-0.83,3.24c-0.87,0.41-2.07-0.2-3.03-1.42c-0.51,0.33-1,0.7-1.46,1.08l-0.04,0.04c-0.07,0.06-0.14,0.12-0.21,0.18l-0.16,0.14c-0.08,0.07-0.15,0.14-0.23,0.21l-0.13,0.12c-0.09,0.09-0.19,0.18-0.28,0.28l-0.07,0.07c-0.12,0.12-0.23,0.24-0.34,0.37l0.07,0.08c0.93,1.07,1.32,2.24,0.9,3.01l-0.08,0.13c-0.08,0.11-0.17,0.21-0.28,0.29c-0.22,0.17-0.51,0.29-0.84,0.34c-0.62,0.1-1.4-0.02-2.22-0.34c-0.58,1.14-1.02,2.35-1.3,3.62c0.74,0.24,1.36,0.58,1.78,0.99l0.03,0.04c0.4,0.4,0.62,0.85,0.58,1.32c-0.01,0.12-0.04,0.24-0.08,0.35c-0.29,0.78-1.32,1.37-2.67,1.57c0.04,0.63,0.11,1.27,0.23,1.91c0.12,0.64,0.27,1.26,0.46,1.87c0.19-0.04,0.38-0.07,0.56-0.09c1.09-0.13,2.02,0.08,2.49,0.63c0.08,0.09,0.14,0.19,0.19,0.3c0.2,0.42,0.16,0.93-0.08,1.44l-0.02,0.04c-0.25,0.53-0.71,1.07-1.32,1.55c0.71,1.08,1.55,2.07,2.49,2.93c1.15-1.04,2.43-1.45,3.22-0.9l0.06,0.04c0.75,0.57,0.81,1.88,0.25,3.3c1.14,0.58,2.35,1.02,3.62,1.3c0.18-0.56,0.42-1.04,0.7-1.43c0.2-0.27,0.42-0.5,0.65-0.66c0.31-0.22,0.65-0.33,1-0.31c0.72,0.06,1.31,0.71,1.66,1.68l0.03,0.1,0.05,0.15c0.08,0.26,0.14,0.53,0.18,0.82c0.37-0.02,0.74-0.06,1.11-0.1c0.27-0.03,0.54-0.07,0.8-0.12c0.23-0.04,0.46-0.09,0.69-0.14c0.4-0.09,0.8-0.2,1.18-0.32c-0.33-1.52-0.04-2.83,0.83-3.24c0.87-0.41,2.07,0.2,3.03,1.42c1.08-0.71,2.07-1.55,2.93-2.49c-1.04-1.15-1.45-2.43-0.9-3.22l0.08-0.1c0.59-0.69,1.87-0.73,3.25-0.19l0.09-0.18c0.38-0.78,0.7-1.6,0.95-2.44c0.1-0.33,0.18-0.66,0.26-1c-0.55-0.18-1.04-0.42-1.43-0.7c-0.28-0.2-0.5-0.42-0.67-0.66c-0.22-0.31-0.33-0.65-0.3-0.99c0.08-0.96,1.21-1.69,2.74-1.92c-0.02-0.38-0.06-0.75-0.11-1.13C50.65,13.28,50.62,13.02,50.57,12.75z"/></g></g></g>
+    </svg>
+    <span style="font-size:1rem;color:var(--gray);margin-left:auto;">Automation &amp; Intelligence</span>
+  </div>
+
+  <h1>Automation Scripts &amp;<br><span class="teal">External Intelligence</span></h1>
+
+  <!-- 4 CORE SCRIPTS -->
+  <h2>Four Core Scripts</h2>
+  <div class="grid-2">
+    <div class="card" style="border-left: 3px solid var(--teal);">
+      <h4>ice-api.js <span class="tag tag-rest">REST</span></h4>
+      <p class="small bold" style="color:var(--white)">201 lines — REST API Proxy</p>
+      <p>OAuth2 password-grant authentication with automatic token management. Commands: <code>token</code>, <code>get</code>, <code>folders</code>, <code>field</code>, <code>settings</code>, <code>rules</code>, <code>schema</code>.</p>
+      <p class="mt small" style="color:var(--gray)">Supports parallel requests with per-session caching. Primary entry point for all REST-based data retrieval.</p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--gold);">
+      <h4>ice-fetch.js <span class="tag tag-web">WEB</span></h4>
+      <p class="small bold" style="color:var(--white)">Playwright Auth-Walled Fetcher</p>
+      <p>Automated browser login through ICE identity provider (IDP). Handles OAuth2 redirect flow, extracts page content from authenticated Encompass web sessions.</p>
+      <p class="mt small" style="color:var(--gray)">Used for scraping admin portal pages not available via REST API.</p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--teal);">
+      <h4>build-knowledge-base-v2.js <span class="tag tag-sdk">SDK</span></h4>
+      <p class="small bold" style="color:var(--white)">1,115 lines — KB Generator</p>
+      <p>Master generator that loads ~30 data sources and produces 24+ structured markdown KB sections. Cross-references data across users, orgs, personas, rules, fields, and templates.</p>
+      <p class="mt small" style="color:var(--gray)">Outputs to <code>knowledge/encompass-settings/</code> with deterministic naming.</p>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--gold);">
+      <h4>extract-live.js <span class="tag tag-rest">REST</span></h4>
+      <p class="small bold" style="color:var(--white)">262 lines — Live Data Extraction</p>
+      <p>Authenticated REST API extractor using OAuth2 + <code>fetchAndSave</code> pattern. Pulls real-time data from production instance and saves structured JSON to <code>data/be11146040/</code>.</p>
+      <p class="mt small" style="color:var(--gray)">Supports incremental updates and differential extraction.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- EXTERNAL INTELLIGENCE -->
+  <h2>External Intelligence Sources</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h4 style="color: var(--gold);">SharePoint Index</h4>
+      <p><span class="num" style="display:inline;font-size:1.3rem;font-weight:800;color:var(--gold)">12,700+</span> documents</p>
+      <ul>
+        <li>MasteringEncompass: 11,657 posts</li>
+        <li>EllieForum: 1,018 posts</li>
+        <li>Topic-indexed &amp; searchable</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>Archive: OldMachine-SB6</h4>
+      <p>Hundreds of scraped posts, PDFs, and custom scrapers preserved from prior research.</p>
+      <ul>
+        <li>Historical Encompass guides</li>
+        <li>Community solutions</li>
+        <li>Configuration patterns</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>External Source Tiers</h4>
+      <p>Three-tier external reference system:</p>
+      <ul>
+        <li><strong class="teal">Tier 1:</strong> ICE official docs</li>
+        <li><strong class="gold">Tier 2:</strong> Community forums</li>
+        <li><strong class="red">Tier 3:</strong> Third-party guides</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- COVERAGE -->
+  <div class="card" style="border-left: 3px solid var(--green); margin-top: 0.12in;">
+    <h4 style="color: var(--green);">Coverage Assessment</h4>
+    <div class="grid-2" style="margin:0;gap:.1in">
+      <div>
+        <p><span class="bold" style="color:var(--white)">~70–75%</span> of all Encompass admin areas</p>
+        <p class="small" style="color:var(--gray)">General admin coverage across all categories</p>
+      </div>
+      <div>
+        <p><span class="bold" style="color:var(--white)">~85–90%</span> of high-impact areas</p>
+        <p class="small" style="color:var(--gray)">Business rules, custom fields, milestones, personas, access controls</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>MortgageTech &copy; 2025 — Confidential</span>
+    <span>Page 4 of 6</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 5 — BUGS & INFRASTRUCTURE
+     ════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="logo-row">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 76.37" style="height:28px">
+      <style>.s0d{fill:#FFF}.s1d{fill:#C7802F}.s2d{fill:url(#g5)}.g1d{transform-origin:22px 54px;animation:sg 4s linear infinite}.g2d{transform-origin:35px 15.5px;animation:sh 4s linear infinite}@keyframes sg{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes sh{from{transform:rotate(22deg)}to{transform:rotate(-338deg)}}</style>
+      <defs><linearGradient id="g5" x1="348" y1="41" x2="486" y2="41" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EC881E"/><stop offset="1" stop-color="#F0A53B"/></linearGradient></defs>
+      <g><g><g><path class="s0d g1d" d="M44,49.71l-0.01-0.04c-0.16-0.9-0.38-1.78-0.65-2.63c-2.17,0.47-4.04,0.05-4.63-1.19c-0.59-1.24,0.28-2.95,2.02-4.33c-0.47-0.73-0.99-1.42-1.55-2.08l-0.05-0.06c-0.09-0.11-0.18-0.21-0.28-0.32l-0.19-0.21c-0.1-0.12-0.21-0.23-0.32-0.34l-0.16-0.17c-0.13-0.14-0.27-0.27-0.4-0.41l-0.09-0.09c-0.17-0.17-0.34-0.33-0.52-0.49l-0.07,0.06c-0.9,0.8-1.86,1.33-2.72,1.5c-0.69,0.14-1.32,0.06-1.81-0.28c-1.12-0.77-1.23-2.66-0.44-4.7l0.02-0.06c-1.63-0.82-3.36-1.45-5.16-1.86c-0.3,0.92-0.71,1.72-1.2,2.3c-0.11,0.13-0.23,0.25-0.34,0.36c-0.55,0.52-1.17,0.8-1.8,0.75c-0.19-0.02-0.37-0.06-0.55-0.13c-0.85-0.35-1.54-1.31-1.93-2.61c-0.11-0.36-0.19-0.75-0.25-1.17c-0.9,0.05-1.82,0.16-2.73,0.32l-0.04,0.01c-0.9,0.16-1.78,0.38-2.63,0.65c0.47,2.17,0.05,4.04-1.19,4.63c-1.24,0.59-2.96-0.28-4.33-2.02c-0.73,0.47-1.42,0.99-2.08,1.55l-0.06,0.05c-0.1,0.08-0.2,0.17-0.3,0.26l-0.23,0.21c-0.11,0.1-0.22,0.2-0.33,0.3l-0.19,0.18c-0.13,0.13-0.27,0.26-0.4,0.39l-0.1,0.1c-0.17,0.17-0.33,0.34-0.49,0.52l0.1,0.12c1.34,1.53,1.88,3.19,1.29,4.3l-0.11,0.18c-0.11,0.16-0.25,0.3-0.4,0.42c-0.32,0.25-0.73,0.41-1.19,0.48c-0.89,0.14-2-0.03-3.16-0.49c-0.82,1.63-1.45,3.36-1.86,5.16c1.06,0.34,1.94,0.83,2.54,1.41l0.05,0.05c0.57,0.57,0.88,1.22,0.82,1.88c-0.01,0.17-0.05,0.34-0.11,0.5C3.39,53.78,1.92,54.61,0,54.9c0.05,0.9,0.16,1.82,0.32,2.73c0.17,0.91,0.39,1.81,0.66,2.67c0.27-0.06,0.54-0.1,0.8-0.13c1.56-0.19,2.88,0.12,3.55,0.9c0.11,0.13,0.21,0.27,0.28,0.43c0.29,0.61,0.22,1.33-0.12,2.06l-0.02,0.04c-0.36,0.76-1.01,1.53-1.88,2.21c1.01,1.55,2.21,2.95,3.55,4.18c1.64-1.49,3.47-2.06,4.6-1.28l0.06,0.05c1.07,0.81,1.16,2.69,0.36,4.71c1.63,0.82,3.36,1.45,5.16,1.86c0.25-0.79,0.6-1.49,1-2.04c0.28-0.39,0.59-0.71,0.93-0.94c0.45-0.32,0.93-0.48,1.42-0.44c1.03,0.08,1.87,1.01,2.37,2.39l0.05,0.14c0.02,0.07,0.05,0.14,0.07,0.21c0.11,0.36,0.19,0.75,0.25,1.17c0.53-0.03,1.05-0.08,1.58-0.15c0.38-0.05,0.77-0.11,1.15-0.18c0.33-0.06,0.66-0.13,0.98-0.2c0.57-0.13,1.14-0.28,1.69-0.45c-0.47-2.17-0.05-4.04,1.19-4.63c1.24-0.59,2.95,0.28,4.33,2.02c1.55-1.01,2.95-2.21,4.18-3.55c-1.49-1.64-2.06-3.47-1.28-4.6l0.12-0.15c0.84-0.98,2.67-1.05,4.64-0.27c0.04-0.08,0.08-0.17,0.12-0.25c0.55-1.12,1.01-2.28,1.36-3.49c0.14-0.47,0.26-0.95,0.37-1.43c-0.79-0.25-1.49-0.59-2.04-0.99c-0.4-0.29-0.71-0.6-0.95-0.94c-0.31-0.45-0.47-0.92-0.43-1.41c0.11-1.37,1.72-2.42,3.91-2.74c-0.03-0.54-0.08-1.07-0.15-1.61C44.12,50.45,44.07,50.08,44,49.71z"/><path class="s1d g2d" d="M50.57,12.75l0-0.03c-0.11-0.63-0.27-1.24-0.45-1.84c-1.52,0.33-2.83,0.04-3.24-0.83s0.2-2.07,1.42-3.03c-0.33-0.51-0.7-1-1.08-1.46l-0.04-0.04c-0.06-0.08-0.13-0.15-0.19-0.22l-0.13-0.15c-0.07-0.08-0.15-0.16-0.22-0.24l-0.11-0.12c-0.09-0.1-0.19-0.19-0.28-0.29l-0.06-0.06c-0.12-0.12-0.24-0.23-0.36-0.34l-0.05,0.05c-0.63,0.56-1.3,0.93-1.9,1.05c-0.48,0.1-0.92,0.04-1.27-0.2c-0.78-0.54-0.86-1.86-0.3-3.29l0.01-0.04c-1.14-0.58-2.35-1.02-3.62-1.3c-0.21,0.65-0.5,1.2-0.84,1.61c-0.08,0.09-0.16,0.18-0.24,0.26c-0.38,0.36-0.82,0.56-1.26,0.52c-0.13-0.01-0.26-0.04-0.39-0.09c-0.6-0.24-1.08-0.92-1.35-1.83C34.51,0.56,34.45,0.29,34.41,0c-0.63,0.04-1.27,0.11-1.91,0.23l-0.03,0.01c-0.63,0.11-1.24,0.27-1.84,0.45c0.33,1.52,0.04,2.83-0.83,3.24c-0.87,0.41-2.07-0.2-3.03-1.42c-0.51,0.33-1,0.7-1.46,1.08l-0.04,0.04c-0.07,0.06-0.14,0.12-0.21,0.18l-0.16,0.14c-0.08,0.07-0.15,0.14-0.23,0.21l-0.13,0.12c-0.09,0.09-0.19,0.18-0.28,0.28l-0.07,0.07c-0.12,0.12-0.23,0.24-0.34,0.37l0.07,0.08c0.93,1.07,1.32,2.24,0.9,3.01l-0.08,0.13c-0.08,0.11-0.17,0.21-0.28,0.29c-0.22,0.17-0.51,0.29-0.84,0.34c-0.62,0.1-1.4-0.02-2.22-0.34c-0.58,1.14-1.02,2.35-1.3,3.62c0.74,0.24,1.36,0.58,1.78,0.99l0.03,0.04c0.4,0.4,0.62,0.85,0.58,1.32c-0.01,0.12-0.04,0.24-0.08,0.35c-0.29,0.78-1.32,1.37-2.67,1.57c0.04,0.63,0.11,1.27,0.23,1.91c0.12,0.64,0.27,1.26,0.46,1.87c0.19-0.04,0.38-0.07,0.56-0.09c1.09-0.13,2.02,0.08,2.49,0.63c0.08,0.09,0.14,0.19,0.19,0.3c0.2,0.42,0.16,0.93-0.08,1.44l-0.02,0.04c-0.25,0.53-0.71,1.07-1.32,1.55c0.71,1.08,1.55,2.07,2.49,2.93c1.15-1.04,2.43-1.45,3.22-0.9l0.06,0.04c0.75,0.57,0.81,1.88,0.25,3.3c1.14,0.58,2.35,1.02,3.62,1.3c0.18-0.56,0.42-1.04,0.7-1.43c0.2-0.27,0.42-0.5,0.65-0.66c0.31-0.22,0.65-0.33,1-0.31c0.72,0.06,1.31,0.71,1.66,1.68l0.03,0.1,0.05,0.15c0.08,0.26,0.14,0.53,0.18,0.82c0.37-0.02,0.74-0.06,1.11-0.1c0.27-0.03,0.54-0.07,0.8-0.12c0.23-0.04,0.46-0.09,0.69-0.14c0.4-0.09,0.8-0.2,1.18-0.32c-0.33-1.52-0.04-2.83,0.83-3.24c0.87-0.41,2.07,0.2,3.03,1.42c1.08-0.71,2.07-1.55,2.93-2.49c-1.04-1.15-1.45-2.43-0.9-3.22l0.08-0.1c0.59-0.69,1.87-0.73,3.25-0.19l0.09-0.18c0.38-0.78,0.7-1.6,0.95-2.44c0.1-0.33,0.18-0.66,0.26-1c-0.55-0.18-1.04-0.42-1.43-0.7c-0.28-0.2-0.5-0.42-0.67-0.66c-0.22-0.31-0.33-0.65-0.3-0.99c0.08-0.96,1.21-1.69,2.74-1.92c-0.02-0.38-0.06-0.75-0.11-1.13C50.65,13.28,50.62,13.02,50.57,12.75z"/></g></g></g>
+    </svg>
+    <span style="font-size:1rem;color:var(--gray);margin-left:auto;">Bugs &amp; Infrastructure</span>
+  </div>
+
+  <h1>Known Bugs &amp;<br><span class="red">Infrastructure</span></h1>
+
+  <!-- BUGS TABLE -->
+  <h2>SDK/API Bugs Discovered</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Issue</th>
+        <th>Impact</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>REST API returns <code>403 Forbidden</code> on all admin setting write endpoints</td>
+        <td class="red">High — blocks automation via REST; SDK required</td>
+        <td><span class="badge badge-teal" style="font-size:.7rem">BYPASSED</span></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Business Rule Archive (.bra) export missing rule metadata for Loan Action rules</td>
+        <td class="gold">Medium — requires SDK fallback extraction</td>
+        <td><span class="badge" style="font-size:.7rem">WORKAROUND</span></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Field trigger rules return inconsistent <code>triggerType</code> values between SDK and REST</td>
+        <td class="gold">Medium — data normalization required in KB builder</td>
+        <td><span class="badge" style="font-size:.7rem">NORMALIZED</span></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Custom field calculated expressions truncated at 4,000 chars in REST response</td>
+        <td class="gold">Medium — SDK returns full expressions</td>
+        <td><span class="badge badge-teal" style="font-size:.7rem">BYPASSED</span></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Persona access matrix export excludes inherited org-level permissions</td>
+        <td class="red">High — incomplete access audit without cross-reference</td>
+        <td><span class="badge" style="font-size:.7rem">KB RESOLVED</span></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Milestone requirement conditions not exposed via REST API at all</td>
+        <td class="red">High — SDK-only data source</td>
+        <td><span class="badge badge-teal" style="font-size:.7rem">SDK ONLY</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+
+  <!-- INFRASTRUCTURE -->
+  <h2>Infrastructure &amp; DevOps</h2>
+  <div class="infra-strip">
+    <div class="infra-box">
+      <span class="mono">GitHub</span>
+      <span>stevepaltridge/TeamAI</span>
+    </div>
+    <div class="infra-box">
+      <span class="mono">Azure DevOps</span>
+      <span>MtgTechTeam/TeamAI</span>
+    </div>
+    <div class="infra-box">
+      <span class="mono">SDK v25.4</span>
+      <span>c:\Dev\Encompass254</span>
+    </div>
+    <div class="infra-box">
+      <span class="mono">Node.js</span>
+      <span>Scripts &amp; Automation</span>
+    </div>
+  </div>
+
+  <!-- DATA FILES INVENTORY -->
+  <h2>Raw Data Inventory — 41 Files (~41 MB)</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Core Admin Data</h4>
+      <table class="data-table" style="margin:0">
+        <tr><td><code>users.json</code></td><td>53 users</td></tr>
+        <tr><td><code>organizations.json</code></td><td>74 orgs</td></tr>
+        <tr><td><code>personas.json</code></td><td>90 personas</td></tr>
+        <tr><td><code>customFields.json</code></td><td>17,357 fields</td></tr>
+        <tr><td><code>fieldTriggerRules.json</code></td><td>396 triggers</td></tr>
+        <tr><td><code>dataEntryRules.json</code></td><td>126 rules</td></tr>
+        <tr><td><code>fieldAccessRules.json</code></td><td>58 rules</td></tr>
+        <tr><td><code>loanAccessRules.json</code></td><td>17 rules</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h4>Documents &amp; Templates</h4>
+      <table class="data-table" style="margin:0">
+        <tr><td><code>documents.json</code></td><td>268 definitions</td></tr>
+        <tr><td><code>tasks.json</code></td><td>130 tasks</td></tr>
+        <tr><td><code>alerts.json</code></td><td>88 alerts</td></tr>
+        <tr><td><code>customForms.json</code></td><td>411 forms</td></tr>
+        <tr><td><code>milestones.json</code></td><td>54 milestones</td></tr>
+        <tr><td><code>milestoneReqs.json</code></td><td>36 requirements</td></tr>
+        <tr><td><code>printForms.json</code></td><td>18 forms</td></tr>
+        <tr><td><code>triggerConfigs.json</code></td><td>33 configs</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>MortgageTech &copy; 2025 — Confidential</span>
+    <span>Page 5 of 6</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE 6 — STRATEGIC VISION
+     ════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="logo-row">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 76.37" style="height:28px">
+      <style>.s0e{fill:#FFF}.s1e{fill:#C7802F}.s2e{fill:url(#g6)}.g1e{transform-origin:22px 54px;animation:si 4s linear infinite}.g2e{transform-origin:35px 15.5px;animation:sj 4s linear infinite}@keyframes si{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes sj{from{transform:rotate(22deg)}to{transform:rotate(-338deg)}}</style>
+      <defs><linearGradient id="g6" x1="348" y1="41" x2="486" y2="41" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#EC881E"/><stop offset="1" stop-color="#F0A53B"/></linearGradient></defs>
+      <g><g><g><path class="s0e g1e" d="M44,49.71l-0.01-0.04c-0.16-0.9-0.38-1.78-0.65-2.63c-2.17,0.47-4.04,0.05-4.63-1.19c-0.59-1.24,0.28-2.95,2.02-4.33c-0.47-0.73-0.99-1.42-1.55-2.08l-0.05-0.06c-0.09-0.11-0.18-0.21-0.28-0.32l-0.19-0.21c-0.1-0.12-0.21-0.23-0.32-0.34l-0.16-0.17c-0.13-0.14-0.27-0.27-0.4-0.41l-0.09-0.09c-0.17-0.17-0.34-0.33-0.52-0.49l-0.07,0.06c-0.9,0.8-1.86,1.33-2.72,1.5c-0.69,0.14-1.32,0.06-1.81-0.28c-1.12-0.77-1.23-2.66-0.44-4.7l0.02-0.06c-1.63-0.82-3.36-1.45-5.16-1.86c-0.3,0.92-0.71,1.72-1.2,2.3c-0.11,0.13-0.23,0.25-0.34,0.36c-0.55,0.52-1.17,0.8-1.8,0.75c-0.19-0.02-0.37-0.06-0.55-0.13c-0.85-0.35-1.54-1.31-1.93-2.61c-0.11-0.36-0.19-0.75-0.25-1.17c-0.9,0.05-1.82,0.16-2.73,0.32l-0.04,0.01c-0.9,0.16-1.78,0.38-2.63,0.65c0.47,2.17,0.05,4.04-1.19,4.63c-1.24,0.59-2.96-0.28-4.33-2.02c-0.73,0.47-1.42,0.99-2.08,1.55l-0.06,0.05c-0.1,0.08-0.2,0.17-0.3,0.26l-0.23,0.21c-0.11,0.1-0.22,0.2-0.33,0.3l-0.19,0.18c-0.13,0.13-0.27,0.26-0.4,0.39l-0.1,0.1c-0.17,0.17-0.33,0.34-0.49,0.52l0.1,0.12c1.34,1.53,1.88,3.19,1.29,4.3l-0.11,0.18c-0.11,0.16-0.25,0.3-0.4,0.42c-0.32,0.25-0.73,0.41-1.19,0.48c-0.89,0.14-2-0.03-3.16-0.49c-0.82,1.63-1.45,3.36-1.86,5.16c1.06,0.34,1.94,0.83,2.54,1.41l0.05,0.05c0.57,0.57,0.88,1.22,0.82,1.88c-0.01,0.17-0.05,0.34-0.11,0.5C3.39,53.78,1.92,54.61,0,54.9c0.05,0.9,0.16,1.82,0.32,2.73c0.17,0.91,0.39,1.81,0.66,2.67c0.27-0.06,0.54-0.1,0.8-0.13c1.56-0.19,2.88,0.12,3.55,0.9c0.11,0.13,0.21,0.27,0.28,0.43c0.29,0.61,0.22,1.33-0.12,2.06l-0.02,0.04c-0.36,0.76-1.01,1.53-1.88,2.21c1.01,1.55,2.21,2.95,3.55,4.18c1.64-1.49,3.47-2.06,4.6-1.28l0.06,0.05c1.07,0.81,1.16,2.69,0.36,4.71c1.63,0.82,3.36,1.45,5.16,1.86c0.25-0.79,0.6-1.49,1-2.04c0.28-0.39,0.59-0.71,0.93-0.94c0.45-0.32,0.93-0.48,1.42-0.44c1.03,0.08,1.87,1.01,2.37,2.39l0.05,0.14c0.02,0.07,0.05,0.14,0.07,0.21c0.11,0.36,0.19,0.75,0.25,1.17c0.53-0.03,1.05-0.08,1.58-0.15c0.38-0.05,0.77-0.11,1.15-0.18c0.33-0.06,0.66-0.13,0.98-0.2c0.57-0.13,1.14-0.28,1.69-0.45c-0.47-2.17-0.05-4.04,1.19-4.63c1.24-0.59,2.95,0.28,4.33,2.02c1.55-1.01,2.95-2.21,4.18-3.55c-1.49-1.64-2.06-3.47-1.28-4.6l0.12-0.15c0.84-0.98,2.67-1.05,4.64-0.27c0.04-0.08,0.08-0.17,0.12-0.25c0.55-1.12,1.01-2.28,1.36-3.49c0.14-0.47,0.26-0.95,0.37-1.43c-0.79-0.25-1.49-0.59-2.04-0.99c-0.4-0.29-0.71-0.6-0.95-0.94c-0.31-0.45-0.47-0.92-0.43-1.41c0.11-1.37,1.72-2.42,3.91-2.74c-0.03-0.54-0.08-1.07-0.15-1.61C44.12,50.45,44.07,50.08,44,49.71z"/><path class="s1e g2e" d="M50.57,12.75l0-0.03c-0.11-0.63-0.27-1.24-0.45-1.84c-1.52,0.33-2.83,0.04-3.24-0.83s0.2-2.07,1.42-3.03c-0.33-0.51-0.7-1-1.08-1.46l-0.04-0.04c-0.06-0.08-0.13-0.15-0.19-0.22l-0.13-0.15c-0.07-0.08-0.15-0.16-0.22-0.24l-0.11-0.12c-0.09-0.1-0.19-0.19-0.28-0.29l-0.06-0.06c-0.12-0.12-0.24-0.23-0.36-0.34l-0.05,0.05c-0.63,0.56-1.3,0.93-1.9,1.05c-0.48,0.1-0.92,0.04-1.27-0.2c-0.78-0.54-0.86-1.86-0.3-3.29l0.01-0.04c-1.14-0.58-2.35-1.02-3.62-1.3c-0.21,0.65-0.5,1.2-0.84,1.61c-0.08,0.09-0.16,0.18-0.24,0.26c-0.38,0.36-0.82,0.56-1.26,0.52c-0.13-0.01-0.26-0.04-0.39-0.09c-0.6-0.24-1.08-0.92-1.35-1.83C34.51,0.56,34.45,0.29,34.41,0c-0.63,0.04-1.27,0.11-1.91,0.23l-0.03,0.01c-0.63,0.11-1.24,0.27-1.84,0.45c0.33,1.52,0.04,2.83-0.83,3.24c-0.87,0.41-2.07-0.2-3.03-1.42c-0.51,0.33-1,0.7-1.46,1.08l-0.04,0.04c-0.07,0.06-0.14,0.12-0.21,0.18l-0.16,0.14c-0.08,0.07-0.15,0.14-0.23,0.21l-0.13,0.12c-0.09,0.09-0.19,0.18-0.28,0.28l-0.07,0.07c-0.12,0.12-0.23,0.24-0.34,0.37l0.07,0.08c0.93,1.07,1.32,2.24,0.9,3.01l-0.08,0.13c-0.08,0.11-0.17,0.21-0.28,0.29c-0.22,0.17-0.51,0.29-0.84,0.34c-0.62,0.1-1.4-0.02-2.22-0.34c-0.58,1.14-1.02,2.35-1.3,3.62c0.74,0.24,1.36,0.58,1.78,0.99l0.03,0.04c0.4,0.4,0.62,0.85,0.58,1.32c-0.01,0.12-0.04,0.24-0.08,0.35c-0.29,0.78-1.32,1.37-2.67,1.57c0.04,0.63,0.11,1.27,0.23,1.91c0.12,0.64,0.27,1.26,0.46,1.87c0.19-0.04,0.38-0.07,0.56-0.09c1.09-0.13,2.02,0.08,2.49,0.63c0.08,0.09,0.14,0.19,0.19,0.3c0.2,0.42,0.16,0.93-0.08,1.44l-0.02,0.04c-0.25,0.53-0.71,1.07-1.32,1.55c0.71,1.08,1.55,2.07,2.49,2.93c1.15-1.04,2.43-1.45,3.22-0.9l0.06,0.04c0.75,0.57,0.81,1.88,0.25,3.3c1.14,0.58,2.35,1.02,3.62,1.3c0.18-0.56,0.42-1.04,0.7-1.43c0.2-0.27,0.42-0.5,0.65-0.66c0.31-0.22,0.65-0.33,1-0.31c0.72,0.06,1.31,0.71,1.66,1.68l0.03,0.1,0.05,0.15c0.08,0.26,0.14,0.53,0.18,0.82c0.37-0.02,0.74-0.06,1.11-0.1c0.27-0.03,0.54-0.07,0.8-0.12c0.23-0.04,0.46-0.09,0.69-0.14c0.4-0.09,0.8-0.2,1.18-0.32c-0.33-1.52-0.04-2.83,0.83-3.24c0.87-0.41,2.07,0.2,3.03,1.42c1.08-0.71,2.07-1.55,2.93-2.49c-1.04-1.15-1.45-2.43-0.9-3.22l0.08-0.1c0.59-0.69,1.87-0.73,3.25-0.19l0.09-0.18c0.38-0.78,0.7-1.6,0.95-2.44c0.1-0.33,0.18-0.66,0.26-1c-0.55-0.18-1.04-0.42-1.43-0.7c-0.28-0.2-0.5-0.42-0.67-0.66c-0.22-0.31-0.33-0.65-0.3-0.99c0.08-0.96,1.21-1.69,2.74-1.92c-0.02-0.38-0.06-0.75-0.11-1.13C50.65,13.28,50.62,13.02,50.57,12.75z"/></g></g></g>
+    </svg>
+    <span style="font-size:1rem;color:var(--gray);margin-left:auto;">Strategic Vision</span>
+  </div>
+
+  <h1>Strategic Vision:<br><span class="gold">Three Products</span></h1>
+  <p class="subtitle">TeamAI's knowledge base and automation infrastructure powers three distinct market-ready products.</p>
+
+  <!-- PRODUCT PIPELINE -->
+  <div class="pipeline">
+    <div class="card">
+      <div class="phase">Product 1</div>
+      <h4 style="color: var(--teal); margin-top: 0.15in;">Admin Support KB</h4>
+      <h3 style="font-size: 1.05rem;">AI-Powered Encompass Administration</h3>
+      <p class="mt">Instant answers about any Encompass admin setting — business rules, custom fields, personas, access controls, and configuration.</p>
+      <ul class="mt">
+        <li>Natural language queries</li>
+        <li>Cross-referenced KB lookups</li>
+        <li>Real-time data validation</li>
+        <li>Configuration recommendations</li>
+      </ul>
+      <p class="mt small bold teal">Status: Active Development</p>
+    </div>
+    <div class="card">
+      <div class="phase">Product 2</div>
+      <h4 style="color: var(--gold); margin-top: 0.15in;">Operational Audit</h4>
+      <h3 style="font-size: 1.05rem;">Automated Configuration Analysis</h3>
+      <p class="mt">Comprehensive audit of an Encompass instance — identifying redundant rules, orphaned fields, access gaps, and optimization opportunities.</p>
+      <ul class="mt">
+        <li>Dormant rule detection</li>
+        <li>Field usage analysis</li>
+        <li>Permission gap audit</li>
+        <li>Best-practice scoring</li>
+      </ul>
+      <p class="mt small bold gold">Status: Design Phase</p>
+    </div>
+    <div class="card">
+      <div class="phase">Product 3</div>
+      <h4 style="color: var(--green); margin-top: 0.15in;">Client Consulting Pipeline</h4>
+      <h3 style="font-size: 1.05rem;">Scalable Multi-Tenant Intelligence</h3>
+      <p class="mt">Replicable extraction → analysis → recommendation pipeline for any Encompass client instance. Multi-tenant knowledge with per-client isolation.</p>
+      <ul class="mt">
+        <li>Automated onboarding extraction</li>
+        <li>Comparative benchmarks</li>
+        <li>Compliance validation</li>
+        <li>Migration planning</li>
+      </ul>
+      <p class="mt small bold green">Status: Future Roadmap</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ONBOARDING -->
+  <h2>Team Onboarding Checklist</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Developer Setup</h4>
+      <ol style="padding-left:1.2em;color:var(--gray-l);font-size:.9rem">
+        <li>Clone repos (GitHub + Azure DevOps)</li>
+        <li>Install Encompass SDK v25.4 to <code>c:\Dev\Encompass254</code></li>
+        <li>Configure OAuth2 credentials (<code>.env</code> file)</li>
+        <li>Run <code>node extract-live.js</code> to verify API access</li>
+        <li>Run <code>node build-knowledge-base-v2.js</code> to rebuild KB</li>
+        <li>Review <code>.github/copilot-instructions.md</code> BREADCRUMB</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h4>Quick Reference</h4>
+      <table class="data-table" style="margin:0">
+        <tr><td class="teal bold">Instance</td><td>BE11146040</td></tr>
+        <tr><td class="teal bold">Client ID</td><td><code>jnpknrc</code></td></tr>
+        <tr><td class="teal bold">SDK Path</td><td><code>c:\Dev\Encompass254</code></td></tr>
+        <tr><td class="teal bold">Data Dir</td><td><code>data/be11146040/</code></td></tr>
+        <tr><td class="teal bold">KB Dir</td><td><code>knowledge/encompass-settings/</code></td></tr>
+        <tr><td class="teal bold">Recovery</td><td><code>TEAMAI-KNOWLEDGE-MAP-2026</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div style="text-align:center;margin-top:0.15in;">
+    <p style="font-size:1.05rem;color:var(--white);font-weight:600;">Built with MortgageTech TeamAI</p>
+    <p class="small" style="color:var(--gray)">ICE Mortgage Technology Ecosystem &nbsp;|&nbsp; Encompass SDK v25.4 &nbsp;|&nbsp; AI-Powered Administration</p>
+  </div>
+
+  <div class="page-footer">
+    <span>MortgageTech &copy; 2025 — Confidential</span>
+    <span>Page 6 of 6</span>
+  </div>
+</div>
+
+</body>
+</html>

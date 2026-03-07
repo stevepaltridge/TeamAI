@@ -108,6 +108,78 @@ Team members need the **MS 365 MCP Server** VS Code extension, signed into their
 
 ---
 
+## 🧭 BREADCRUMB — Project Knowledge Map (ALWAYS READ ON SESSION START)
+
+**Keyword:** `TEAMAI-KNOWLEDGE-MAP-2026`
+
+This section exists so no session ever loses track of accumulated work. If you are a new session: read this, orient, then proceed. Do NOT re-discover what is already mapped here.
+
+### Active Instance
+- **Encompass Instance:** BE11146040
+- **Credentials:** `C:/Dev/TeamAI/.env` (NEVER read directly — use ice-api.js / ice-fetch.js)
+- **API Client ID:** jnpknrc
+
+### Data Layer (41 files, ~41MB)
+| Path | Contents |
+|------|----------|
+| `C:/Dev/TeamAI/data/be11146040/` | All extracted instance data — REST API (custom fields 17,359; alerts 88; orgs 74; users 53; personas 89; loan folders 24; loan schema 243 entities; pipeline fields 1,529) + SDK (milestones 47, system settings 48 investor templates, policies 200+, service URLs 83 endpoints, triggers 33, company/license/server info, key URLs 19, misc settings 56 plugins) + BRA ref (triggers 396, data entry 126, field access 58, loan access 17, print forms 18, docs 268, tasks 130, milestone reqs 36, personas 90, custom forms 411, input forms 409) |
+| `C:/Dev/TeamAI/docs/` | SDK capability documentation — `SDK-Capabilities-Flyer.html` (6pp), `SDK-Advanced-Capabilities.html` (10pp, 1165 lines). Source material for encompass-dev/ KB articles. |
+
+### Knowledge Base (122+ markdown files)
+| Path | Contents |
+|------|----------|
+| `C:/Dev/TeamAI/knowledge/encompass-settings/` | Generated KB v2 — sections 00-44, from server info through xlsx sheets. Built by `scripts/build-knowledge-base-v2.js` (1115 lines, 24 core sections + xlsx sheets) |
+| `C:/Dev/TeamAI/knowledge/encompass-admin/` | Hand-written admin guides (business rules, loan folders, workflow rules) |
+| `C:/Dev/TeamAI/knowledge/encompass-dev/` | SDK v25.4 deep reference — 6 articles: architecture, write capabilities (REST vs SDK), loan operations, workflow/compliance, query/reporting/CRM, forms/automation/events/admin. 885 public types, 138 automation types, 118 enums documented. |
+| `C:/Dev/TeamAI/knowledge/external-sources.md` | Curated URL catalog for ICE docs, forums, developer portals |
+
+### Scripts
+| Script | Purpose |
+|--------|---------|
+| `scripts/build-knowledge-base-v2.js` | Transforms raw data → 116 markdown KB files. 24 sections. Fully reviewed, no bugs. |
+| `scripts/ice-api.js` | Encompass REST API proxy (OAuth2 via .env) |
+| `scripts/ice-fetch.js` | Auth-walled web page fetcher (Playwright + .env) |
+| `scripts/extract-live.js` | Live data extraction from Encompass instance |
+
+### Archives — OldMachine-SB6 (MASSIVE — do not re-scrape what exists)
+| Path | Contents |
+|------|----------|
+| `C:/Dev/OldMachine-SB6/MasteringEncompass/` | **Hundreds** of scraped community Q&A posts (enriched JSON, MHTML, TXT), developer API docs (developer.icemortgagetechnology.com), structured CSVs (encompass_posts.csv, encompass_qa_report.csv, encompass_kb_summary.csv), search indexes, Python scrapers (scrape_encompass_feed.py, scrape_full_threads.py), PowerShell scrapers (ME_Scrape_Locked.ps1, DevOpsUploader), HTTrack mirror configs, Encompass PDFs (SDK Programmer's Guide, Keyboard Shortcuts, System Requirements) |
+| `C:/Dev/OldMachine-SB6/GPTlogs/Test1/` | 10 pages from forum.elliemae.com "Developer Connect/APIs" section (HTML/TXT/PNG triplets). Forum has 46 pages total — only 10 captured. |
+| `C:/Dev/scrapeice/` | ICE docs scraper (`scrape_ice_docs.py`) targeting help.icemortgagetechnology.com + developer.icemortgagetechnology.com. Has `ice_docs_repo/` output folder. |
+
+### SharePoint / OneDrive Knowledge (via MS365 MCP)
+- **12,700+ indexed documents** across MortgageTech company stores
+- **MasteringEncompass collection:** 11,657 forum posts (.enriched.json)
+- **EllieForum collection:** 1,018 Ellie Mae community posts
+- **Team docs:** Training guides, admin playbooks, workflow configs
+- Access: `mcp_ms365_search-query(query, entityTypes: ["driveItem"], size: 5)`
+
+### Coverage Assessment (as of March 2, 2026)
+- **By categories:** ~80-85% of Encompass admin areas covered (up from 70-75% after SDK integration)
+- **By importance:** ~90-95% of high-impact settings + development capabilities captured
+- **SDK coverage:** Full — 885 public types, 138 automation types, 118 enums, 67 namespaces, 20+ service APIs documented across 6 articles
+- **Known gaps:** Loan programs, closing cost templates, data templates, input form sets, document sets, condition sets, fee schedules, duplicate checking, rate lock settings
+
+### Strategic Vision (3 products — PLANNING PHASE, not started)
+1. **Admin Support KB** — Admins across the country use VS Code + Copilot to ask Encompass settings questions → answered from KB + Graph Search + live API
+2. **Operational Audit** — Assess whether an instance's settings support a well-run mortgage operation (milestone flow, persona permissions, rule coverage, folder structure)
+3. **Client Consulting Pipeline** — Ingest ANY client's settings dump → audit config → deliver recommendations. Repeatable product.
+- **User Touches** — Behavioral data (timing, keystrokes, borrower file progression) to be integrated. Source: SharePoint or local TBD.
+
+### Forum Access (needs recreation)
+- Previous session had programmatic forum access — lost in reboot
+- Target forums: masteringencompass.com, community.icemortgagetechnology.com (now ice-em.my.site.com), forum.elliemae.com
+- Existing cookies in `OldMachine-SB6/MasteringEncompass/cookies*.txt` — likely expired
+- Existing scrapers in same folder — may be reusable with fresh auth
+
+### Session Recovery
+- If starting fresh, search for `TEAMAI-KNOWLEDGE-MAP-2026` — this section has everything.
+- Project session summary: `C:/Dev/TeamAI/docs/project-session-summary.md` (keyword: `TEAMAI-REBOOT-2026`)
+- The user is **Steve Paltridge**, sole architect of MortgageTech TeamAI.
+
+---
+
 ## Project-Specific Rules
 
 Each repository has its own `.github/copilot-instructions.md` with project-specific rules (file paths, scripts, deployment steps, firewalls). These are additive — org rules + repo rules both apply.
@@ -116,4 +188,4 @@ See the TeamAI repo README for the full instruction architecture.
 
 ---
 
-*MortgageTech AI Agent Instructions v1.4 — March 2, 2026*
+*MortgageTech AI Agent Instructions v1.5 — March 2, 2026*

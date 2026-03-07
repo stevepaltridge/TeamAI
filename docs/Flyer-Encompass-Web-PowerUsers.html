@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MortgageTech — Encompass Web for Power Users</title>
+<style>
+/* ── GLOBAL ─────────────────────────────────────────────── */
+@page { size: letter; margin: 0; }
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy:    #0d1b2a;
+  --navy2:   #1b2838;
+  --navy3:   #243447;
+  --teal:    #4ecdc4;
+  --teal-d:  #3ba89f;
+  --gold:    #EC881E;
+  --gold-l:  #F0A53B;
+  --red:     #ff6b6b;
+  --green:   #51cf66;
+  --white:   #ffffff;
+  --gray:    #94a3b8;
+  --gray-l:  #cbd5e1;
+  --page-w:  8.5in;
+  --page-h:  11in;
+}
+html { font-size: 11px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #111;
+  color: var(--white);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PAGE ───────────────────────────────────────────────── */
+.page {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  max-height: var(--page-h);
+  background: var(--navy);
+  margin: 1rem auto;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 40px rgba(0,0,0,.6);
+}
+.page::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--gold), var(--teal));
+  z-index: 10;
+}
+@media print {
+  body { background: none; }
+  .page { margin: 0; box-shadow: none; }
+}
+
+/* ── FADED BACKGROUND IMAGE ─────────────────────────────── */
+.page .bg-ghost {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110%;
+  height: 80%;
+  opacity: 0.035;
+  filter: blur(1.5px) saturate(0.3);
+  pointer-events: none;
+  z-index: 0;
+  /* 
+    Faded screenshot illusion: a CSS-drawn "UI wireframe" representing
+    the Encompass Web interface. This gives the impression of a blurred
+    background screenshot without requiring an actual image file.
+  */
+  background:
+    /* top bar */
+    linear-gradient(to right, rgba(78,205,196,.5) 0%, rgba(78,205,196,.2) 100%) 0% 5% / 100% 6% no-repeat,
+    /* sidebar */
+    linear-gradient(to bottom, rgba(148,163,184,.3), rgba(148,163,184,.1)) 0% 12% / 18% 80% no-repeat,
+    /* main content blocks */
+    linear-gradient(135deg, rgba(78,205,196,.15), rgba(236,136,30,.08)) 22% 15% / 40% 18% no-repeat,
+    linear-gradient(135deg, rgba(78,205,196,.1), rgba(148,163,184,.1)) 65% 15% / 33% 18% no-repeat,
+    linear-gradient(to right, rgba(148,163,184,.12), rgba(148,163,184,.06)) 22% 38% / 76% 12% no-repeat,
+    linear-gradient(to right, rgba(78,205,196,.08), rgba(148,163,184,.08)) 22% 55% / 76% 10% no-repeat,
+    linear-gradient(to right, rgba(236,136,30,.1), rgba(148,163,184,.06)) 22% 70% / 50% 8% no-repeat,
+    linear-gradient(to bottom, rgba(148,163,184,.08), transparent) 75% 70% / 23% 25% no-repeat;
+}
+
+/* ── LOGO ───────────────────────────────────────────────── */
+.logo-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.4in 0.6in 0;
+  position: relative;
+  z-index: 1;
+}
+.logo-row svg { height: 34px; width: auto; }
+.gear1 { transform-origin: 22px 54px; animation: spin1 10s linear infinite; }
+.gear2 { transform-origin: 35px 15.5px; animation: spin2 7.27s linear infinite; }
+@keyframes spin1 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes spin2 { from { transform: rotate(22deg); } to { transform: rotate(-338deg); } }
+
+/* ── HERO ───────────────────────────────────────────────── */
+.hero {
+  padding: 0.2in 0.6in 0.2in;
+  position: relative;
+  z-index: 1;
+}
+.hero h1 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 0.08in;
+}
+.hero h1 .teal  { color: var(--teal); }
+.hero h1 .gold  { color: var(--gold); }
+.hero .tagline {
+  font-size: 1.1rem;
+  color: var(--gray);
+  line-height: 1.35;
+  max-width: 5.5in;
+}
+.hero .coming-badge {
+  display: inline-block;
+  background: rgba(78,205,196,.12);
+  border: 1px solid rgba(78,205,196,.3);
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 0.15em 0.6em;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 0.08in;
+}
+
+/* ── DIVIDER ────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal) 20%, var(--gold) 80%, transparent);
+  margin: 0 0.6in;
+  opacity: 0.4;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── CONTENT ────────────────────────────────────────────── */
+.content {
+  padding: 0.22in 0.6in 0.2in;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── FEATURE PANELS ─────────────────────────────────────── */
+.feature-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.16in;
+  margin-bottom: 0.22in;
+}
+.fpanel {
+  background: rgba(27,40,56,.85);
+  border: 1px solid rgba(78,205,196,.1);
+  border-radius: 10px;
+  padding: 0.22in 0.24in;
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+.fpanel .icon-lg {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.06in;
+}
+.fpanel h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 0.06in;
+}
+.fpanel p {
+  font-size: 0.92rem;
+  color: var(--gray-l);
+  line-height: 1.4;
+}
+.fpanel .accent-line {
+  position: absolute;
+  top: 0; left: 20px; right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), transparent);
+  border-radius: 0 0 2px 2px;
+}
+
+/* ── MULTI-SCREEN HERO BANNER ───────────────────────────── */
+.multi-screen-banner {
+  background: linear-gradient(135deg, rgba(78,205,196,.08), rgba(78,205,196,.03));
+  border: 1px solid rgba(78,205,196,.15);
+  border-radius: 10px;
+  padding: 0.22in 0.28in;
+  margin-bottom: 0.2in;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.24in;
+}
+.multi-screen-banner .screens-icon {
+  display: flex;
+  gap: 0.08in;
+  flex-shrink: 0;
+  padding-top: 0.04in;
+}
+.multi-screen-banner .screen-box {
+  width: 38px;
+  height: 28px;
+  border: 2px solid var(--teal);
+  border-radius: 4px;
+  background: rgba(78,205,196,.06);
+  position: relative;
+}
+.multi-screen-banner .screen-box::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 3px;
+  background: var(--teal);
+  border-radius: 1px;
+  opacity: 0.5;
+}
+.multi-screen-banner .screen-box:nth-child(2) {
+  margin-top: -0.04in;
+  border-color: var(--gold);
+  background: rgba(236,136,30,.06);
+}
+.multi-screen-banner .screen-box:nth-child(2)::after {
+  background: var(--gold);
+}
+.multi-screen-banner .msb-content h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 0.05in;
+}
+.multi-screen-banner .msb-content p {
+  font-size: 0.92rem;
+  color: var(--gray-l);
+  line-height: 1.4;
+}
+
+/* ── AT YOUR FINGERTIPS ─────────────────────────────────── */
+.fingertips-section h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 0.14in;
+}
+.fingertips-section h2 span { color: var(--gold); }
+.pill-row {
+  display: flex;
+  gap: 0.12in;
+  margin-bottom: 0.22in;
+  flex-wrap: wrap;
+}
+.pill {
+  background: var(--navy3);
+  border: 1px solid rgba(78,205,196,.12);
+  border-radius: 40px;
+  padding: 0.14in 0.28in;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: 1;
+  min-width: 2in;
+}
+.pill .pill-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.pill .pill-text {
+  display: flex;
+  flex-direction: column;
+}
+.pill .pill-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--teal);
+  line-height: 1.2;
+}
+.pill .pill-desc {
+  font-size: 0.8rem;
+  color: var(--gray);
+  line-height: 1.25;
+}
+
+/* ── COMPARISON STRIP ───────────────────────────────────── */
+.compare-section {
+  margin-bottom: 0.18in;
+}
+.compare-section h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 0.1in;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.compare-table th {
+  text-align: left;
+  font-size: 0.8rem;
+  color: var(--gray);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.06in 0.14in;
+  border-bottom: 1px solid rgba(78,205,196,.15);
+}
+.compare-table td {
+  font-size: 0.88rem;
+  padding: 0.08in 0.14in;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  color: var(--gray-l);
+}
+.compare-table tr:nth-child(even) td {
+  background: rgba(255,255,255,.02);
+}
+.compare-table .check {
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 1rem;
+}
+.compare-table .dash {
+  color: var(--gray);
+  opacity: 0.4;
+}
+
+/* ── CTA FOOTER ─────────────────────────────────────────── */
+.cta-footer {
+  background: linear-gradient(135deg, var(--navy3), var(--navy2));
+  border-top: 1px solid rgba(78,205,196,.15);
+  padding: 0.2in 0.6in;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+.cta-footer .left {
+  display: flex;
+  flex-direction: column;
+}
+.cta-footer .cta-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--white);
+}
+.cta-footer .cta-sub {
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-top: 0.02in;
+}
+.cta-footer .contact-block {
+  text-align: right;
+}
+.cta-footer .phone {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--teal);
+  letter-spacing: 0.02em;
+}
+.cta-footer .email {
+  font-size: 0.88rem;
+  color: var(--gold);
+}
+.cta-footer .web {
+  font-size: 0.78rem;
+  color: var(--gray);
+}
+
+/* ── PARTNER BADGE ──────────────────────────────────────── */
+.partner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  background: rgba(78,205,196,.08);
+  border: 1px solid rgba(78,205,196,.2);
+  border-radius: 4px;
+  padding: 0.12em 0.6em;
+  font-size: 0.78rem;
+  color: var(--teal);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-top: 0.08in;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- FADED BACKGROUND GHOST -->
+  <div class="bg-ghost"></div>
+
+  <!-- LOGO ROW -->
+  <div class="logo-row">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 500 76.37" style="enable-background:new 0 0 500 76.37;" xml:space="preserve">
+      <style type="text/css">.st0{fill:#FFFFFF;}.st1{fill:#C7802F;}.st2{fill:url(#SVGID_1_);}</style>
+      <g><g><g>
+        <path class="st0 gear1" d="M44,49.71l-0.01-0.04h0c-0.16-0.9-0.38-1.78-0.65-2.63c-2.17,0.47-4.04,0.05-4.63-1.19c-0.59-1.24,0.28-2.95,2.02-4.33c-0.47-0.73-0.99-1.42-1.55-2.08l0,0l-0.05-0.06c-0.09-0.11-0.18-0.21-0.28-0.32c-0.06-0.07-0.12-0.14-0.19-0.21c-0.1-0.12-0.21-0.23-0.32-0.34l-0.16-0.17c-0.13-0.14-0.27-0.27-0.4-0.41l-0.09-0.09c-0.17-0.17-0.34-0.33-0.52-0.49l-0.07,0.06c-0.9,0.8-1.86,1.33-2.72,1.5c-0.69,0.14-1.32,0.06-1.81-0.28c-1.12-0.77-1.23-2.66-0.44-4.7l0.02-0.06c-1.63-0.82-3.36-1.45-5.16-1.86c-0.3,0.92-0.71,1.72-1.2,2.3c-0.11,0.13-0.23,0.25-0.34,0.36c-0.55,0.52-1.17,0.8-1.8,0.75c-0.19-0.02-0.37-0.06-0.55-0.13c-0.85-0.35-1.54-1.31-1.93-2.61c-0.11-0.36-0.19-0.75-0.25-1.17v0c-0.9,0.05-1.82,0.16-2.73,0.32l0,0l-0.04,0.01v0c-0.9,0.16-1.78,0.38-2.63,0.65c0.47,2.17,0.05,4.04-1.19,4.63c-1.24,0.59-2.96-0.28-4.33-2.02c-0.73,0.47-1.42,0.99-2.08,1.55l0,0l-0.06,0.05c-0.1,0.08-0.2,0.17-0.3,0.26c-0.08,0.07-0.16,0.14-0.23,0.21c-0.11,0.1-0.22,0.2-0.33,0.3l-0.19,0.18c-0.13,0.13-0.27,0.26-0.4,0.39l-0.1,0.1c-0.17,0.17-0.33,0.34-0.49,0.52l0.1,0.12c1.34,1.53,1.88,3.19,1.29,4.3l-0.11,0.18c-0.11,0.16-0.25,0.3-0.4,0.42c-0.32,0.25-0.73,0.41-1.19,0.48c-0.89,0.14-2-0.03-3.16-0.49h0c-0.82,1.63-1.45,3.36-1.86,5.16v0c1.06,0.34,1.94,0.83,2.54,1.41l0.05,0.05c0.57,0.57,0.88,1.22,0.82,1.88c-0.01,0.17-0.05,0.34-0.11,0.5C3.39,53.78,1.92,54.61,0,54.9c0.05,0.9,0.16,1.82,0.32,2.73c0.17,0.91,0.39,1.81,0.66,2.67c0.27-0.06,0.54-0.1,0.8-0.13c1.56-0.19,2.88,0.12,3.55,0.9c0.11,0.13,0.21,0.27,0.28,0.43c0.29,0.61,0.22,1.33-0.12,2.06L5.47,63.6c-0.36,0.76-1.01,1.53-1.88,2.21v0c1.01,1.55,2.21,2.95,3.55,4.18c1.64-1.49,3.47-2.06,4.6-1.28l0.06,0.05c1.07,0.81,1.16,2.69,0.36,4.71l0,0l0,0c1.63,0.82,3.36,1.45,5.16,1.86c0.25-0.79,0.6-1.49,1-2.04c0.28-0.39,0.59-0.71,0.93-0.94c0.45-0.32,0.93-0.48,1.42-0.44c1.03,0.08,1.87,1.01,2.37,2.39l0.05,0.14c0.02,0.07,0.05,0.14,0.07,0.21c0.11,0.36,0.19,0.75,0.25,1.17v0c0.53-0.03,1.05-0.08,1.58-0.15c0.38-0.05,0.77-0.11,1.15-0.18c0.33-0.06,0.66-0.13,0.98-0.2c0.57-0.13,1.14-0.28,1.69-0.45c-0.47-2.17-0.05-4.04,1.19-4.63c1.24-0.59,2.95,0.28,4.33,2.02c1.55-1.01,2.95-2.21,4.18-3.55v0c-1.49-1.64-2.06-3.47-1.28-4.6l0.12-0.15c0.84-0.98,2.67-1.05,4.64-0.27h0c0.04-0.08,0.08-0.17,0.12-0.25c0.55-1.12,1.01-2.28,1.36-3.49c0.14-0.47,0.26-0.95,0.37-1.43v0c-0.79-0.25-1.49-0.59-2.04-0.99c-0.4-0.29-0.71-0.6-0.95-0.94c-0.31-0.45-0.47-0.92-0.43-1.41c0.11-1.37,1.72-2.42,3.91-2.74c-0.03-0.54-0.08-1.07-0.15-1.61C44.12,50.45,44.07,50.08,44,49.71L44,49.71z M35.13,53.02c0.01,0.15,0.01,0.3,0.02,0.44v0.16c0,0.16,0,0.31,0,0.47l-0.01,0.11c-0.04,0.94-0.18,1.85-0.41,2.74l-0.02,0.1c-0.04,0.14-0.08,0.28-0.12,0.42l-0.05,0.16c-0.04,0.13-0.09,0.26-0.13,0.38l-0.07,0.19c-0.04,0.12-0.09,0.24-0.14,0.35l-0.08,0.21c-0.05,0.11-0.1,0.22-0.15,0.33c-0.03,0.07-0.07,0.14-0.1,0.22c-0.05,0.11-0.1,0.21-0.16,0.32c-0.04,0.07-0.08,0.15-0.12,0.22c-0.05,0.1-0.11,0.2-0.17,0.3c-0.04,0.08-0.09,0.15-0.13,0.23c-0.06,0.09-0.11,0.19-0.17,0.28c-0.05,0.08-0.1,0.15-0.15,0.23c-0.06,0.09-0.12,0.18-0.18,0.26c-0.06,0.08-0.11,0.16-0.17,0.24c-0.06,0.08-0.12,0.16-0.18,0.24c-0.07,0.08-0.13,0.17-0.2,0.25c-0.06,0.07-0.11,0.14-0.17,0.21c-0.09,0.1-0.18,0.2-0.27,0.31l-0.13,0.14c-0.14,0.15-0.28,0.29-0.42,0.43l-0.12,0.11c-0.11,0.1-0.22,0.21-0.33,0.3l-0.16,0.13c-0.1,0.09-0.2,0.17-0.31,0.26l-0.18,0.14c-0.1,0.08-0.2,0.16-0.31,0.24l-0.19,0.13c-0.1,0.07-0.21,0.15-0.31,0.22l-0.2,0.13c-0.11,0.07-0.22,0.14-0.33,0.2l-0.2,0.12c-0.11,0.06-0.22,0.13-0.34,0.19l-0.2,0.11c-0.12,0.06-0.24,0.12-0.36,0.17l-0.21,0.1c-0.12,0.06-0.25,0.11-0.37,0.16l-0.2,0.08c-0.13,0.05-0.27,0.1-0.4,0.15l-0.19,0.07c-0.15,0.05-0.3,0.1-0.45,0.14l-0.16,0.05c-0.18,0.05-0.36,0.1-0.54,0.14l-0.08,0.02c-0.21,0.05-0.43,0.09-0.65,0.13c-2.51,0.46-4.98,0.15-7.19-0.74c-3.99-1.62-7.08-5.18-7.91-9.72c-0.08-0.43-0.13-0.87-0.17-1.3l0-0.03c-0.02-0.2-0.03-0.41-0.03-0.61l0-0.06c0-0.2-0.01-0.4,0-0.59l0-0.06c0.01-0.2,0.01-0.39,0.03-0.58l0.01-0.06c0.02-0.19,0.03-0.39,0.06-0.58l0.01-0.05c0.02-0.2,0.05-0.39,0.09-0.58l0.01-0.03c0.03-0.18,0.07-0.37,0.11-0.55l0.02-0.08c0.04-0.17,0.08-0.34,0.13-0.51l0.03-0.12c0.05-0.16,0.09-0.32,0.15-0.48l0.05-0.14c0.05-0.15,0.1-0.3,0.16-0.45l0.06-0.16c0.06-0.15,0.12-0.29,0.18-0.43l0.07-0.16c0.06-0.14,0.13-0.28,0.19-0.41l0.08-0.16c0.06-0.11,0.12-0.23,0.18-0.34c0.04-0.07,0.08-0.14,0.12-0.21c0.06-0.11,0.12-0.21,0.18-0.31l0.13-0.21c0.07-0.11,0.14-0.21,0.21-0.32l0.12-0.17c0.08-0.12,0.17-0.23,0.25-0.34l0.13-0.17c1.89-2.43,4.66-4.21,7.93-4.8c0.52-0.09,1.03-0.15,1.55-0.19l0,0c1.41-0.09,2.8,0.06,4.11,0.41l0.02,0.01c0.37,0.1,0.73,0.21,1.09,0.34l0.01,0c0.17,0.06,0.33,0.13,0.5,0.2l0.07,0.03c0.16,0.07,0.31,0.13,0.47,0.21l0.08,0.04c0.16,0.07,0.31,0.15,0.46,0.23l0.04,0.02c0.14,0.07,0.28,0.15,0.41,0.23l0.1,0.06c0.13,0.08,0.27,0.16,0.4,0.25l0.12,0.08c0.13,0.08,0.26,0.17,0.38,0.26l0.11,0.08c0.11,0.08,0.21,0.16,0.32,0.24l0.09,0.07v0c2.42,1.89,4.18,4.65,4.77,7.9C35.04,51.91,35.10,52.47,35.13,53.02z"/>
+        <path class="st1 gear2" d="M50.57,12.75l0-0.03h0c-0.11-0.63-0.27-1.24-0.45-1.84c-1.52,0.33-2.83,0.04-3.24-0.83s0.2-2.07,1.42-3.03c-0.33-0.51-0.7-1-1.08-1.46h0l-0.04-0.04c-0.06-0.08-0.13-0.15-0.19-0.22l-0.13-0.15c-0.07-0.08-0.15-0.16-0.22-0.24l-0.11-0.12c-0.09-0.1-0.19-0.19-0.28-0.29l-0.06-0.06c-0.12-0.12-0.24-0.23-0.36-0.34l-0.05,0.05c-0.63,0.56-1.3,0.93-1.9,1.05c-0.48,0.1-0.92,0.04-1.27-0.2c-0.78-0.54-0.86-1.86-0.3-3.29l0.01-0.04c-1.14-0.58-2.35-1.02-3.62-1.3c-0.21,0.65-0.5,1.2-0.84,1.61c-0.08,0.09-0.16,0.18-0.24,0.26c-0.38,0.36-0.82,0.56-1.26,0.52c-0.13-0.01-0.26-0.04-0.39-0.09c-0.6-0.24-1.08-0.92-1.35-1.83C34.51,0.56,34.45,0.29,34.41,0v0c-0.63,0.04-1.27,0.11-1.91,0.23h0l-0.03,0.01l0,0c-0.63,0.11-1.24,0.27-1.84,0.45c0.33,1.52,0.04,2.83-0.83,3.24c-0.87,0.41-2.07-0.2-3.03-1.42c-0.51,0.33-1,0.7-1.46,1.08l0,0l-0.04,0.04c-0.07,0.06-0.14,0.12-0.21,0.18l-0.16,0.14c-0.08,0.07-0.15,0.14-0.23,0.21l-0.13,0.12c-0.09,0.09-0.19,0.18-0.28,0.28l-0.07,0.07C24.06,4.75,23.94,4.87,23.83,5l0.07,0.08c0.93,1.07,1.32,2.24,0.9,3.01l-0.08,0.13c-0.08,0.11-0.17,0.21-0.28,0.29c-0.22,0.17-0.51,0.29-0.84,0.34c-0.62,0.1-1.4-0.02-2.22-0.34c-0.58,1.14-1.02,2.35-1.3,3.62v0c0.74,0.24,1.36,0.58,1.78,0.99l0.03,0.04c0.4,0.4,0.62,0.85,0.58,1.32c-0.01,0.12-0.04,0.24-0.08,0.35c-0.29,0.78-1.32,1.37-2.67,1.57c0.04,0.63,0.11,1.27,0.23,1.91c0.12,0.64,0.27,1.26,0.46,1.87c0.19-0.04,0.38-0.07,0.56-0.09c1.09-0.13,2.02,0.08,2.49,0.63c0.08,0.09,0.14,0.19,0.19,0.3c0.2,0.42,0.16,0.93-0.08,1.44l-0.02,0.04c-0.25,0.53-0.71,1.07-1.32,1.55h0c0.71,1.08,1.55,2.07,2.49,2.93c1.15-1.04,2.43-1.45,3.22-0.9L28,26.1c0.75,0.57,0.81,1.88,0.25,3.3v0c1.14,0.58,2.35,1.02,3.62,1.3c0.18-0.56,0.42-1.04,0.7-1.43c0.2-0.27,0.42-0.5,0.65-0.66c0.31-0.22,0.65-0.33,1-0.31c0.72,0.06,1.31,0.71,1.66,1.68l0.03,0.1l0.05,0.15c0.08,0.26,0.14,0.53,0.18,0.82v0c0.37-0.02,0.74-0.06,1.11-0.1c0.27-0.03,0.54-0.07,0.8-0.12c0.23-0.04,0.46-0.09,0.69-0.14c0.4-0.09,0.8-0.2,1.18-0.32c-0.33-1.52-0.04-2.83,0.83-3.24c0.87-0.41,2.07,0.2,3.03,1.42h0c1.08-0.71,2.07-1.55,2.93-2.49h0v0c-1.04-1.15-1.45-2.43-0.9-3.22l0.08-0.1c0.59-0.69,1.87-0.73,3.25-0.19l0,0l0.09-0.18c0.38-0.78,0.7-1.6,0.95-2.44c0.1-0.33,0.18-0.66,0.26-1v0c-0.55-0.18-1.04-0.42-1.43-0.7c-0.28-0.2-0.5-0.42-0.67-0.66c-0.22-0.31-0.33-0.65-0.3-0.99c0.08-0.96,1.21-1.69,2.74-1.92c-0.02-0.38-0.06-0.75-0.11-1.13C50.65,13.28,50.62,13.02,50.57,12.75L50.57,12.75z"/>
+      </g><g><g>
+        <path class="st0" d="M102.38,64.1L102.32,28L86.37,59.47h-3L67.47,28v36.1h-4.75v-43.8h6.19l16.02,31.53l15.95-31.53h6.13v43.8H102.38z"/>
+        <path class="st0" d="M149.74,47.59c0,9.89-6.94,16.71-16.71,16.71s-16.71-6.82-16.71-16.71c0-9.82,6.94-16.58,16.71-16.58S149.74,37.76,149.74,47.59z M121.21,47.65c0,7.26,4.94,12.26,11.82,12.26c6.88,0,11.82-5.01,11.82-12.26c0-7.19-4.94-12.2-11.82-12.2C126.15,35.45,121.21,40.45,121.21,47.65z"/>
+        <path class="st0" d="M163.19,38.45c2.19-4.82,6.26-7.45,11.83-7.51v4.94c-6.94-0.12-11.26,4.19-11.83,10.7V64.1h-4.88V31.13h4.88V38.45z"/>
+        <path class="st0" d="M198.6,61.85c-2.31,1.56-4.82,2.44-7.45,2.5c-4.82,0-8.38-2.88-8.38-9.38V36.14h-4.75v-3.94h4.75v-8.7h4.82v8.7l10.45-0.06v4h-10.45v17.96c0,4,1.56,5.51,4.38,5.51c1.69,0,3.44-0.56,5.26-1.69L198.6,61.85z"/>
+        <path class="st0" d="M234.2,60.66c0,9.63-6.57,15.7-16.58,15.7c-5.19-0.06-9.51-1.75-13.51-4.75l2.25-3.75c3.25,2.69,6.69,4.13,11.07,4.19c7.19,0,11.89-4.38,11.89-11.26v-5c-2.32,4.38-6.57,6.88-12.14,6.88c-8.88,0-15.02-6.57-15.02-15.95c0-9.2,6.07-15.7,14.89-15.77c5.63,0,9.89,2.5,12.26,6.88v-6.69h4.88V60.66z M229.32,46.9c0-6.88-4.69-11.7-11.26-11.7c-6.63,0-11.26,4.88-11.32,11.7c0.06,6.76,4.69,11.64,11.32,11.64C224.63,58.54,229.32,53.65,229.32,46.9z"/>
+        <path class="st0" d="M265.73,59.04c-2.63,3.57-6.82,5.32-12.08,5.32c-6.82,0-11.2-4.38-11.2-10.07c0-5.76,4.57-9.38,12.33-9.45h10.82v-1.94c0-4.82-3-7.7-8.82-7.7c-3.63,0-7.01,1.38-10.45,3.75l-2.06-3.57c4.25-2.82,7.82-4.44,13.45-4.44c8.13,0,12.64,4.32,12.7,11.39l0.06,21.77h-4.75V59.04z M265.67,52.72v-3.94h-10.26c-5.51,0-8.38,1.69-8.38,5.32s2.94,6.01,7.57,6.01C260.16,60.1,264.42,57.28,265.67,52.72z"/>
+        <path class="st0" d="M310.09,60.66c0,9.63-6.57,15.7-16.58,15.7c-5.19-0.06-9.51-1.75-13.51-4.75l2.25-3.75c3.25,2.69,6.69,4.13,11.07,4.19c7.19,0,11.89-4.38,11.89-11.26v-5c-2.31,4.38-6.57,6.88-12.14,6.88c-8.88,0-15.02-6.57-15.02-15.95c0-9.2,6.07-15.7,14.89-15.77c5.63,0,9.89,2.5,12.26,6.88v-6.69h4.88V60.66z M305.21,46.9c0-6.88-4.69-11.7-11.26-11.7c-6.63,0-11.26,4.88-11.32,11.7c0.06,6.76,4.69,11.64,11.32,11.64C300.51,58.54,305.21,53.65,305.21,46.9z"/>
+        <path class="st0" d="M349.56,49.53h-26.9c0.88,6.44,5.57,10.51,11.95,10.51c4.07,0,7.63-1.44,10.2-4.13l2.69,2.88c-3.13,3.5-7.76,5.51-13.26,5.51c-9.7,0-16.39-6.82-16.39-16.64c0-9.82,6.76-16.64,16.33-16.64C344.81,30.94,350.06,38.33,349.56,49.53z M345.18,45.52c-0.31-6.32-4.57-10.32-11.01-10.32c-6.26,0-10.76,4.07-11.51,10.32H345.18z"/>
+        <linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="348.0591" y1="40.9851" x2="486.011" y2="40.9851">
+          <stop offset="0" style="stop-color:#EC881E"/>
+          <stop offset="1" style="stop-color:#F0A53B"/>
+        </linearGradient>
+        <path class="st2" d="M367.33,25.12V64.1h-5.01V25.12h-14.27v-4.82h33.6v4.82H367.33z M412,49.53h-26.9c0.88,6.44,5.57,10.51,11.95,10.51c4.07,0,7.63-1.44,10.2-4.13l2.69,2.88c-3.13,3.5-7.76,5.51-13.26,5.51c-9.7,0-16.39-6.82-16.39-16.64c0-9.82,6.76-16.64,16.33-16.64C407.25,30.94,412.5,38.33,412,49.53z M407.62,45.52c-0.31-6.32-4.57-10.32-11.01-10.32c-6.26,0-10.76,4.07-11.51,10.32H407.62z M446.1,35.89l-2.69,3.44c-2.5-2.38-5.82-3.82-9.82-3.82c-6.82,0-11.7,4.94-11.7,12.14c0,7.2,4.88,12.2,11.7,12.2c4.32,0,7.88-1.5,10.2-4.26l2.82,3c-2.94,3.57-7.51,5.69-13.2,5.69c-9.57,0-16.33-6.82-16.33-16.64c0-9.82,6.82-16.64,16.33-16.64C438.71,30.94,443.09,32.76,446.1,35.89z M486.01,43.77V64.1h-4.88V45.08c0-5.82-3.5-9.26-9.32-9.26c-7.01,0.06-11.14,5-11.14,12.08v16.2h-4.88V17.68h4.88v20.84c2.25-5.13,6.76-7.51,12.83-7.57C481.38,30.94,486.01,35.82,486.01,43.77z"/>
+      </g></g></g></g>
+      <g><path class="st0" d="M500,20.01c0,3.88-3.13,7.16-7.14,7.16c-3.99,0-7.07-3.23-7.07-7.12c0-3.88,3.11-7.16,7.12-7.16C496.89,12.9,500,16.11,500,20.01z M498.8,20.01c0-3.21-2.56-5.86-5.9-5.86c-3.36,0-5.92,2.69-5.92,5.9c0,3.21,2.54,5.86,5.88,5.86C496.22,25.91,498.8,23.22,498.8,20.01z M494.44,21l1.64,2.37h-1.39l-1.32-2.14h-0.31h-1.66v2.14h-1.2v-7.09h2.85c1.85,0,2.88,0.88,2.88,2.43C495.93,19.82,495.4,20.62,494.44,21z M493.05,20.22c1.09,0,1.74-0.55,1.74-1.49c0-0.94-0.65-1.45-1.74-1.45h-1.66v2.94H493.05z"/></g>
+    </svg>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Encompass <span class="teal">Web</span><br>for <span class="gold">Power Users</span></h1>
+    <p class="tagline">Screens built for people who actually use Encompass all day. Non-responsive layouts, multi-monitor support, and everything you need — one click away.</p>
+    <span class="coming-badge">&#9889; Built by MortgageTech &bull; Powered by WebFX</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FEATURE PANELS -->
+  <div class="content">
+    <div class="feature-panels">
+
+      <div class="fpanel">
+        <div class="accent-line"></div>
+        <span class="icon-lg">&#128218;</span>
+        <h3>Web Workbooks</h3>
+        <p>MortgageTech's custom <strong style="color:var(--white)">Encompass Web Workbooks</strong> bring a structured, multi-tabbed workflow view to the browser — purpose-built for processors, underwriters, and closers who live in loan files.</p>
+      </div>
+
+      <div class="fpanel">
+        <div class="accent-line"></div>
+        <span class="icon-lg">&#128433;</span>
+        <h3>Non-Responsive Screens</h3>
+        <p>Forget cramped, reflowing layouts. Our screens are <strong style="color:var(--white)">fixed-width, data-dense views</strong> designed for 1080p+ monitors — because power users need to see more, not less.</p>
+      </div>
+
+      <div class="fpanel">
+        <div class="accent-line"></div>
+        <span class="icon-lg">&#128187;</span>
+        <h3>Multi-Monitor Support</h3>
+        <p>Pop out loan sections, docs, and dashboards across <strong style="color:var(--white)">two or three screens</strong>. Work the way you already do on desktop — but now in the browser with full Web support.</p>
+      </div>
+
+      <div class="fpanel">
+        <div class="accent-line"></div>
+        <span class="icon-lg">&#9889;</span>
+        <h3>Everything at Your Fingertips</h3>
+        <p><strong style="color:var(--white)">Docs, dates, links, tasks, contacts</strong> — all visible without drilling down. Our layouts surface the data LOs and ops teams actually use, right where they need it.</p>
+      </div>
+
+    </div>
+
+    <!-- MULTI-SCREEN VISUAL -->
+    <div class="multi-screen-banner">
+      <div class="screens-icon">
+        <div class="screen-box"></div>
+        <div class="screen-box"></div>
+        <div class="screen-box"></div>
+      </div>
+      <div class="msb-content">
+        <h3>Designed for Real Mortgage Workflows</h3>
+        <p>MortgageTech has been building Encompass screen solutions since 2010. Our Web screens are informed by <strong style="color:var(--white)">hundreds of client implementations</strong> — we know what power users need because we've watched them work. Every layout decision is based on real production feedback, not theoretical UX.</p>
+      </div>
+    </div>
+
+    <!-- COMPARISON -->
+    <div class="compare-section">
+      <h2>Web Power Users vs. Standard Web</h2>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th style="text-align:center">Standard Web</th>
+            <th style="text-align:center; color:var(--teal)">MT Power Users</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fixed-width data-dense layouts</td>
+            <td style="text-align:center"><span class="dash">—</span></td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Multi-monitor pop-out sections</td>
+            <td style="text-align:center"><span class="dash">—</span></td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Loan-level docs, dates &amp; links hub</td>
+            <td style="text-align:center"><span class="dash">—</span></td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Workbook-style tabbed navigation</td>
+            <td style="text-align:center"><span class="dash">—</span></td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Pipeline &amp; reporting views</td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+          </tr>
+          <tr>
+            <td>Role-based persona screens</td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+            <td style="text-align:center"><span class="check">&#10003;</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TAGLINE -->
+    <div style="text-align:center; margin-bottom:0.14in;">
+      <span style="font-size:1.05rem; color:var(--gray); font-style:italic;">"Stop adapting to Encompass Web. Make it adapt to you."</span>
+    </div>
+
+  </div>
+
+  <!-- CTA FOOTER -->
+  <div class="cta-footer">
+    <div class="left">
+      <span class="cta-text">See the screens in action. Book a demo.</span>
+      <span class="cta-sub">Custom builds available &bull; Flat-rate pricing</span>
+    </div>
+    <div class="contact-block">
+      <div class="phone">833.684.8324</div>
+      <div class="email">mail@mortgagetech.com</div>
+      <div class="web">www.mortgagetech.com</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- @wbx-modified ClaudeOpus4.6·0b2a | 2026-03-03 | Created: Encompass Web Power Users tradeshow flyer (print-ready) -->
+</body>
+</html>

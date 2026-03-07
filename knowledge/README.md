@@ -28,8 +28,13 @@ knowledge/
 │   ├── loan-folders.md
 │   ├── business-rules-overview.md
 │   └── workflow-rules.md
-└── encompass-dev/         ← SDK, API, custom forms, scripting
-    └── (future articles)
+└── encompass-dev/         ← SDK v25.4 deep reference (6 articles)
+    ├── sdk-architecture.md        ← Session object, connection, 17 sub-APIs
+    ├── sdk-write-capabilities.md  ← REST vs SDK — what returns 403 vs. full CRUD
+    ├── sdk-loan-operations.md     ← Loan object (46 props, 49 methods), fields, export/import
+    ├── sdk-workflow-compliance.md  ← Milestones (47), conditions (13 states), TRID, alerts, eFolder
+    ├── sdk-query-reporting.md     ← Pipeline queries, ERDB, CRM (42 types), data exchange
+    └── sdk-forms-automation.md    ← Custom forms (138 types), real-time events, users/ACL, admin
 ```
 
 ## Tags Convention
