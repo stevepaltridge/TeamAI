@@ -65,7 +65,7 @@ Do these 4 steps once and you're done. Takes ~5 minutes.
 ### Step 1: Clone this repo
 
 ```powershell
-git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/CopilotInstructions C:\Dev\TeamAI
+git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/TeamAI C:\Dev\TeamAI
 ```
 
 ### Step 2: Add VS Code User Setting
