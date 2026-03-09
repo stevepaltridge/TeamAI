@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<!-- @wbx-modified ClaudeOpus4.6·c4f7 | 2026-03-07 | presenter shell: 9-slide branded chapter cards for Bridge Call, keyboard/touch/click nav, progress bar, fullscreen | new file -->
+<html lang="en">
+<head>
+<!-- @wbx-modified ClaudeOpus4.6·b26a | 2026-03-07 | New presenter report | prev: unknown -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MortgageTech — Admin Bridge Call</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --brand-dark:    #0a0e27;
+  --brand-deep:    #111640;
+  --brand-accent:  #00d4ff;
+  --brand-accent2: #7c3aed;
+  --brand-hot:     #ff6b35;
+  --brand-green:   #10b981;
+  --brand-gold:    #f59e0b;
+  --text-primary:  #f0f4ff;
+  --text-muted:    #94a3b8;
+  --glass-bg:      rgba(255,255,255,0.05);
+  --glass-border:  rgba(255,255,255,0.08);
+  --glow-cyan:     0 0 40px rgba(0,212,255,0.15);
+  --glow-purple:   0 0 40px rgba(124,58,237,0.15);
+}
+
+html, body {
+  height: 100%; overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--brand-dark);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* === ANIMATED BACKGROUND === */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.bg-orb {
+  position: fixed; border-radius: 50%; filter: blur(120px); z-index: 0; pointer-events: none;
+  animation: orbDrift 25s ease-in-out infinite alternate;
+}
+.bg-orb.cyan   { width: 600px; height: 600px; background: rgba(0,212,255,0.07); top: -10%; left: -5%; }
+.bg-orb.purple { width: 500px; height: 500px; background: rgba(124,58,237,0.06); bottom: -10%; right: -5%; animation-delay: -12s; }
+.bg-orb.hot    { width: 400px; height: 400px; background: rgba(255,107,53,0.04); top: 50%; left: 50%; animation-delay: -7s; }
+
+@keyframes orbDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(40px, -30px) scale(1.1); }
+  66%  { transform: translate(-20px, 50px) scale(0.95); }
+  100% { transform: translate(30px, 20px) scale(1.05); }
+}
+
+/* === SLIDE CONTAINER === */
+.deck {
+  position: fixed; inset: 0; z-index: 1;
+}
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 60px 80px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+}
+.slide.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.slide.exit-up {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+/* === WORDMARK === */
+.wordmark {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+.wordmark span { color: var(--brand-accent); }
+
+/* === SLIDE BADGE (chapter label) === */
+.slide-badge {
+  display: inline-block;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 3px; color: var(--brand-accent);
+  padding: 6px 16px; border-radius: 6px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.15);
+  margin-bottom: 28px;
+}
+.slide-badge.hot {
+  color: var(--brand-hot);
+  background: rgba(255,107,53,0.08);
+  border-color: rgba(255,107,53,0.15);
+}
+.slide-badge.purple {
+  color: var(--brand-accent2);
+  background: rgba(124,58,237,0.08);
+  border-color: rgba(124,58,237,0.15);
+}
+.slide-badge.green {
+  color: var(--brand-green);
+  background: rgba(16,185,129,0.08);
+  border-color: rgba(16,185,129,0.15);
+}
+.slide-badge.gold {
+  color: var(--brand-gold);
+  background: rgba(245,158,11,0.08);
+  border-color: rgba(245,158,11,0.15);
+}
+
+/* === SLIDE TYPOGRAPHY === */
+.slide-title {
+  font-size: 72px; font-weight: 900;
+  letter-spacing: -2.5px; line-height: 1.08;
+  margin-bottom: 20px;
+  max-width: 900px;
+}
+.gradient-text {
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hot-text {
+  background: linear-gradient(135deg, var(--brand-hot), var(--brand-gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.green-text {
+  background: linear-gradient(135deg, var(--brand-green), var(--brand-accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.purple-text {
+  background: linear-gradient(135deg, var(--brand-accent2), var(--brand-hot));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.slide-sub {
+  font-size: 22px; font-weight: 400;
+  color: var(--text-muted); line-height: 1.7;
+  max-width: 680px; margin-bottom: 8px;
+}
+
+.slide-time {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 2px; color: rgba(148,163,184,0.5);
+  margin-top: 32px;
+}
+
+/* === TITLE SLIDE SPECIAL === */
+.title-date {
+  font-size: 15px; font-weight: 500; color: var(--text-muted);
+  margin-top: 4px; letter-spacing: 0.5px;
+}
+.title-wordmark {
+  font-size: 28px; font-weight: 800; letter-spacing: -0.5px;
+  margin-bottom: 40px;
+}
+.title-wordmark span { color: var(--brand-accent); }
+
+/* === CLOSING SLIDE LINKS === */
+.link-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-top: 36px; max-width: 720px;
+}
+.link-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px; padding: 16px 20px;
+  text-align: left; text-decoration: none;
+  transition: all 0.3s ease;
+}
+.link-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(0,212,255,0.25);
+  transform: translateY(-2px);
+  box-shadow: var(--glow-cyan);
+}
+.link-card-title {
+  font-size: 14px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 3px;
+}
+.link-card-url {
+  font-size: 11px; color: var(--text-muted); word-break: break-all;
+}
+
+/* === STAT STRIP === */
+.stat-strip {
+  display: flex; gap: 48px; margin-top: 36px;
+  justify-content: center;
+}
+.stat-item { text-align: center; }
+.stat-value {
+  font-size: 42px; font-weight: 900; letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label {
+  font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--text-muted); margin-top: 4px;
+}
+
+/* === HUD (heads-up display) === */
+.hud {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 40px;
+  pointer-events: none;
+}
+.hud-left, .hud-right {
+  font-size: 12px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; color: rgba(148,163,184,0.4);
+}
+.hud-accent { color: var(--brand-accent); }
+.hud-right { font-variant-numeric: tabular-nums; }
+
+/* Progress bar */
+.progress-track {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; z-index: 10;
+  background: rgba(255,255,255,0.04);
+}
+.progress-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--brand-accent), var(--brand-accent2));
+  transition: width 0.5s ease;
+  box-shadow: 0 0 12px rgba(0,212,255,0.4);
+}
+
+/* === PRESENTER NOTES HINT (bottom-left, hidden in screenshare) === */
+.note {
+  position: absolute; bottom: 70px; left: 40px; right: 40px;
+  font-size: 13px; color: rgba(148,163,184,0.0);
+  line-height: 1.6; text-align: left; max-width: 500px;
+  transition: color 0.2s;
+  pointer-events: none;
+}
+body:hover .note { color: rgba(148,163,184,0.25); }
+
+/* === KEY HINT === */
+.key-hint {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 10;
+  font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(148,163,184,0.2);
+  transition: opacity 0.5s;
+}
+.key-hint.hidden { opacity: 0; }
+
+/* === CURSOR RESTORE ON MOVEMENT === */
+body.show-cursor { cursor: default; }
+
+/* === INTRO ANIMATION === */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide.active .slide-badge   { animation: fadeSlideUp 0.6s ease both; animation-delay: 0.1s; }
+.slide.active .slide-title   { animation: fadeSlideUp 0.6s ease both; animation-delay: 0.25s; }
+.slide.active .slide-sub     { animation: fadeSlideUp 0.6s ease both; animation-delay: 0.4s; }
+.slide.active .slide-time    { animation: fadeSlideUp 0.6s ease both; animation-delay: 0.55s; }
+.slide.active .stat-strip    { animation: fadeSlideUp 0.6s ease both; animation-delay: 0.5s; }
+.slide.active .link-grid     { animation: fadeSlideUp 0.6s ease both; animation-delay: 0.5s; }
+.slide.active .title-wordmark { animation: fadeSlideUp 0.6s ease both; animation-delay: 0.1s; }
+
+/* === PULSE RING on title slide === */
+.pulse-ring {
+  width: 120px; height: 120px; border-radius: 50%;
+  border: 2px solid rgba(0,212,255,0.15);
+  animation: pulseRing 3s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 32px;
+}
+.pulse-ring-inner {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--brand-accent);
+  box-shadow: 0 0 20px rgba(0,212,255,0.5);
+}
+@keyframes pulseRing {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+}
+
+/* === RESPONSIVE (for smaller screens during prep) === */
+@media (max-width: 900px) {
+  .slide { padding: 40px 32px; }
+  .slide-title { font-size: 48px; }
+  .slide-sub { font-size: 18px; }
+  .link-grid { grid-template-columns: 1fr 1fr; }
+  .stat-strip { gap: 24px; }
+  .stat-value { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background layers (matches index.html) -->
+<div class="bg-grid"></div>
+<div class="bg-orb cyan"></div>
+<div class="bg-orb purple"></div>
+<div class="bg-orb hot"></div>
+
+<!-- Progress bar -->
+<div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+
+<!-- ========== SLIDES ========== -->
+<div class="deck" id="deck">
+
+  <!-- SLIDE 0 — TITLE -->
+  <div class="slide active" data-slide="0">
+    <div class="pulse-ring"><div class="pulse-ring-inner"></div></div>
+    <div class="title-wordmark">Mortgage<span>Tech</span></div>
+    <div class="slide-title gradient-text">Product Training</div>
+    <div class="slide-sub">What we built, how it works, and why it changes everything.</div>
+    <div class="title-date">Monday, March 9, 2026 · 60 Minutes</div>
+    <div class="note">Start recording + transcription. Poll is pre-loaded. Deep breath.</div>
+  </div>
+
+  <!-- SLIDE 1 — POLL -->
+  <div class="slide" data-slide="1">
+    <div class="slide-badge">0:00 – 0:05</div>
+    <div class="slide-title">Quick <span class="gradient-text">Question</span></div>
+    <div class="slide-sub">What takes you the most time in Encompass admin work?</div>
+    <div class="slide-time">Launch the Teams Poll now</div>
+    <div class="note">Let results populate for ~90 seconds. Read top answers aloud. "Every one of those answers is about to change."</div>
+  </div>
+
+  <!-- SLIDE 2 — BEFORE / AFTER -->
+  <div class="slide" data-slide="2">
+    <div class="slide-badge hot">0:05 – 0:12</div>
+    <div class="slide-title">You Know This.<br><span class="hot-text">We Rebuilt It.</span></div>
+    <div class="slide-sub">155 fields → 232 fields. 97% coverage on the Lender tab — pixel-perfect.</div>
+    <div class="slide-time">→ Switch to lender-before-after.html</div>
+    <div class="note">Start on T5A7. Walk through Before → After. Click through T5A2, T5A4, T5A8, T5A9. "This is just the Lender tab."</div>
+  </div>
+
+  <!-- SLIDE 3 — PRODUCT SUITE -->
+  <div class="slide" data-slide="3">
+    <div class="slide-badge purple">0:12 – 0:22</div>
+    <div class="slide-title">Here's What<br><span class="purple-text">We Sell Now</span></div>
+    <div class="slide-sub">Five products. One architecture. Every one solves a problem you already have.</div>
+    <div class="slide-time">→ Switch to products.html</div>
+    <div class="note">Scroll slowly. Name each product, one sentence max. Linger on stat strip. "This isn't a roadmap slide. All of this is built."</div>
+  </div>
+
+  <!-- SLIDE 4 — SETTINGSPILOT -->
+  <div class="slide" data-slide="4">
+    <div class="slide-badge green">0:22 – 0:35</div>
+    <div class="slide-title">Settings.<br><span class="green-text">As Code.</span></div>
+    <div class="slide-sub">Toggle boards, rule designers, VBS→JS migration, diff views, audit logs — all in the browser.</div>
+    <div class="slide-time">→ Switch to settingspilot.html · This is the WOW</div>
+    <div class="note">13 minutes. Take it slow. Toggle board → Rule designer (WHEN/THEN) → VBS sandbox → Diff viewer → Audit log → AI insights. Let them absorb each one.</div>
+  </div>
+
+  <!-- SLIDE 5 — SMARTADVISOR -->
+  <div class="slide" data-slide="5">
+    <div class="slide-badge">0:35 – 0:45</div>
+    <div class="slide-title">AI That Knows<br><span class="gradient-text">Your Loan</span></div>
+    <div class="slide-sub">Context-aware guidance that reads the loan file and talks to the LO in plain language.</div>
+    <div class="slide-time">→ Switch to walkthrough.html</div>
+    <div class="note">Show the 4-step flow. Click each role profile. Show both AI providers. "The admin configures what the AI says."</div>
+  </div>
+
+  <!-- SLIDE 6 — DASHBOARD -->
+  <div class="slide" data-slide="6">
+    <div class="slide-badge gold">0:45 – 0:52</div>
+    <div class="slide-title">Everyone.<br><span class="hot-text">In Real Time.</span></div>
+    <div class="slide-sub">Live pipeline, bottleneck detection, role-based views — built on WebSockets.</div>
+    <div class="slide-time">→ Switch to dashboard.html · Click "Launch Demo Mode"</div>
+    <div class="note">KPI strip → Pipeline bars → Role breakdown → Bottleneck alert → CSV export. "Every admin becomes a command center."</div>
+  </div>
+
+  <!-- SLIDE 7 — BIG PICTURE -->
+  <div class="slide" data-slide="7">
+    <div class="slide-badge purple">0:52 – 0:57</div>
+    <div class="slide-title"><span class="gradient-text">One System</span></div>
+    <div class="slide-sub">Forms. Settings. AI. Dashboards. Documents. All built on the same architecture, all deployable from one control panel.</div>
+    <div class="stat-strip">
+      <div class="stat-item"><div class="stat-value">5</div><div class="stat-label">Products</div></div>
+      <div class="stat-item"><div class="stat-value">39</div><div class="stat-label">Pages Live</div></div>
+      <div class="stat-item"><div class="stat-value">1,105</div><div class="stat-label">Fields Mapped</div></div>
+      <div class="stat-item"><div class="stat-value">11</div><div class="stat-label">Days to Tradeshow</div></div>
+    </div>
+    <div class="note">"You are the people who will demo this at ICE. Thursday we drill individually."</div>
+  </div>
+
+  <!-- SLIDE 8 — HOMEWORK / CLOSE -->
+  <div class="slide" data-slide="8">
+    <div class="slide-badge hot">0:57 – 1:00</div>
+    <div class="slide-title">Your <span class="hot-text">Homework</span></div>
+    <div class="slide-sub">Click every link below before Thursday. Explore. Break things. Write down questions.</div>
+    <div class="link-grid">
+      <a class="link-card" href="https://victorious-stone-0c72f0f10.6.azurestaticapps.net/Reports/products.html" target="_blank" rel="noopener">
+        <div class="link-card-title">📦 Product Suite</div>
+        <div class="link-card-url">products.html</div>
+      </a>
+      <a class="link-card" href="https://victorious-stone-0c72f0f10.6.azurestaticapps.net/Reports/settingspilot.html" target="_blank" rel="noopener">
+        <div class="link-card-title">⚙️ SettingsPilot</div>
+        <div class="link-card-url">settingspilot.html</div>
+      </a>
+      <a class="link-card" href="https://victorious-stone-0c72f0f10.6.azurestaticapps.net/Reports/walkthrough.html" target="_blank" rel="noopener">
+        <div class="link-card-title">🤖 SmartAdvisor</div>
+        <div class="link-card-url">walkthrough.html</div>
+      </a>
+      <a class="link-card" href="https://victorious-stone-0c72f0f10.6.azurestaticapps.net/Reports/dashboard.html" target="_blank" rel="noopener">
+        <div class="link-card-title">📊 Dashboard</div>
+        <div class="link-card-url">dashboard.html</div>
+      </a>
+      <a class="link-card" href="https://victorious-stone-0c72f0f10.6.azurestaticapps.net/Reports/docs.html" target="_blank" rel="noopener">
+        <div class="link-card-title">📄 DocPilot</div>
+        <div class="link-card-url">docs.html</div>
+      </a>
+      <a class="link-card" href="https://victorious-stone-0c72f0f10.6.azurestaticapps.net/Reports/lender-before-after.html" target="_blank" rel="noopener">
+        <div class="link-card-title">🔀 Before / After</div>
+        <div class="link-card-url">lender-before-after.html</div>
+      </a>
+    </div>
+    <div class="slide-time">Links are in the Teams channel. See you Thursday.</div>
+    <div class="note">Drop all 6 links in chat. Post Loop checklist. Stop recording.</div>
+  </div>
+
+</div>
+<!-- ========== END SLIDES ========== -->
+
+<!-- HUD -->
+<div class="hud">
+  <div class="hud-left">Mortgage<span class="hud-accent">Tech</span></div>
+  <div class="hud-right" id="slideCounter">1 / 9</div>
+</div>
+
+<div class="key-hint" id="keyHint">← → or click to navigate · F for fullscreen</div>
+
+<script>
+(() => {
+  const slides = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('slideCounter');
+  const keyHint = document.getElementById('keyHint');
+  const total = slides.length;
+  let current = 0;
+  let cursorTimer;
+
+  function go(index) {
+    if (index < 0 || index >= total) return;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit-up');
+    setTimeout(() => slides[current === index ? current : (index > current ? current : current)].classList.remove('exit-up'), 600);
+    const prev = current;
+    current = index;
+    // Remove exit from old slide after transition
+    setTimeout(() => slides[prev].classList.remove('exit-up'), 600);
+    slides[current].classList.add('active');
+    progress.style.width = ((current / (total - 1)) * 100) + '%';
+    counter.textContent = (current + 1) + ' / ' + total;
+    // Hide key hint after first navigation
+    keyHint.classList.add('hidden');
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault(); go(current + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault(); go(current - 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault(); go(0);
+    } else if (e.key === 'End') {
+      e.preventDefault(); go(total - 1);
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  });
+
+  // Click navigation (left third = back, right two-thirds = forward)
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return; // Don't hijack link clicks
+    const x = e.clientX / window.innerWidth;
+    if (x < 0.33) go(current - 1);
+    else go(current + 1);
+  });
+
+  // Touch support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) {
+      if (dx < 0) go(current + 1);
+      else go(current - 1);
+    }
+  });
+
+  // Show cursor on movement, hide after 2s idle
+  document.addEventListener('mousemove', () => {
+    document.body.classList.add('show-cursor');
+    clearTimeout(cursorTimer);
+    cursorTimer = setTimeout(() => document.body.classList.remove('show-cursor'), 2000);
+  });
+
+  // Initial state
+  progress.style.width = '0%';
+})();
+</script>
+</body>
+</html>
