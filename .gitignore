@@ -13,8 +13,8 @@ data/
 # Runtime logs
 guardrails.log
 
-# Local workspace files
-*.code-workspace
+# Local workspace files (keep TeamAI.code-workspace tracked)
+CurrentVersions.code-workspace
 
 # OS
 Thumbs.db

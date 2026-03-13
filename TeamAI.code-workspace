@@ -1,0 +1,89 @@
+{
+	"folders": [
+		{
+			"name": "TeamAI",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/node_modules": true,
+			"**/data": true,
+			"**/.git": true,
+			"**/playwright-browsers": true
+		},
+		"files.readonlyInclude": {
+			"knowledge/encompass-settings/**": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/data": true,
+			"**/*.pdf": true,
+			"**/package-lock.json": true,
+			"knowledge/encompass-settings/**": true
+		},
+		"files.watcherExclude": {
+			"**/node_modules/**": true,
+			"**/data/**": true,
+			"**/.git/objects/**": true,
+			"**/.git/subtree-cache/**": true,
+			"**/playwright-browsers/**": true
+		},
+		"github.copilot.enable": {
+			"*": true
+		},
+		"chat.mcp.gallery.enabled": false,
+		"chat.agent.maxRequests": 100,
+		"files.autoSave": "afterDelay",
+		"files.autoSaveDelay": 2000,
+		"editor.wordWrap": "on",
+		"editor.minimap.enabled": false,
+		"git.autofetch": true,
+		"git.autofetchPeriod": 300,
+		"git.confirmSync": false,
+		"git.enableSmartCommit": true,
+		"[markdown]": {
+			"editor.wordWrap": "on",
+			"editor.quickSuggestions": {
+				"other": false,
+				"comments": false,
+				"strings": false
+			}
+		},
+		"[javascript]": {
+			"editor.defaultFormatter": "vscode.typescript-language-features"
+		}
+	},
+	"extensions": {
+		"recommendations": [
+			"github.copilot",
+			"github.copilot-chat",
+			"ms-azuretools.vscode-azure-github-copilot",
+			"ms-azuretools.vscode-azurefunctions",
+			"sonarsource.sonarlint-vscode",
+			"davidanson.vscode-markdownlint",
+			"yzhang.markdown-all-in-one"
+		]
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "TeamAI: Auto-Pull Latest",
+				"type": "shell",
+				"command": "git",
+				"args": ["pull", "--ff-only", "origin", "main"],
+				"presentation": {
+					"reveal": "silent",
+					"focus": false,
+					"panel": "shared",
+					"showReuseMessage": false
+				},
+				"runOptions": {
+					"runOn": "folderOpen"
+				},
+				"problemMatcher": []
+			}
+		]
+	}
+}

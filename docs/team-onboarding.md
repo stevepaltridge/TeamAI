@@ -47,6 +47,12 @@ git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/TeamAI C:\Dev\TeamAI
 
 > **Note:** If you don't have git installed, download from https://git-scm.com/download/win
 
+### Step 3b: Open the TeamAI Workspace
+
+Double-click `C:\Dev\TeamAI\TeamAI.code-workspace` to open TeamAI in VS Code. This loads all recommended settings, extensions, and tasks automatically.
+
+> **Auto-pull:** Every time you open the workspace, it automatically pulls the latest changes from the repo. You always have current knowledge articles and instructions.
+
 ### Step 4: Add Org-Wide AI Instructions to VS Code
 
 This tells Copilot to load our company rules into every chat:
@@ -160,11 +166,15 @@ The AI will automatically:
 These are one-time admin tasks that Steve will complete:
 
 - [x] Set up TeamAI repo on Azure DevOps (+ GitHub mirror)
-- [x] Create org-wide AI instructions (Layer 1 v1.4)
+- [x] Create org-wide AI instructions (Layer 1 v1.5)
 - [x] Build OAuth proxy for Encompass REST API (`ice-api.js`)
 - [x] Build browser proxy for auth-walled pages (`ice-fetch.js`)
 - [x] Configure MS365 Graph Search and validate pipeline
 - [x] **Rename & share the OneDrive knowledge folder** — renamed to **EncompassFX** and shared with team. Location: `OneDrive > EncompassFX`.
+- [x] **Auto-pull on workspace open** — VS Code tasks.json pulls latest on every open
+- [x] **VS Code workspace file** — `TeamAI.code-workspace` with all settings, extensions, and tasks
+- [x] **DevOps Wiki pages** — browsable docs in `docs/devops-wiki/`
+- [x] **Freshness check script** — `node scripts/freshness-check.js`
 - [ ] **Enable additional API products** on ICE Developer Connect (https://developer.icemortgagetechnology.com) for client ID `jnpknrc` — needed for field definitions, loans, pipeline, users, and business rules endpoints.
 - [ ] **Ensure all team members have Copilot licenses** — manage via https://github.com/orgs/MortgageTech/settings (GitHub is required for Copilot licensing only).
 
@@ -222,4 +232,16 @@ This system is available to all @mortgagetech.com team members listed at [mortga
 
 ---
 
-*MortgageTech AI Platform — Onboarding v1.0 · March 2, 2026*
+## Additional Resources
+
+| Resource | Location |
+|----------|----------|
+| Admin Quick Reference | [docs/devops-wiki/Admin-Quick-Reference.md](devops-wiki/Admin-Quick-Reference.md) |
+| How to Ask Questions | [docs/devops-wiki/How-to-Ask-Questions.md](devops-wiki/How-to-Ask-Questions.md) |
+| Contributing Knowledge | [docs/devops-wiki/Contributing-Knowledge.md](devops-wiki/Contributing-Knowledge.md) |
+| Branch Policies | [docs/devops-wiki/Branch-Policies.md](devops-wiki/Branch-Policies.md) |
+| Freshness Check | Run: `node scripts/freshness-check.js` |
+
+---
+
+*MortgageTech AI Platform — Onboarding v2.0 · March 13, 2026*

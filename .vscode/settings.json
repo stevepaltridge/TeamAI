@@ -5,11 +5,15 @@
 		"**/.git": true,
 		"**/playwright-browsers": true
 	},
+	"files.readonlyInclude": {
+		"knowledge/encompass-settings/**": true
+	},
 	"search.exclude": {
 		"**/node_modules": true,
 		"**/data": true,
 		"**/*.pdf": true,
-		"**/package-lock.json": true
+		"**/package-lock.json": true,
+		"knowledge/encompass-settings/**": true
 	},
 	"files.watcherExclude": {
 		"**/node_modules/**": true,
@@ -26,6 +30,12 @@
 	"files.autoSave": "afterDelay",
 	"files.autoSaveDelay": 2000,
 	"editor.defaultFormatter": null,
+	"editor.wordWrap": "on",
+	"editor.minimap.enabled": false,
+	"git.autofetch": true,
+	"git.autofetchPeriod": 300,
+	"git.confirmSync": false,
+	"git.enableSmartCommit": true,
 	"[markdown]": {
 		"editor.wordWrap": "on",
 		"editor.quickSuggestions": {

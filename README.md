@@ -1,6 +1,29 @@
-# TeamAI — MortgageTech AI Instruction System
+# TeamAI — MortgageTech AI Knowledge Platform
 
-Central repository for AI agent instructions used across all MortgageTech projects.
+Your team's primary resource for Encompass administration, backed by 12,700+ indexed knowledge articles, live API access, and AI-powered search.
+
+## For Admins: Get Started in 10 Minutes
+
+1. **Run the setup script** (installs everything):
+   ```powershell
+   git clone https://dev.azure.com/MtgTechTeam/TeamAI/_git/TeamAI C:\Dev\TeamAI
+   cd C:\Dev\TeamAI
+   powershell -ExecutionPolicy Bypass -File scripts/teamai-setup.ps1
+   ```
+2. **Open the workspace:** Double-click `TeamAI.code-workspace`
+3. **Ask a question:** Press `Ctrl+Shift+I` and type naturally
+
+> Full setup guide: [docs/team-onboarding.md](docs/team-onboarding.md) | Quick answers: [docs/devops-wiki/How-to-Ask-Questions.md](docs/devops-wiki/How-to-Ask-Questions.md)
+
+## What You Get
+
+| Source | Content | Size |
+|--------|---------|------|
+| MasteringEncompass | Forum posts (full text + metadata) | 11,657 articles |
+| EllieForum | Ellie Mae community archive | 1,018 posts |
+| SharePoint / OneDrive | Training guides, admin docs, configs | All company drives |
+| Encompass REST API | Live instance data (folders, fields, schemas) | Real-time |
+| ICE Developer Connect | Auth-walled documentation pages | On demand |
 
 ## Architecture
 
@@ -56,9 +79,9 @@ TeamAI/
 └── README.md                      ← This file
 ```
 
-## Developer Onboarding (One-Time Setup)
+## Detailed Setup (Manual Steps)
 
-Do these 4 steps once and you're done. Takes ~5 minutes.
+> **Prefer the one-click setup above.** These steps are for reference or if the setup script doesn't work.
 
 > **Full setup guide with screenshots and troubleshooting:** See [docs/team-onboarding.md](docs/team-onboarding.md)
 
@@ -120,6 +143,18 @@ Any project with its own `.github/copilot-instructions.md` will automatically ad
 2. Fill in project-specific paths, scripts, and rules
 3. Commit and push
 
+## Staying Current
+
+The workspace auto-pulls the latest changes every time you open it. You can also check manually:
+
+```powershell
+node scripts/freshness-check.js
+```
+
+## Contributing Knowledge
+
+Anyone on the team can add knowledge articles. See [docs/devops-wiki/Contributing-Knowledge.md](docs/devops-wiki/Contributing-Knowledge.md).
+
 ## Updating Org Rules
 
 Org-level rules affect ALL team members across ALL projects. Changes to `.github/copilot-instructions.md` in this repo should be:
@@ -140,4 +175,4 @@ AI agents have context limits. Keep instructions lean:
 
 ---
 
-*MortgageTech TeamAI v1.4 — March 2, 2026*
+*MortgageTech TeamAI v2.0 — March 13, 2026*
