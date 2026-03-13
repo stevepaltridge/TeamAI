@@ -1,4 +1,5 @@
 /* @wbx-modified ClaudeOpus4.6·a3d1 | 2026-06-02 | revival: Azure Storage Consolidation — disk #6 recovery + remaining steps */
+<!-- S-20260313-06 | 2026-03-13 | SECURITY: key1 exposed in DevOps commit f7ecae2, rotated both keys, force-pushed redacted history -->
 
 # REVIVAL — Azure Storage Consolidation
 > Created: 2026-06-02 | Agent: ·a3d1 | Keyword: `REVIVAL-AZURE-STORAGE`
