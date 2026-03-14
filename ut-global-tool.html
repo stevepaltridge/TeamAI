@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<!-- @wbx-modified ClaudeOpus4.6 -->
+<!-- UserTouches™ Global Custom Tool — Dual Mode (Encompass + Website) -->
+<!-- Build 2026.0314.3 | MortgageTech® -->
+<html lang="en">
+<head>
+<!-- @wbx-modified ClaudeOpus4.6·f238 | 2026-03-14 | UserTouches Global Custom Tool - full rebuild with all website + Encompass features | prev: Steve@2026-03-13 -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>UserTouches™ — Loan Touch Inspector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ROOT VARIABLES & RESET
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --brand-dark: #0a0e27;
+  --brand-accent: #00d4ff;
+  --brand-accent2: #8b5cf6;
+  --brand-hot: #ff6b35;
+  --brand-gold: #fbbf24;
+  --brand-green: #4ade80;
+  --brand-red: #ef4444;
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-glow: rgba(0, 212, 255, 0.08);
+  --text-primary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-dim: #475569;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 14px; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--brand-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODE VISIBILITY HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+.encompass-only { display: none; }
+.website-only { display: block; }
+body.encompass-mode .encompass-only { display: block; }
+body.encompass-mode .website-only { display: none !important; }
+body.encompass-mode .website-only-flex { display: none !important; }
+.website-only-flex { display: flex; }
+
+/* Utility classes (replacing inline styles) */
+.hidden { display: none; }
+.flex-center-gap10 { display: flex; align-items: center; gap: 10px; }
+.flex-wrap-gap8 { display: flex; flex-wrap: wrap; gap: 8px; }
+.flex-center-wrap-gap8 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.swatch-saved { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+.swatch-unsaved { background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px); }
+
+/* ═══════════════════════════════════════════════════════════════
+   TOPBAR (Encompass mode — sticky loan context bar)
+   ═══════════════════════════════════════════════════════════════ */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  display: none; /* shown by encompass-mode */
+  align-items: center; gap: 10px;
+  height: 44px; padding: 0 16px;
+  background: rgba(10,14,39,0.92);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+}
+body.encompass-mode .topbar { display: flex; }
+
+.topbar-brand { font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 6px; color: var(--text-primary); white-space: nowrap; }
+.topbar-brand .icon { font-size: 16px; }
+.topbar-brand .name { background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.topbar-brand .tm { font-size: 8px; vertical-align: super; opacity: 0.5; -webkit-text-fill-color: var(--text-muted); }
+.topbar-sep { width: 1px; height: 20px; background: var(--glass-border); }
+.topbar-loan { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+.topbar-loan-num { font-family: 'Consolas', monospace; color: var(--brand-accent); font-weight: 600; }
+.topbar-borrower { color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.topbar-spacer { flex: 1; }
+
+/* Status Pill */
+.status-pill {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; padding: 3px 10px;
+  border-radius: 14px; border: 1px solid var(--glass-border);
+}
+.status-pill .dot { width: 6px; height: 6px; border-radius: 50%; }
+.status-pill.healthy { color: var(--brand-green); }
+.status-pill.healthy .dot { background: var(--brand-green); box-shadow: 0 0 6px var(--brand-green); }
+.status-pill.warning { color: var(--brand-gold); }
+.status-pill.warning .dot { background: var(--brand-gold); animation: pulse 2s infinite; }
+.status-pill.critical { color: var(--brand-red); }
+.status-pill.critical .dot { background: var(--brand-red); animation: pulse 1.5s infinite; }
+.status-pill.offline { color: #666; }
+.status-pill.offline .dot { background: #666; }
+
+.topbar-btn {
+  background: none; border: 1px solid var(--glass-border); color: var(--text-muted);
+  font-size: 10px; padding: 4px 10px; border-radius: 8px; cursor: pointer;
+  transition: all 0.2s;
+}
+.topbar-btn:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+.topbar-btn.active { background: rgba(0,212,255,0.1); border-color: var(--brand-accent); color: var(--brand-accent); }
+
+/* ═══════════════════════════════════════════════════════════════
+   SUBBAR (Website mode — fixed dashboard header)
+   ═══════════════════════════════════════════════════════════════ */
+.dash-subbar {
+  position: fixed; top: 87px; left: 0; right: 0; z-index: 99;
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 32px;
+  background: rgba(15, 23, 42, 0.75);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--glass-border);
+}
+body.encompass-mode .dash-subbar { display: none; }
+
+.dash-subbar h2 {
+  font-size: 15px; font-weight: 800; margin: 0;
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent2));
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.connection-badge { display: flex; align-items: center; gap: 6px; margin-left: auto; position: fixed; top: 8px; right: 80px; z-index: 100; }
+.connection-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; transition: all 0.3s; }
+.connection-dot.live { background: #4ade80; box-shadow: 0 0 8px rgba(74, 222, 128, 0.6); animation: pulse 2s infinite; }
+.connection-dot.offline { background: #ef4444; }
+.connection-label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NO-LOAN VIEW (Encompass mode — shown when no loan is open)
+   ═══════════════════════════════════════════════════════════════ */
+.no-loan {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: calc(100vh - 60px); text-align: center; padding: 40px;
+}
+.no-loan .icon { font-size: 64px; margin-bottom: 16px; opacity: 0.6; }
+.no-loan h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent2)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.no-loan p { font-size: 14px; color: var(--text-muted); max-width: 400px; }
+.no-loan .hint { margin-top: 20px; padding: 12px 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 10px; font-size: 12px; color: var(--brand-accent); }
+
+/* ═══════════════════════════════════════════════════════════════
+   DASHBOARD LAYOUT
+   ═══════════════════════════════════════════════════════════════ */
+.dashboard {
+  position: relative; z-index: 1;
+  padding: 24px;
+  max-width: 1600px; margin: 0 auto;
+}
+body.encompass-mode .dashboard { padding: 16px; max-width: 1400px; }
+body:not(.encompass-mode) .dashboard { padding: 24px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   KPI STRIP
+   ═══════════════════════════════════════════════════════════════ */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px; margin-bottom: 14px;
+}
+
+.kpi-card {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 12px 14px; position: relative; overflow: hidden;
+  transition: transform 0.2s;
+}
+.kpi-card:hover { transform: translateY(-1px); }
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--brand-accent);
+}
+.kpi-card.hot::before { background: linear-gradient(90deg, var(--brand-hot), #ff8f65); }
+.kpi-card.cyan::before { background: linear-gradient(90deg, var(--brand-accent), #38bdf8); }
+.kpi-card.gold::before { background: linear-gradient(90deg, var(--brand-gold), #f59e0b); }
+.kpi-card.green::before { background: linear-gradient(90deg, var(--brand-green), #22c55e); }
+.kpi-card.purple::before { background: linear-gradient(90deg, var(--brand-accent2), #a78bfa); }
+
+.kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+.kpi-value { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 3px; }
+.kpi-value.cyan { color: var(--brand-accent); }
+.kpi-value.green { color: var(--brand-green); }
+.kpi-value.hot { color: var(--brand-hot); }
+.kpi-value.gold { color: var(--brand-gold); }
+.kpi-value.purple { color: var(--brand-accent2); }
+.kpi-sub { font-size: 11px; color: var(--text-dim); }
+.kpi-compare { font-size: 10px; margin-top: 3px; }
+.kpi-compare.up { color: var(--brand-green); }
+.kpi-compare.down { color: var(--brand-red); }
+.kpi-compare.neutral { color: var(--text-muted); }
+
+@media (max-width: 600px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANELS & GRIDS
+   ═══════════════════════════════════════════════════════════════ */
+.panel {
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 12px; padding: 16px; margin-bottom: 12px;
+}
+.panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+.panel-title { font-size: 15px; font-weight: 700; }
+.panel-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.panel-badge { font-size: 11px; background: rgba(0,212,255,0.1); color: var(--brand-accent); padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+.panel-title-group { display: flex; flex-direction: column; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.grid-2-wide { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 12px; }
+.dash-grid { display: grid; grid-template-columns: 1fr 400px; gap: 12px; margin-bottom: 12px; }
+
+@media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr; } }
+@media (max-width: 800px) {
+  .grid-2, .grid-2-wide { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ROLE BARS (shared)
+   ═══════════════════════════════════════════════════════════════ */
+.role-bar-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+.role-bar-row.bottleneck { background: rgba(239, 68, 68, 0.05); border-radius: 8px; padding: 4px 6px; }
+.role-bar-label { width: 28px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right; flex-shrink: 0; }
+.role-bar-track { flex: 1; height: 24px; background: rgba(255,255,255,0.04); border-radius: 6px; overflow: hidden; position: relative; }
+.role-bar-fill { height: 100%; border-radius: 6px; position: relative; display: flex; align-items: center; transition: width 0.6s ease; }
+.role-bar-fill.FS { background: linear-gradient(90deg, #ef4444, #f87171); }
+.role-bar-fill.LA { background: linear-gradient(90deg, #f97316, #fb923c); }
+.role-bar-fill.LO { background: linear-gradient(90deg, #eab308, #facc15); }
+.role-bar-fill.LP { background: linear-gradient(90deg, #84cc16, #a3e635); }
+.role-bar-fill.UW { background: linear-gradient(90deg, #22c55e, #4ade80); }
+.role-bar-fill.CL { background: linear-gradient(90deg, #14b8a6, #2dd4bf); }
+.role-bar-fill.PC { background: linear-gradient(90deg, #06b6d4, #22d3ee); }
+.role-bar-fill.LD { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.role-bar-fill.UU { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+.role-bar-unsaved {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(0,0,0,0.25) 3px, rgba(0,0,0,0.25) 6px);
+}
+.role-bar-pct { position: absolute; right: 8px; font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.7); }
+.role-bar-meta { width: 80px; text-align: right; flex-shrink: 0; }
+.role-bar-hours { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+.role-bar-detail { font-size: 10px; color: var(--text-muted); }
+.role-bar-bottleneck-tag { font-size: 9px; background: rgba(239,68,68,0.15); color: var(--brand-red); padding: 1px 6px; border-radius: 4px; margin-left: 6px; }
+
+.role-bars-legend {
+  display: flex; gap: 16px; margin-top: 8px; font-size: 10px; color: var(--text-muted);
+}
+.role-bars-legend span { display: flex; align-items: center; gap: 4px; }
+.role-bars-legend .swatch { width: 10px; height: 7px; border-radius: 2px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ROLE CHIP (shared)
+   ═══════════════════════════════════════════════════════════════ */
+.role-chip {
+  display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 8px;
+  border-radius: 8px; letter-spacing: 0.5px;
+}
+.role-chip.FS { background: #2c1618; color: #fca5a5; }
+.role-chip.LA { background: #2d1a0e; color: #fdba74; }
+.role-chip.LO { background: #2c2508; color: #fde047; }
+.role-chip.LP { background: #1a2a0e; color: #d9f99d; }
+.role-chip.UW { background: #0e231a; color: #86efac; }
+.role-chip.CL { background: #0e2320; color: #5eead4; }
+.role-chip.PC { background: #0e2128; color: #67e8f9; }
+.role-chip.LD { background: #0e1830; color: #93c5fd; }
+.role-chip.UU { background: #1a1230; color: #c4b5fd; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ALERT CARD (shared)
+   ═══════════════════════════════════════════════════════════════ */
+.alert-card {
+  display: flex; gap: 12px; padding: 14px 16px;
+  background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 12px; margin-bottom: 10px; align-items: flex-start;
+}
+.alert-card.warning { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.15); }
+.alert-card.info { background: rgba(0,212,255,0.06); border-color: rgba(0,212,255,0.15); }
+.alert-icon { font-size: 22px; flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(255,255,255,0.04); }
+.alert-card.critical .alert-icon { color: #f87171; }
+.alert-card.warning .alert-icon { color: #fbbf24; }
+.alert-card.info .alert-icon { color: var(--brand-accent); }
+.alert-body { flex: 1; min-width: 0; }
+.alert-body h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; color: var(--text-primary); }
+.alert-body p { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+.bottleneck-subtitle { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.bottleneck-auto-badge { background: linear-gradient(135deg, var(--brand-accent), #0891b2); color: #000; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 6px; letter-spacing: 0.5px; }
+.bottleneck-header-row { display: flex; justify-content: space-between; align-items: center; }
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT BUTTON (shared)
+   ═══════════════════════════════════════════════════════════════ */
+.export-btn {
+  background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2);
+  color: var(--brand-accent); font-size: 10px; font-weight: 600;
+  padding: 5px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s;
+}
+.export-btn:hover { background: rgba(0,212,255,0.15); }
+.export-bar { display: flex; gap: 6px; align-items: center; }
+
+/* ═══════════════════════════════════════════════════════════════
+   DONUT (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+.donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.donut-svg { width: 160px; height: 160px; }
+.donut-center { font-size: 12px; fill: var(--text-muted); }
+.donut-legend { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-size: 11px; color: var(--text-muted); }
+.donut-legend .legend-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 2px; vertical-align: middle; margin-right: 3px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TICKER (Encompass mode — live event feed)
+   ═══════════════════════════════════════════════════════════════ */
+.ticker { display: flex; flex-direction: column; gap: 2px; max-height: 140px; overflow-y: auto; }
+.ticker-item { display: flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 0; animation: tickerIn 0.3s ease; }
+@keyframes tickerIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+.ticker-time { font-family: 'Consolas', monospace; font-size: 11px; color: var(--text-dim); min-width: 58px; }
+.ticker-action { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
+.ticker-action.open { background: #0e231a; color: #86efac; }
+.ticker-action.close { background: #2c1618; color: #fca5a5; }
+.ticker-action.save { background: #0e1830; color: #93c5fd; }
+.ticker-action.heartbeat { background: #16102a; color: #c4b5fd; }
+.ticker-action.focus { background: #221e0a; color: #fde68a; }
+.ticker-action.blur { background: #171a1e; color: #cbd5e1; }
+.ticker-user { color: var(--text-muted); font-size: 11px; }
+.ticker-detail { color: var(--text-dim); font-size: 11px; margin-left: auto; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMELINE (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+.timeline { display: flex; flex-direction: column; max-height: 320px; overflow-y: auto; }
+.tl-item { display: flex; }
+.tl-dot-col { width: 20px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; border: 2px solid var(--brand-accent); background: var(--brand-dark); margin-top: 4px; flex-shrink: 0; }
+.tl-line { width: 2px; flex: 1; background: rgba(0,212,255,0.15); margin: 2px 0; }
+.tl-body { padding: 2px 0 12px 8px; flex: 1; }
+.tl-header { display: flex; align-items: center; gap: 6px; font-size: 11px; flex-wrap: wrap; }
+.tl-time { font-size: 10px; font-family: 'Consolas', monospace; color: var(--text-dim); }
+.tl-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   AI INSIGHT (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+.ai-btn {
+  background: linear-gradient(135deg, var(--brand-accent2), #7c3aed);
+  color: white; border: none; padding: 8px 16px; border-radius: 8px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+}
+.ai-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(139,92,246,0.3); }
+.ai-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.ai-spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-status { font-size: 10px; color: var(--text-muted); margin-top: 6px; }
+.ai-health-ring { position: relative; display: flex; align-items: center; justify-content: center; width: 100px; height: 100px; }
+.ai-health-ring .score { position: absolute; font-size: 28px; font-weight: 800; }
+.ai-health-detail { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 4px; }
+.ai-section { margin-top: 10px; }
+.ai-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 5px; }
+.ai-issue-item { display: flex; gap: 8px; padding: 6px 0; font-size: 12px; }
+.ai-issue-icon { font-size: 14px; flex-shrink: 0; }
+.ai-issue-type { font-size: 10px; font-weight: 700; color: var(--brand-red); text-transform: uppercase; }
+.ai-rec-item { padding: 6px 0; font-size: 12px; border-bottom: 1px solid var(--glass-border); }
+.ai-rec-type { font-size: 10px; font-weight: 700; color: var(--brand-green); text-transform: uppercase; margin-right: 6px; }
+.ai-empty { text-align: center; padding: 20px; color: var(--text-dim); }
+.ai-empty .icon { font-size: 24px; margin-bottom: 6px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPARE GRID (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+.compare-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.compare-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 8px; padding: 12px; text-align: center; }
+.compare-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 6px; }
+.compare-row { margin-bottom: 4px; }
+.compare-this { font-size: 22px; font-weight: 800; }
+.compare-vs { font-size: 11px; color: var(--text-dim); margin: 3px 0; }
+.compare-avg { font-size: 15px; font-weight: 600; color: var(--text-muted); }
+.compare-delta { font-size: 11px; margin-top: 4px; font-weight: 600; }
+.compare-delta.better { color: var(--brand-green); }
+.compare-delta.worse { color: var(--brand-red); }
+.compare-delta.same { color: var(--text-muted); }
+
+/* ═══════════════════════════════════════════════════════════════
+   HANDOFF TRACKER (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+.handoff-track { display: flex; align-items: flex-start; overflow-x: auto; padding: 8px 0; }
+.handoff-step { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.handoff-node {
+  width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: rgba(0,0,0,0.8); border: 2px solid transparent;
+}
+.handoff-node.active { box-shadow: 0 0 12px rgba(0,212,255,0.4); border-color: var(--brand-accent); }
+.handoff-node.completed { opacity: 0.7; }
+.handoff-node.pending { opacity: 0.3; border: 2px dashed var(--text-dim); background: transparent !important; color: var(--text-dim); }
+.handoff-label { font-size: 9px; color: var(--text-muted); margin-top: 4px; text-align: center; }
+.handoff-hours { font-size: 9px; color: var(--text-dim); }
+.handoff-line { width: 24px; height: 2px; background: var(--glass-border); margin-top: 15px; flex-shrink: 0; }
+.handoff-line.done { background: var(--brand-accent); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PIPELINE STRIP (Website mode)
+   ═══════════════════════════════════════════════════════════════ */
+.pipeline-strip { margin-bottom: 12px; }
+.pipeline-strip .panel-header { margin-bottom: 8px; }
+.pipeline-chip {
+  display: inline-flex; flex-direction: column; align-items: center;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 8px 12px; min-width: 80px;
+}
+.pc-role { font-size: 11px; font-weight: 700; color: var(--brand-accent); }
+.pc-count { font-size: 20px; font-weight: 800; line-height: 1.2; }
+.pc-count small { font-size: 10px; font-weight: 400; color: var(--text-muted); display: block; }
+.pc-avg { font-size: 10px; color: var(--text-dim); }
+
+/* ═══════════════════════════════════════════════════════════════
+   INFO HINT (Website mode — tooltip circles)
+   ═══════════════════════════════════════════════════════════════ */
+.info-hint {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: rgba(0,212,255,0.1); color: var(--brand-accent);
+  font-size: 9px; font-weight: 700; cursor: help; position: relative;
+}
+.info-hint::after {
+  content: attr(data-tip);
+  position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+  background: #1e293b; color: var(--text-primary);
+  padding: 6px 10px; border-radius: 6px; font-size: 10px;
+  font-weight: 400; white-space: normal; width: 260px;
+  pointer-events: none; opacity: 0; transition: opacity 0.2s;
+  border: 1px solid var(--glass-border); z-index: 50;
+}
+.info-hint:hover::after { opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════════════
+   CONSOLE WRAP + CHART GRID (Website mode)
+   ═══════════════════════════════════════════════════════════════ */
+.console-wrap {
+  display: grid; grid-template-columns: 110px 1fr;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  border-radius: 12px; overflow: hidden; min-height: 520px; margin-bottom: 12px;
+}
+.console-sidebar { background: rgba(0,0,0,0.2); padding: 10px 0; display: flex; flex-direction: column; gap: 2px; }
+.console-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 12px; font-size: 12px; font-weight: 500;
+  color: var(--text-muted); cursor: pointer; border-left: 3px solid transparent;
+  transition: all 0.2s;
+  background: none; border-top: none; border-right: none; border-bottom: none;
+  font-family: inherit; text-align: left; width: 100%;
+}
+.console-tab:hover { background: rgba(0,212,255,0.04); color: var(--text-primary); }
+.console-tab.active { border-left-color: var(--brand-accent); color: var(--brand-accent); background: rgba(0,212,255,0.06); }
+.console-main { padding: 16px; overflow: hidden; }
+.console-breadcrumb { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.chart-card {
+  background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 16px; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.chart-card.wide { grid-column: span 2; }
+.chart-card-header {
+  display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted);
+}
+.chart-kpis { display: flex; gap: 16px; align-items: baseline; }
+.chart-kpi { text-align: right; line-height: 1; }
+.chart-kpi-v { font-size: 22px; font-weight: 800; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; }
+.chart-kpi-v.accent { color: #22c55e; }
+.chart-kpi-l { font-size: 9px; color: var(--text-dim); display: block; margin-top: 2px; }
+
+.mini-bars { display: flex; align-items: flex-end; gap: 6px; flex: 1; min-height: 0; }
+.mini-bar-col { flex: 1; display: flex; flex-direction: column; align-items: stretch; height: 100%; }
+.mini-bar-col .mini-bar {
+  flex: none; background: var(--brand-accent); border-radius: 3px 3px 0 0;
+  min-height: 3px; transition: height 0.3s;
+}
+.mini-bar-col .bar-area { flex: 1; display: flex; align-items: flex-end; }
+.mini-bar-label { font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 6px; font-weight: 500; }
+
+.mini-donut-wrap { display: flex; align-items: center; gap: 20px; justify-content: center; flex: 1; }
+.mini-donut { width: 130px; height: 130px; border-radius: 50%; position: relative; flex-shrink: 0; }
+.mini-donut-hole {
+  position: absolute; inset: 22%; background: var(--brand-dark); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: var(--text-primary); text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+.mini-donut-legend { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--text-muted); }
+.mini-donut-legend .swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+.forecast-bar-wrap { display: flex; flex-direction: column; gap: 12px; flex: 1; justify-content: center; }
+.forecast-row { display: flex; align-items: center; gap: 10px; }
+.forecast-row span:first-child { font-size: 12px; font-weight: 600; min-width: 48px; color: var(--text-muted); }
+.forecast-track { flex: 1; height: 22px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
+.forecast-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+.forecast-fill.actual { background: var(--brand-accent); }
+.forecast-fill.target { background: var(--text-dim); opacity: 0.3; }
+.forecast-value { font-size: 14px; font-weight: 700; min-width: 44px; text-align: right; font-family: 'JetBrains Mono', monospace; }
+.forecast-kpis { display: flex; gap: 16px; align-items: baseline; }
+.forecast-kpi-v { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.forecast-kpi-v.green { color: #22c55e; }
+.forecast-kpi-v.red { color: #ef4444; }
+.forecast-kpi-l { font-size: 9px; color: var(--text-dim); display: block; margin-top: 2px; }
+
+@media (max-width: 900px) {
+  .console-wrap { grid-template-columns: 1fr; min-height: 0; }
+  .console-sidebar { flex-direction: row; overflow-x: auto; padding: 0; }
+  .console-tab { border-left: none; border-bottom: 3px solid transparent; padding: 8px 14px; white-space: nowrap; }
+  .console-tab.active { border-bottom-color: var(--brand-accent); }
+  .chart-grid { grid-template-columns: 1fr; }
+  .chart-card.wide { grid-column: span 1; }
+  .mini-bars { min-height: 120px; }
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SHOW FILTER (Website mode — all/saved/unsaved toggle)
+   ═══════════════════════════════════════════════════════════════ */
+.show-filter { display: flex; gap: 4px; }
+.show-filter-btn {
+  font-size: 10px; font-weight: 600; padding: 3px 10px;
+  border-radius: 6px; border: 1px solid var(--glass-border);
+  background: none; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+}
+.show-filter-btn.active[data-filter="all"] { background: rgba(0,212,255,0.12); border-color: var(--brand-accent); color: var(--brand-accent); }
+.show-filter-btn.active[data-filter="saved"] { background: rgba(74,222,128,0.12); border-color: var(--brand-green); color: var(--brand-green); }
+.show-filter-btn.active[data-filter="unsaved"] { background: rgba(251,191,36,0.12); border-color: var(--brand-gold); color: var(--brand-gold); }
+
+/* ═══════════════════════════════════════════════════════════════
+   TIME FORMAT TOGGLE (Website mode)
+   ═══════════════════════════════════════════════════════════════ */
+.time-toggle { display: flex; gap: 4px; }
+.time-toggle-btn {
+  font-size: 10px; font-weight: 600; padding: 3px 8px;
+  border-radius: 6px; border: 1px solid var(--glass-border);
+  background: none; color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+}
+.time-toggle-btn.active { background: rgba(139,92,246,0.12); border-color: var(--brand-accent2); color: var(--brand-accent2); }
+
+/* ═══════════════════════════════════════════════════════════════
+   TOTALS GRID (Website mode — 8-column data table)
+   ═══════════════════════════════════════════════════════════════ */
+.totals-grid { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+.totals-grid th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); padding: 6px 8px; border-bottom: 1px solid var(--glass-border); }
+.totals-grid td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.totals-grid .pct-cell { color: var(--brand-accent); font-weight: 600; }
+.totals-grid .saved-cell { color: var(--brand-green); }
+.totals-grid .unsaved-cell { color: var(--brand-gold); }
+.totals-grid .totals-row { font-weight: 700; border-top: 2px solid var(--glass-border); }
+.totals-grid .totals-row td { padding-top: 10px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SESSION LOG TABS (Website mode — per-role event log)
+   ═══════════════════════════════════════════════════════════════ */
+.session-log-tabs { display: flex; gap: 2px; margin-bottom: 8px; overflow-x: auto; }
+.session-log-tab {
+  font-size: 11px; font-weight: 600; padding: 4px 10px;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--text-muted); cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.session-log-tab.active { color: var(--brand-accent); border-bottom-color: var(--brand-accent); }
+.session-log-tab:hover { color: var(--text-primary); }
+.session-log-body { max-height: 260px; overflow-y: auto; }
+.log-entry {
+  display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center;
+  padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px;
+}
+.log-user { font-weight: 500; }
+.log-time { font-family: 'Consolas', monospace; font-size: 10px; color: var(--text-dim); }
+.event-action { font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
+.event-action.open { background: #0e231a; color: #86efac; }
+.event-action.close { background: #2c1618; color: #fca5a5; }
+.event-action.save { background: #0e1830; color: #93c5fd; }
+.event-action.heartbeat { background: #16102a; color: #c4b5fd; }
+.event-action.focus { background: #221e0a; color: #fde68a; }
+.event-action.blur { background: #171a1e; color: #cbd5e1; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TRACKING BADGE (Encompass mode — fixed bottom-right)
+   ═══════════════════════════════════════════════════════════════ */
+.tracking-badge {
+  position: fixed; bottom: 12px; right: 12px; z-index: 200;
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.2);
+  color: var(--brand-green); font-size: 10px; font-weight: 600;
+  opacity: 0; transition: opacity 0.3s;
+}
+.tracking-badge.visible { opacity: 1; }
+.tracking-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-green); animation: pulse 2s infinite; }
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPACT MODE (Encompass — dense layout)
+   ═══════════════════════════════════════════════════════════════ */
+body.compact .dashboard { padding: 8px; }
+body.compact .kpi-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+body.compact .kpi-value { font-size: 20px; }
+body.compact .grid-2, body.compact .grid-2-wide { grid-template-columns: 1fr; }
+body.compact .section-collapsible { display: none; }
+body.compact .section-compact-only { display: block; }
+.section-compact-only { display: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════════════════════════════ */
+.empty-state { text-align: center; padding: 24px 16px; color: var(--text-dim); }
+.empty-state .icon { font-size: 28px; margin-bottom: 6px; opacity: 0.5; }
+.empty-state p { font-size: 13px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER (Website mode)
+   ═══════════════════════════════════════════════════════════════ */
+.dash-footer {
+  text-align: center; padding: 24px; margin-top: 20px;
+  font-size: 10px; color: var(--text-dim);
+  border-top: 1px solid var(--glass-border);
+}
+.dash-footer a { color: var(--brand-accent); text-decoration: none; }
+.version-badge { position: fixed; bottom: 8px; right: 8px; background: rgba(0,255,170,.12); color: var(--brand-accent); font-size: 10px; padding: 3px 8px; border-radius: 4px; z-index: 9999; font-family: monospace; pointer-events: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR
+   ═══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* ═══════════════════════════════════════════════════════════════
+   LOAN PACE (Encompass mode — days-to-close projection)
+   ═══════════════════════════════════════════════════════════════ */
+.pace-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.pace-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 8px; padding: 14px; }
+.pace-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+.pace-value { font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.pace-sub { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
+.pace-bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.pace-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
+.pace-fill.on-track { background: var(--brand-green); }
+.pace-fill.at-risk { background: var(--brand-gold); }
+.pace-fill.behind { background: var(--brand-red); }
+.pace-status { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-top: 6px; }
+.pace-status.on-track { background: rgba(74,222,128,0.12); color: var(--brand-green); }
+.pace-status.at-risk { background: rgba(251,191,36,0.12); color: var(--brand-gold); }
+.pace-status.behind { background: rgba(239,68,68,0.12); color: var(--brand-red); }
+
+/* ═══════════════════════════════════════════════════════════════
+   STALL FLAG (Encompass mode — handoff stall indicators)
+   ═══════════════════════════════════════════════════════════════ */
+.handoff-stall { font-size: 8px; color: var(--brand-red); font-weight: 700; margin-top: 2px; animation: pulse 2s infinite; }
+.handoff-node.stalled { border-color: var(--brand-red) !important; box-shadow: 0 0 12px rgba(239,68,68,0.4); }
+
+/* ═══════════════════════════════════════════════════════════════
+   USER DRILL-DOWN (Encompass mode — per-user breakdown)
+   ═══════════════════════════════════════════════════════════════ */
+.user-drill { display: none; margin-top: 8px; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); border-radius: 8px; }
+.user-drill.visible { display: block; animation: slideDown 0.2s ease; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.user-drill-row { display: grid; grid-template-columns: 1fr auto auto auto auto; gap: 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; }
+.user-drill-row:last-child { border-bottom: none; }
+.user-drill-name { font-weight: 600; }
+.user-drill-stat { font-family: 'Consolas', monospace; font-size: 11px; color: var(--text-muted); text-align: right; }
+.user-drill-hdr { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); font-weight: 700; }
+
+/* ═══════════════════════════════════════════════════════════════
+   REPORT BUTTON + LOAN TYPE BADGE (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+.report-btn { background: linear-gradient(135deg, var(--brand-accent), #0891b2); color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.report-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,212,255,0.3); }
+.loan-type-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.loan-type-badge.purchase { background: rgba(0,212,255,0.12); color: var(--brand-accent); }
+.loan-type-badge.refinance { background: rgba(139,92,246,0.12); color: var(--brand-accent2); }
+.loan-type-badge.heloc { background: rgba(251,191,36,0.12); color: var(--brand-gold); }
+.role-bar-row.clickable { cursor: pointer; transition: background 0.15s; }
+.role-bar-row.clickable:hover { background: rgba(0,212,255,0.04); }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<!-- ═══ TOPBAR (Encompass mode) ═══ -->
+<div class="topbar encompass-only">
+  <div class="topbar-brand"><span class="icon">📊</span><span class="name">UserTouches</span><span class="tm">™</span></div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-loan">Loan <span class="topbar-loan-num" id="topbarLoan">—</span></div>
+  <div class="topbar-sep"></div>
+  <div class="topbar-borrower" id="borrowerName">—</div>
+  <div class="topbar-spacer"></div>
+  <div class="status-pill offline" id="statusPill"><span class="dot"></span><span id="statusLabel">Offline</span></div>
+  <button class="topbar-btn" id="compactBtn" onclick="toggleCompact()">⊟ Compact</button>
+  <button class="topbar-btn" onclick="exportCSVEncompass()">📋 CSV</button>
+  <button class="topbar-btn" onclick="window.print()">🖨 Print</button>
+</div>
+
+<!-- ═══ CONNECTION STATUS (Website mode) ═══ -->
+<div class="connection-badge website-only">
+  <div class="connection-dot" id="connDot"></div><span class="connection-label" id="connLabel">Connecting…</span>
+</div>
+
+<!-- ═══ NO-LOAN VIEW (Encompass — shown when no loan open) ═══ -->
+<div id="noLoanView" class="no-loan encompass-only">
+  <div class="icon">📋</div>
+  <h2>UserTouches™</h2>
+  <p>Open a loan to see real-time touch tracking, role breakdown, and AI-powered insights for this file.</p>
+  <div class="hint">💡 This tool automatically tracks touch events for every role that interacts with the loan.</div>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="dashboardView" class="dashboard hidden">
+
+  <!-- Pipeline Snapshot header (Website mode) -->
+  <div class="pipeline-strip website-only">
+    <div class="panel-header">
+      <div class="panel-title-group">
+        <div class="panel-title">Pipeline Snapshot <span class="info-hint" data-tip="Real-time overview of active touches across the pipeline. Each chip shows touches and avg hours per role.">?</span></div>
+        <div class="panel-subtitle">Per-role active touch summary</div>
+      </div>
+      <div class="flex-center-gap10">
+        <span class="panel-badge" id="pipelineTotalBadge">0 total</span>
+      </div>
+    </div>
+    <div id="pipelineChips" class="flex-wrap-gap8"></div>
+  </div>
+
+  <!-- KPI Strip (Website mode — 4 metric cards) -->
+  <div class="kpi-strip website-only">
+    <div class="kpi-card hot"><div class="kpi-label">Saves Today</div><div class="kpi-value hot" id="kpiSaves">0</div><div class="kpi-sub">across all roles</div></div>
+    <div class="kpi-card gold"><div class="kpi-label">Avg Session</div><div class="kpi-value gold" id="kpiAvgDuration">0:00</div><div class="kpi-sub">per user</div></div>
+    <div class="kpi-card cyan"><div class="kpi-label">Accumulated Hours</div><div class="kpi-value cyan" id="kpiAccumHrs">0.0</div><div class="kpi-sub">total tracked</div></div>
+    <div class="kpi-card purple"><div class="kpi-label">Events Today</div><div class="kpi-value purple" id="kpiEvents">0</div><div class="kpi-sub">total events</div></div>
+  </div>
+
+  <!-- KPI Strip (Encompass mode — loan-specific metrics) -->
+  <div class="kpi-strip encompass-only">
+    <div class="kpi-card hot"><div class="kpi-label">Total Touches</div><div class="kpi-value hot" id="kpiTouches">0</div><div class="kpi-sub" id="kpiTouchesSub">all roles</div><div class="kpi-compare" id="kpiTouchesCompare"></div></div>
+    <div class="kpi-card cyan"><div class="kpi-label">Active Roles</div><div class="kpi-value cyan" id="kpiRoles">0</div><div class="kpi-sub" id="kpiRolesSub">of 9 tracked</div><div class="kpi-compare" id="kpiRolesCompare"></div></div>
+    <div class="kpi-card gold"><div class="kpi-label">Time on File</div><div class="kpi-value gold" id="kpiHours">0.0h</div><div class="kpi-sub" id="kpiHoursSub">accumulated hours</div><div class="kpi-compare" id="kpiHoursCompare"></div></div>
+    <div class="kpi-card green"><div class="kpi-label">Last Touch</div><div class="kpi-value green" id="kpiLastTouch">—</div><div class="kpi-sub" id="kpiLastTouchSub">no activity</div><div class="kpi-compare" id="kpiLastTouchCompare"></div></div>
+  </div>
+
+  <!-- Loan Pace (Encompass mode — days-to-close projection) -->
+  <div class="panel section-collapsible encompass-only" id="loanPacePanel">
+    <div class="panel-header">
+      <div class="panel-title-group"><div class="panel-title">Loan Pace</div><span id="loanTypeBadge"></span></div>
+      <button class="report-btn" onclick="exportReport()">📊 Full Report</button>
+    </div>
+    <div class="pace-grid" id="paceGrid">
+      <div class="pace-card"><div class="pace-label">Days in Process</div><div class="pace-value" id="paceDaysIn">—</div><div class="pace-sub" id="paceDaysInSub">no application date</div></div>
+      <div class="pace-card"><div class="pace-label">Est. Days to Close</div><div class="pace-value" id="paceDaysLeft">—</div><div class="pace-sub" id="paceDaysLeftSub">no target date</div><div class="pace-bar"><div class="pace-fill on-track" id="paceFill" style="width:0%"></div></div></div>
+      <div class="pace-card"><div class="pace-label">Pace Status</div><div class="pace-value" id="paceStatus">—</div><div class="pace-sub" id="paceStatusSub">awaiting data</div></div>
+    </div>
+  </div>
+
+  <!-- Console Wrap (Website mode — chart dashboard) -->
+  <div class="console-wrap website-only">
+    <div class="console-sidebar">
+      <button class="console-tab active" data-tab="touches" onclick="_switchConsoleTab('touches')">📊 Touches</button>
+      <button class="console-tab" data-tab="hours" onclick="_switchConsoleTab('hours')">⏱ Hours</button>
+      <button class="console-tab" data-tab="sessions" onclick="_switchConsoleTab('sessions')">👥 Sessions</button>
+      <button class="console-tab" data-tab="trends" onclick="_switchConsoleTab('trends')">📈 Trends</button>
+    </div>
+    <div class="console-main">
+      <div class="console-breadcrumb" id="consoleBreadcrumb">Console › Touches</div>
+      <div class="chart-grid" id="chartGrid">
+      </div>
+    </div>
+  </div>
+
+  <!-- Role Breakdown (shared — full version) -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title-group">
+        <div class="panel-title">Role Breakdown <span class="info-hint website-only" data-tip="Percentage of total tracked hours per role. Saved hours show committed work; unsaved show active but uncommitted time.">?</span></div>
+        <div class="panel-subtitle" id="totalHoursBadge">0.0 total hours</div>
+      </div>
+      <div class="flex-center-wrap-gap8">
+        <div class="time-toggle website-only-flex">
+          <button class="time-toggle-btn active" data-fmt="decimal" onclick="_setTimeFormat('decimal')">Decimal</button>
+          <button class="time-toggle-btn" data-fmt="clock" onclick="_setTimeFormat('clock')">Clock</button>
+        </div>
+        <div class="show-filter website-only-flex">
+          <button class="show-filter-btn active" data-filter="all" onclick="_setShowFilter('all')">All</button>
+          <button class="show-filter-btn" data-filter="saved" onclick="_setShowFilter('saved')">Saved</button>
+          <button class="show-filter-btn" data-filter="unsaved" onclick="_setShowFilter('unsaved')">Unsaved</button>
+        </div>
+        <button class="export-btn website-only" onclick="_exportRoleCSV()">📋 Export Roles CSV</button>
+      </div>
+    </div>
+    <div id="roleBars"></div>
+    <div id="userDrill" class="user-drill encompass-only"></div>
+    <div class="role-bars-legend">
+      <span><span class="swatch swatch-saved"></span>Saved</span>
+      <span><span class="swatch swatch-unsaved"></span>Unsaved</span>
+      <span>🔴 Bottleneck &gt;35%</span>
+    </div>
+    <table class="totals-grid website-only" id="totalsGrid"><thead><tr><th>Role</th><th>Hours</th><th>%</th><th>Saved</th><th>Unsaved</th><th>Sessions</th><th>Touches</th><th>Status</th></tr></thead><tbody id="totalsBody"></tbody></table>
+  </div>
+
+  <!-- ═══ ENCOMPASS-ONLY PANELS ═══ -->
+
+  <!-- Compact Role Bars (shown in compact mode only) -->
+  <div class="section-compact-only panel encompass-only">
+    <div class="panel-header"><div class="panel-title">Role Activity</div></div>
+    <div id="roleBarsCompact"></div>
+  </div>
+
+  <!-- Donut + Role Waterfall (Encompass) -->
+  <div class="grid-2-wide section-collapsible encompass-only">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Role Waterfall</div><button class="export-btn" onclick="exportCSVEncompass()">📋 CSV</button></div>
+      <div id="roleBarsWaterfall"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Distribution</div></div>
+      <div class="donut-wrap"><svg id="donutSvg" class="donut-svg" viewBox="0 0 160 160"></svg><div id="donutLegend" class="donut-legend"></div></div>
+    </div>
+  </div>
+
+  <!-- Ticker + Handoff (Encompass) -->
+  <div class="grid-2 section-collapsible encompass-only">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Live Event Feed</div><div class="panel-badge" id="tickerCount">0 events</div></div>
+      <div id="tickerContent" class="ticker"><div class="empty-state"><div class="icon">📡</div><p>Waiting for live events…</p></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Handoff Tracker</div></div>
+      <div id="handoffTrack" class="handoff-track"></div>
+    </div>
+  </div>
+
+  <!-- Timeline + AI Insight (Encompass) -->
+  <div class="grid-2 section-collapsible encompass-only">
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Activity Timeline</div><button class="export-btn" onclick="refreshTimeline()">🔄 Refresh</button></div>
+      <div id="timelineContent" class="timeline"><div class="empty-state"><div class="icon">📅</div><p>No timeline data yet</p></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">AI Insight</div><button class="ai-btn" id="aiBtn" onclick="runAiAnalysis()">🤖 Analyze</button></div>
+      <div id="aiContent">
+        <div class="ai-empty"><div class="icon">🤖</div><p>Press <strong>Analyze</strong> to get AI-powered insights for this loan.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Compare (Encompass) -->
+  <div class="panel section-collapsible encompass-only">
+    <div class="panel-header"><div class="panel-title">Quick Compare</div><div class="panel-badge">vs. 90-day avg</div></div>
+    <div class="compare-grid" id="compareGrid">
+      <div class="compare-card"><div class="compare-label">Total Touches</div><div class="compare-row"><div class="compare-this" id="cmpTouches">—</div></div><div class="compare-vs">vs</div><div class="compare-avg" id="cmpTouchesAvg">—</div><div class="compare-delta" id="cmpTouchesDelta"></div></div>
+      <div class="compare-card"><div class="compare-label">Total Hours</div><div class="compare-row"><div class="compare-this" id="cmpHours">—</div></div><div class="compare-vs">vs</div><div class="compare-avg" id="cmpHoursAvg">—</div><div class="compare-delta" id="cmpHoursDelta"></div></div>
+      <div class="compare-card"><div class="compare-label">Active Roles</div><div class="compare-row"><div class="compare-this" id="cmpRoles">—</div></div><div class="compare-vs">vs</div><div class="compare-avg" id="cmpRolesAvg">—</div><div class="compare-delta" id="cmpRolesDelta"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══ WEBSITE-ONLY SIDE-BY-SIDE ═══ -->
+  <div class="dash-grid website-only">
+    <!-- Session Log -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title-group"><div class="panel-title">Session Log</div><div class="panel-subtitle">per-role event stream</div></div>
+        <button class="export-btn" onclick="_exportSessionLogCSV()">📋 Export Log</button>
+      </div>
+      <div class="session-log-tabs" id="sessionLogTabs">
+        <button class="session-log-tab active" data-role="AU" onclick="_setLogTab('AU')">All</button>
+        <button class="session-log-tab" data-role="FS" onclick="_setLogTab('FS')">FS</button>
+        <button class="session-log-tab" data-role="LA" onclick="_setLogTab('LA')">LA</button>
+        <button class="session-log-tab" data-role="LO" onclick="_setLogTab('LO')">LO</button>
+        <button class="session-log-tab" data-role="LP" onclick="_setLogTab('LP')">LP</button>
+        <button class="session-log-tab" data-role="UW" onclick="_setLogTab('UW')">UW</button>
+        <button class="session-log-tab" data-role="CL" onclick="_setLogTab('CL')">CL</button>
+        <button class="session-log-tab" data-role="PC" onclick="_setLogTab('PC')">PC</button>
+        <button class="session-log-tab" data-role="LD" onclick="_setLogTab('LD')">LD</button>
+        <button class="session-log-tab" data-role="UU" onclick="_setLogTab('UU')">UU</button>
+      </div>
+      <div class="session-log-body" id="sessionLogBody"><div class="empty-state"><div class="icon">📝</div><p>No events yet</p></div></div>
+    </div>
+    <!-- Bottleneck Detection (shared) -->
+    <div class="panel">
+      <div class="panel-header"><div class="panel-title">Bottleneck Detection</div></div>
+      <div id="alertsContent"><div class="empty-state"><div class="icon">✅</div><p>No bottlenecks detected</p></div></div>
+    </div>
+  </div>
+
+  <!-- Bottleneck Detection (Encompass mode — full width) -->
+  <div class="panel section-collapsible encompass-only">
+    <div class="panel-header"><div class="bottleneck-header-row"><div><div class="panel-title">Bottleneck Detection</div><div class="bottleneck-subtitle">Configuration issues SettingsPilot™ can resolve</div></div><span class="bottleneck-auto-badge">AUTO</span></div></div>
+    <div id="alertsContentEncompass"><div class="empty-state"><div class="icon">✅</div><p>No bottlenecks detected</p></div></div>
+  </div>
+
+</div><!-- /dashboard -->
+
+<!-- Tracking Badge (Encompass mode) -->
+<div class="tracking-badge encompass-only" id="trackingBadge"><div class="tracking-dot"></div> Tracking Active</div>
+
+<!-- SignalR CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+<script>
+(function () {
+'use strict';
+/* ═══════════════════════════════════════════════════════════════
+   CONSTANTS
+   ═══════════════════════════════════════════════════════════════ */
+var ROLES = ['FS','LA','LO','LP','UW','CL','PC','LD','UU'];
+var ROLE_NAMES = { FS:'File Starter', LA:'Loan Assistant', LO:'Loan Officer', LP:'Loan Processor', UW:'Underwriter', CL:'Closer', PC:'Post-Closer', LD:'Lead', UU:'Unknown' };
+var ROLE_COLORS = { FS:'#ef4444', LA:'#f97316', LO:'#eab308', LP:'#84cc16', UW:'#22c55e', CL:'#14b8a6', PC:'#06b6d4', LD:'#3b82f6', UU:'#8b5cf6' };
+
+/* CX field mappings (Encompass — 27 fields) */
+var CX_TOUCHES = {}, CX_HOURS = {}, CX_PCT = {};
+ROLES.forEach(function(r) { CX_TOUCHES[r] = 'CX.TOUCHES.' + r; CX_HOURS[r] = 'CX.TOUCHHRS.' + r; CX_PCT[r] = 'CX.TOUCHPCT.' + r; });
+
+/* ═══════════════════════════════════════════════════════════════
+   MODE DETECTION
+   ═══════════════════════════════════════════════════════════════ */
+var isEncompass = globalThis.elli !== undefined && globalThis.elli.script !== undefined;
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════════════ */
+/* Encompass state */
+var host = null, loan = null, auth = null;
+var loanNumber = '', loanGuid = '', borrowerName = '', userId = '', userName = '', userRole = 'UU';
+var sessionStart = Date.now();
+var sessionId = 'S-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 4);
+var hasSaved = false, compact = false, signalRConnected = false;
+var touchData = {}, tickerEvents = [], timelineEvents = [], compareData = null;
+var aiLoading = false, aiResult = null, alerts = [];
+var trackingActive = false, lastTrackPost = 0;
+
+/* Website state */
+var sessions = {}, eventHistory = [], roleTotals = {};
+var savesCount = 0, totalEvents = 0;
+var showFilter = 'all', timeFormat = 'decimal', activeLogTab = 'AU', activeConsoleTab = 'touches';
+
+var chartData = {
+  touches: { daily: [12,18,9,22,15,20,14], monthly: [120,145,98,167,134,155,142,110,88,130,150,160], branches: { 'Main St': 42, 'Oak Ave': 35, 'Elm Blvd': 28, 'Pine Rd': 19, 'Cedar Ln': 15 }, forecast: { actual: 72, target: 85 } },
+  hours: { daily: [4.2,6.1,3.8,7.5,5.2,6.8,4.9], monthly: [42,51,38,62,48,55,50,44,36,47,53,58], branches: { 'Main St': 18.5, 'Oak Ave': 14.2, 'Elm Blvd': 11.8, 'Pine Rd': 8.4, 'Cedar Ln': 6.2 }, forecast: { actual: 38, target: 42 } },
+  sessions: { daily: [8,12,6,15,10,13,9], monthly: [80,96,72,112,88,102,94,78,64,84,98,106], branches: { 'Main St': 28, 'Oak Ave': 22, 'Elm Blvd': 18, 'Pine Rd': 12, 'Cedar Ln': 10 }, forecast: { actual: 62, target: 70 } },
+  trends: { daily: [3,5,2,7,4,6,3], monthly: [30,38,24,48,34,42,36,28,20,32,40,44], branches: { 'Main St': 12, 'Oak Ave': 10, 'Elm Blvd': 8, 'Pine Rd': 5, 'Cedar Ln': 4 }, forecast: { actual: 28, target: 35 } }
+};
+var DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+ROLES.forEach(function(r) { touchData[r] = { touches: 0, hours: 0, savedHours: 0, unsavedHours: 0, lastTouch: null }; });
+ROLES.forEach(function(r) { roleTotals[r] = { sessions: 0, hours: 0, savedHours: 0, unsavedHours: 0 }; });
+
+/* Encompass loan context (populated from Encompass fields) */
+var loanPurpose = '', applicationDate = null, expectedCloseDate = null, lockExpiration = null;
+var userBreakdown = {}; /* keyed by userId: { name, role, touches, saves, lastTouch } */
+var activeDrill = null; /* currently expanded role in user drill-down */
+
+/* Loan-type benchmarks: touches, hours, roles, avgDays */
+var BENCHMARKS = {
+  purchase:  { touches: 45, hours: 9.0, roles: 6, avgDays: 42 },
+  refinance: { touches: 32, hours: 6.5, roles: 5, avgDays: 35 },
+  heloc:     { touches: 20, hours: 4.0, roles: 4, avgDays: 28 },
+  default:   { touches: 35, hours: 7.2, roles: 5, avgDays: 38 }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   DOM REFERENCES
+   ═══════════════════════════════════════════════════════════════ */
+function $(id) { return document.getElementById(id); }
+
+/* Encompass DOM */
+var $topbarLoan, $borrowerName, $statusPill, $statusLabel, $noLoan, $dashboard;
+var $kpiTouches, $kpiRoles, $kpiHours, $kpiLastTouch;
+var $kpiLastTouchSub;
+var $kpiTouchesCompare, $kpiRolesCompare, $kpiHoursCompare;
+var $roleBars, $roleBarsCompact, $roleBarsWaterfall, $donutSvg, $donutLegend;
+var $tickerContent, $tickerCount, $handoffTrack;
+var $timelineContent, $aiContent, $aiBtn;
+var $trackingBadge;
+var $alertsContentEncompass;
+
+/* Website DOM */
+var $connDot, $connLabel;
+var $kpiSaves, $kpiAvgDuration, $kpiAccumHrs, $kpiEvents;
+var $pipelineChips, $pipelineTotalBadge;
+var $chartGrid, $consoleBreadcrumb;
+var $totalHoursBadge, $totalsBody;
+var $sessionLogBody;
+var $alertsContent;
+
+function initDomRefs() {
+  $topbarLoan = $('topbarLoan'); $borrowerName = $('borrowerName');
+  $statusPill = $('statusPill'); $statusLabel = $('statusLabel');
+  $noLoan = $('noLoanView'); $dashboard = $('dashboardView');
+  $kpiTouches = $('kpiTouches'); $kpiRoles = $('kpiRoles');
+  $kpiHours = $('kpiHours'); $kpiLastTouch = $('kpiLastTouch');
+  $kpiLastTouchSub = $('kpiLastTouchSub');
+  $kpiTouchesCompare = $('kpiTouchesCompare'); $kpiRolesCompare = $('kpiRolesCompare');
+  $kpiHoursCompare = $('kpiHoursCompare');
+  $roleBars = $('roleBars'); $roleBarsCompact = $('roleBarsCompact');
+  $roleBarsWaterfall = $('roleBarsWaterfall');
+  $donutSvg = $('donutSvg'); $donutLegend = $('donutLegend');
+  $tickerContent = $('tickerContent'); $tickerCount = $('tickerCount');
+  $handoffTrack = $('handoffTrack'); $timelineContent = $('timelineContent');
+  $aiContent = $('aiContent'); $aiBtn = $('aiBtn');
+  $trackingBadge = $('trackingBadge');
+  $alertsContentEncompass = $('alertsContentEncompass');
+
+  $connDot = $('connDot'); $connLabel = $('connLabel');
+  $kpiSaves = $('kpiSaves'); $kpiAvgDuration = $('kpiAvgDuration');
+  $kpiAccumHrs = $('kpiAccumHrs'); $kpiEvents = $('kpiEvents');
+  $pipelineChips = $('pipelineChips'); $pipelineTotalBadge = $('pipelineTotalBadge');
+  $chartGrid = $('chartGrid');
+  $consoleBreadcrumb = $('consoleBreadcrumb');
+  $totalHoursBadge = $('totalHoursBadge'); $totalsBody = $('totalsBody');
+  $sessionLogBody = $('sessionLogBody');
+  $alertsContent = $('alertsContent');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY FUNCTIONS
+   ═══════════════════════════════════════════════════════════════ */
+var apiBase = '';
+
+function fetchAPI(url, opts) {
+  opts = opts || {};
+  var headers = opts.headers || {};
+  headers['Content-Type'] = 'application/json';
+  if (auth && auth.accessToken) headers['X-MTW-Token'] = auth.accessToken;
+  opts.headers = headers;
+  return fetch(apiBase + url, opts).then(function(r) { return r.ok ? r.json() : Promise.reject(r.statusText); });
+}
+
+function fmtHrs(h) {
+  if (timeFormat === 'clock') { var hr = Math.floor(h); var mn = Math.round((h - hr) * 60); return hr + ':' + pad(mn); }
+  return h.toFixed(1);
+}
+function formatDuration(ms) { var s = Math.floor(ms / 1000); var m = Math.floor(s / 60); s = s % 60; var h = Math.floor(m / 60); m = m % 60; return (h > 0 ? h + ':' + pad(m) : m) + ':' + pad(s); }
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ROLE RESOLUTION (Encompass mode — multi-strategy)
+   ═══════════════════════════════════════════════════════════════ */
+function mapPersona(p) {
+  p = (p || '').toUpperCase();
+  if (p.includes('FILE STARTER') || p.includes('SETUP')) return 'FS';
+  if (p.includes('ASSISTANT')) return 'LA';
+  if (p.includes('OFFICER') && !p.includes('POST')) return 'LO';
+  if (p.includes('PROCESSOR')) return 'LP';
+  if (p.includes('UNDERWRITER')) return 'UW';
+  if (p.includes('CLOSER') || p.includes('CLOSING')) return 'CL';
+  if (p.includes('POST') || p.includes('FUNDER') || p.includes('SHIPPER')) return 'PC';
+  if (p.includes('LEAD') || p.includes('MANAGER') || p.includes('ADMIN')) return 'LD';
+  return 'UU';
+}
+
+function resolveUserRole(authObj) {
+  /* Strategy 1: Direct SSF auth property (newer SDK versions may expose this) */
+  var persona = authObj.userPersona || authObj.persona || '';
+  if (persona) return Promise.resolve(mapPersona(persona));
+
+  /* Strategy 2: Backend proxy — avoids CORS, carries access token automatically */
+  if (authObj.userId) {
+    return fetchAPI('/api/user-role?userId=' + encodeURIComponent(authObj.userId))
+      .then(function(data) { return data.role ? mapPersona(data.role) : 'UU'; })
+      .catch(function() {
+        /* Strategy 3: Direct Encompass REST API (works when SSF origin has API access) */
+        if (!authObj.accessToken) return 'UU';
+        return fetch('/encompass/v3/users/' + encodeURIComponent(authObj.userId), {
+          headers: { 'Authorization': 'Bearer ' + authObj.accessToken }
+        }).then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+          .then(function(user) {
+            if (user.personas && user.personas.length > 0) return mapPersona(user.personas[0]);
+            if (user.workingFolder) return mapPersona(user.workingFolder);
+            return 'UU';
+          }).catch(function() { return 'UU'; });
+      });
+  }
+  return Promise.resolve('UU');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SSF INIT (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function initSSF() {
+  if (!isEncompass) return;
+  try {
+    elli.script.connect().then(function(hostObj) {
+      host = hostObj;
+      return host.getObject('auth');
+    }).then(function(authObj) {
+      auth = authObj;
+      userId = auth.userId || ''; userName = auth.userName || '';
+      return resolveUserRole(auth).then(function(role) {
+        userRole = role;
+        return host.getObject('loan');
+      });
+    }).then(function(loanObj) {
+      loan = loanObj;
+      loan.getField('4000').then(function(num) {
+        if (num) { loanNumber = num; onLoanOpened(); }
+      });
+      loan.on('change', function() { hasSaved = false; });
+      loan.on('save', function() { hasSaved = true; postTouchEvent('save'); });
+      loan.on('close', function() { postTouchEvent('close'); showNoLoan(); });
+      loan.on('open', function() { onLoanOpened(); });
+    }).catch(function() { showNoLoan(); loadDemoData(500); });
+  } catch (e) { console.error(e); showNoLoan(); loadDemoData(500); }
+}
+
+function onLoanOpened() {
+  postTouchEvent('open');
+  startAutoTracking();
+  readLoanContext();
+  showDashboard();
+  readCXFields();
+  loadTimeline();
+  loadCompareData();
+  initSignalR();
+  /* Auto-trigger AI analysis after data settles */
+  setTimeout(function() { if (!aiResult && !aiLoading) runAiAnalysis(); }, 3000);
+  /* Periodic bottleneck recheck — catches stale hand-offs even when no events arrive */
+  setInterval(function() { checkBottlenecks(); }, 120000);
+}
+
+function readLoanContext() {
+  if (!loan) return;
+  Promise.all([
+    loan.getField('4000'), loan.getField('4002'), Promise.resolve(loan.id || loan.guid || ''),
+    loan.getField('19'), loan.getField('745'), loan.getField('763'), loan.getField('2149')
+  ]).then(function(vals) {
+    loanNumber = vals[0] || ''; borrowerName = vals[1] || '';
+    loanGuid = vals[2] || '';
+    /* Loan purpose → benchmark key */
+    var purpose = (vals[3] || '').toLowerCase();
+    if (purpose.indexOf('purchase') >= 0) loanPurpose = 'purchase';
+    else if (purpose.indexOf('refi') >= 0) loanPurpose = 'refinance';
+    else if (purpose.indexOf('heloc') >= 0 || purpose.indexOf('equity') >= 0) loanPurpose = 'heloc';
+    else loanPurpose = purpose ? 'default' : '';
+    applicationDate = vals[4] ? new Date(vals[4]) : null;
+    expectedCloseDate = vals[5] ? new Date(vals[5]) : null;
+    lockExpiration = vals[6] ? new Date(vals[6]) : null;
+    if ($topbarLoan) $topbarLoan.textContent = loanNumber || '—';
+    if ($borrowerName) $borrowerName.textContent = borrowerName || '—';
+    renderLoanPace();
+  });
+}
+
+function readCXFields() {
+  if (!loan) return;
+  var fields = [];
+  ROLES.forEach(function(r) { fields.push(CX_TOUCHES[r], CX_HOURS[r], CX_PCT[r]); });
+  var promises = fields.map(function(f) { return loan.getField(f); });
+  Promise.all(promises).then(function(vals) {
+    var i = 0;
+    ROLES.forEach(function(r) {
+      touchData[r].touches = Number.parseInt(vals[i++]) || 0;
+      touchData[r].hours = Number.parseFloat(vals[i++]) || 0;
+      i++; /* skip pct — saved/unsaved computed from timeline events */
+    });
+    renderAll();
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AUTO-TRACKING (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function startAutoTracking() {
+  if (trackingActive) return;
+  trackingActive = true;
+  if ($trackingBadge) $trackingBadge.classList.add('visible');
+  setInterval(function() { if (trackingActive) postTouchEvent('heartbeat'); }, 60000);
+  document.addEventListener('focus', function() { postTouchEvent('focus'); }, true);
+  document.addEventListener('blur', function() { postTouchEvent('blur'); }, true);
+}
+
+function postTouchEvent(action) {
+  var now = Date.now();
+  if (action !== 'open' && action !== 'close' && action !== 'save' && (now - lastTrackPost) < 5000) return;
+  lastTrackPost = now;
+  var elapsed = (now - sessionStart) / 1000;
+  var payload = {
+    loanNumber: loanNumber, loanGuid: loanGuid, action: action,
+    role: userRole, userId: userId, userName: userName,
+    sessionId: sessionId, elapsed: elapsed, hasSaved: hasSaved, timestamp: new Date().toISOString()
+  };
+  fetchAPI('/api/touch-event', { method: 'POST', body: JSON.stringify(payload) }).catch(function() {});
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIGNALR (shared — loan-filtered in Encompass, general in Website)
+   ═══════════════════════════════════════════════════════════════ */
+var connection = null;
+
+function initSignalR() {
+  if (connection) return;
+  connection = new signalR.HubConnectionBuilder()
+    .withUrl(apiBase + '/api')
+    .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+    .build();
+  connection.on('touchEvent', function(evt) {
+    if (isEncompass) { handleLiveEvent(evt); }
+    else { handleEvent(evt); }
+  });
+  connection.onreconnecting(function() { setConnectionStatus('reconnecting'); });
+  connection.onreconnected(function() { setConnectionStatus('connected'); });
+  connection.onclose(function() { setConnectionStatus('disconnected'); });
+  startConnection();
+}
+
+function startConnection() {
+  connection.start().then(function() {
+    setConnectionStatus('connected');
+  }).catch(function() {
+    setConnectionStatus('disconnected');
+    setTimeout(startConnection, 5000);
+  });
+}
+
+function setConnectionStatus(status) {
+  signalRConnected = (status === 'connected');
+  if ($connDot) {
+    $connDot.className = 'connection-dot' + (signalRConnected ? ' live' : ' offline');
+    var label = 'Offline';
+    if (signalRConnected) label = 'Live';
+    else if (status === 'reconnecting') label = 'Reconnecting\u2026';
+    $connLabel.textContent = label;
+  }
+  if (isEncompass) updateStatusPill();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WEBSITE EVENT HANDLER
+   ═══════════════════════════════════════════════════════════════ */
+function handleEvent(evt) {
+  totalEvents++;
+  var key = (evt.userId || 'anon') + '-' + (evt.loanNumber || 'unknown');
+  if (!sessions[key]) sessions[key] = { user: evt.userName || evt.userId, role: evt.role || 'UU', loan: evt.loanNumber, start: Date.now(), events: 0 };
+  sessions[key].events++;
+  if (evt.action === 'save') savesCount++;
+  var r = evt.role || 'UU';
+  if (roleTotals[r]) {
+    roleTotals[r].sessions = Object.keys(sessions).filter(function(k) { return sessions[k].role === r; }).length;
+    var hrs = (evt.elapsed || 0) / 3600;
+    roleTotals[r].hours += hrs * 0.7;
+    roleTotals[r].savedHours += hrs * 0.7;
+    roleTotals[r].unsavedHours += hrs * 0.3;
+  }
+  eventHistory.unshift({ user: evt.userName || evt.userId, role: r, action: evt.action, loan: evt.loanNumber, time: new Date().toISOString() });
+  if (eventHistory.length > 200) eventHistory.length = 200;
+  renderKPIsWebsite(); renderRoleBars(); renderEventLog(); checkBottlenecks(); renderConsoleCharts();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENCOMPASS LIVE EVENT HANDLER
+   ═══════════════════════════════════════════════════════════════ */
+function handleLiveEvent(evt) {
+  if (evt.loanNumber && evt.loanNumber !== loanNumber) return;
+  tickerEvents.unshift({ time: new Date(), action: evt.action, role: evt.role || 'UU', user: evt.userName || evt.userId, detail: evt.loanNumber });
+  if (tickerEvents.length > 50) tickerEvents.length = 50;
+  var r = evt.role || 'UU';
+  if (touchData[r]) {
+    touchData[r].touches++;
+    var hrs = (evt.elapsed || 0) / 3600;
+    touchData[r].hours += hrs;
+    if (evt.action === 'save') { touchData[r].savedHours += hrs; }
+    else { touchData[r].unsavedHours += hrs; }
+    touchData[r].lastTouch = new Date();
+  }
+  /* Update user breakdown live */
+  var uid = evt.userId || evt.userName || 'unknown';
+  if (!userBreakdown[uid]) { userBreakdown[uid] = { name: evt.userName || evt.userId || 'Unknown', role: r, touches: 0, saves: 0, lastTouch: null }; }
+  userBreakdown[uid].touches++;
+  if (evt.action === 'save') userBreakdown[uid].saves++;
+  userBreakdown[uid].lastTouch = new Date();
+  renderKPIsEncompass(); renderRoleBars(); renderDonut(); renderTicker(); renderHandoff(); renderLoanPace();
+  /* Re-check bottlenecks on every live event — this is how it runs all day */
+  checkBottlenecks();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: KPIs (Website mode)
+   ═══════════════════════════════════════════════════════════════ */
+function renderKPIsWebsite() {
+  if (!$kpiSaves) return;
+  $kpiSaves.textContent = savesCount;
+  var sessionKeys = Object.keys(sessions);
+  var avg = 0;
+  if (sessionKeys.length > 0) {
+    var totalMs = 0;
+    sessionKeys.forEach(function(k) { totalMs += (Date.now() - sessions[k].start); });
+    avg = totalMs / sessionKeys.length;
+  }
+  $kpiAvgDuration.textContent = formatDuration(avg);
+  var accum = 0;
+  ROLES.forEach(function(r) { accum += roleTotals[r].hours; });
+  $kpiAccumHrs.textContent = fmtHrs(accum);
+  $kpiEvents.textContent = totalEvents;
+
+  /* pipeline chips */
+  if ($pipelineChips) {
+    var chips = '';
+    ROLES.forEach(function(r) {
+      var cnt = Object.keys(sessions).filter(function(k) { return sessions[k].role === r; }).length;
+      if (cnt > 0) {
+        var avgH = roleTotals[r].hours > 0 ? (roleTotals[r].hours / cnt).toFixed(1) : '0.0';
+        chips += '<div class="pipeline-chip"><span class="pc-role">' + r + '</span><span class="pc-count">' + cnt + '<small>touches</small></span><span class="pc-avg">' + avgH + 'h avg</span></div>';
+      }
+    });
+    $pipelineChips.innerHTML = chips || '<span style="color:var(--text-dim);font-size:11px;">No pipeline activity</span>';
+    $pipelineTotalBadge.textContent = Object.keys(sessions).length + ' total';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: KPIs (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function renderKPIsEncompass() {
+  if (!$kpiTouches) return;
+  var totalTouches = 0, totalHrs = 0, activeRoles = 0, lastTouch = null;
+  ROLES.forEach(function(r) {
+    totalTouches += touchData[r].touches;
+    totalHrs += touchData[r].hours;
+    if (touchData[r].touches > 0) activeRoles++;
+    if (touchData[r].lastTouch && (!lastTouch || touchData[r].lastTouch > lastTouch)) lastTouch = touchData[r].lastTouch;
+  });
+  $kpiTouches.textContent = totalTouches;
+  $kpiRoles.textContent = activeRoles;
+  $kpiHours.textContent = totalHrs.toFixed(1) + 'h';
+  if (lastTouch) {
+    var ago = Math.round((Date.now() - lastTouch.getTime()) / 60000);
+    $kpiLastTouch.textContent = ago < 1 ? 'Just now' : ago + 'm';
+    $kpiLastTouchSub.textContent = lastTouch.toLocaleTimeString();
+  }
+  /* compare deltas */
+  if (compareData) {
+    renderDelta($kpiTouchesCompare, totalTouches, compareData.avgTouches, 'touches');
+    renderDelta($kpiHoursCompare, totalHrs, compareData.avgHours, 'hours');
+    renderDelta($kpiRolesCompare, activeRoles, compareData.avgRoles, 'roles');
+  }
+}
+
+function renderDelta(el, val, avg, unit) {
+  if (!el || !avg) return;
+  var diff = val - avg;
+  var pct = avg > 0 ? Math.round((diff / avg) * 100) : 0;
+  var cls, arrow;
+  if (pct > 5) { cls = 'up'; arrow = '\u25B2'; }
+  else if (pct < -5) { cls = 'down'; arrow = '\u25BC'; }
+  else { cls = 'neutral'; arrow = '\u2014'; }
+  el.className = 'kpi-compare ' + cls;
+  el.textContent = arrow + ' ' + Math.abs(pct) + '% vs avg';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: ROLE BARS (shared — supports filters + totals)
+   ═══════════════════════════════════════════════════════════════ */
+function renderRoleBars() {
+  var targets = [$roleBars];
+  if (isEncompass && $roleBarsWaterfall) targets.push($roleBarsWaterfall);
+
+  /* Compute source data based on mode */
+  var data = isEncompass ? touchData : roleTotals;
+
+  targets.forEach(function($el) {
+    if (!$el) return;
+    var totalHrs = 0;
+    ROLES.forEach(function(r) { totalHrs += (data[r].hours || 0) + (data[r].unsavedHours || 0); });
+    if (isEncompass) { ROLES.forEach(function(r) { totalHrs = 0; totalHrs += touchData[r].hours; }); totalHrs = 0; ROLES.forEach(function(r) { totalHrs += touchData[r].hours; }); }
+    var maxHours = 0;
+    ROLES.forEach(function(r) {
+      var h = isEncompass ? touchData[r].hours : (roleTotals[r].savedHours + roleTotals[r].unsavedHours);
+      if (h > maxHours) maxHours = h;
+    });
+    if (maxHours === 0) maxHours = 1;
+
+    var html = '';
+    ROLES.forEach(function(r) {
+      var saved, unsaved, total, pct;
+      if (isEncompass) {
+        saved = touchData[r].savedHours;
+        unsaved = touchData[r].unsavedHours;
+        total = touchData[r].hours;
+      } else {
+        saved = roleTotals[r].savedHours || 0;
+        unsaved = roleTotals[r].unsavedHours || 0;
+        total = saved + unsaved;
+      }
+      pct = totalHrs > 0 ? ((total / totalHrs) * 100).toFixed(1) : '0.0';
+      var isBottleneck = Number.parseFloat(pct) > 35 && total > 0.5;
+
+      /* apply filter */
+      var displayHrs;
+      if (showFilter === 'saved') displayHrs = saved;
+      else if (showFilter === 'unsaved') displayHrs = unsaved;
+      else displayHrs = total;
+
+      var barW = maxHours > 0 ? Math.max((displayHrs / maxHours) * 100, 2) : 2;
+      var unsavedW = total > 0 ? ((unsaved / total) * 100).toFixed(1) : '0';
+
+      html += '<div class="role-bar-row' + (isBottleneck ? ' bottleneck' : '') + (isEncompass ? ' clickable" onclick="drillRole(\'' + r + '\')"' : '"') + '>';
+      html += '<span class="role-bar-label">' + r + '</span>';
+      html += '<div class="role-bar-track"><div class="role-bar-fill ' + r + '" style="width:' + barW + '%">';
+      if (showFilter === 'all' && unsaved > 0) {
+        html += '<div class="role-bar-unsaved" style="width:' + unsavedW + '%"></div>';
+      }
+      html += '<span class="role-bar-pct">' + pct + '%</span>';
+      html += '</div></div>';
+      html += '<div class="role-bar-meta"><span class="role-bar-hours">' + fmtHrs(displayHrs) + 'h</span>';
+      if (isEncompass) { html += '<span class="role-bar-detail">' + touchData[r].touches + ' touches</span>'; }
+      else { html += '<span class="role-bar-detail">' + (roleTotals[r].sessions || 0) + ' sess</span>'; }
+      html += '</div>';
+      if (isBottleneck) html += '<span class="role-bar-bottleneck-tag">⚠ BOTTLENECK</span>';
+      html += '</div>';
+    });
+    $el.innerHTML = html;
+  });
+
+  /* Compact bars for Encompass */
+  if (isEncompass && $roleBarsCompact) {
+    var cHtml = '';
+    ROLES.forEach(function(r) {
+      var h = touchData[r].hours;
+      var maxH = 1; ROLES.forEach(function(x) { if (touchData[x].hours > maxH) maxH = touchData[x].hours; });
+      var w = Math.max((h / maxH) * 100, 2);
+      cHtml += '<div class="role-bar-row"><span class="role-bar-label">' + r + '</span><div class="role-bar-track"><div class="role-bar-fill ' + r + '" style="width:' + w + '%"></div></div><div class="role-bar-meta"><span class="role-bar-hours">' + h.toFixed(1) + 'h</span></div></div>';
+    });
+    $roleBarsCompact.innerHTML = cHtml;
+  }
+
+  /* Total hours badge */
+  var grandTotal = 0;
+  ROLES.forEach(function(r) { grandTotal += isEncompass ? touchData[r].hours : (roleTotals[r].savedHours + roleTotals[r].unsavedHours); });
+  if ($totalHoursBadge) $totalHoursBadge.textContent = fmtHrs(grandTotal) + ' total hours';
+
+  /* Totals grid (Website mode) */
+  if ($totalsBody && !isEncompass) {
+    var tHtml = '', gSaved = 0, gUnsaved = 0, gSess = 0, gTouch = 0;
+    ROLES.forEach(function(r) {
+      var s = roleTotals[r].savedHours || 0, u = roleTotals[r].unsavedHours || 0, t = s + u;
+      var p = grandTotal > 0 ? ((t / grandTotal) * 100).toFixed(1) : '0.0';
+      gSaved += s; gUnsaved += u; gSess += (roleTotals[r].sessions || 0); gTouch += Object.keys(sessions).filter(function(k) { return sessions[k].role === r; }).length;
+      tHtml += '<tr><td><span class="role-chip ' + r + '">' + r + '</span> ' + esc(ROLE_NAMES[r]) + '</td><td>' + fmtHrs(t) + '</td><td class="pct-cell">' + p + '%</td><td class="saved-cell">' + fmtHrs(s) + '</td><td class="unsaved-cell">' + fmtHrs(u) + '</td><td>' + (roleTotals[r].sessions || 0) + '</td><td>' + Object.keys(sessions).filter(function(k) { return sessions[k].role === r; }).length + '</td><td>' + (Number.parseFloat(p) > 35 && t > 0.5 ? '⚠️' : '✅') + '</td></tr>';
+    });
+    tHtml += '<tr class="totals-row"><td><strong>ALL</strong></td><td>' + fmtHrs(grandTotal) + '</td><td class="pct-cell">100%</td><td class="saved-cell">' + fmtHrs(gSaved) + '</td><td class="unsaved-cell">' + fmtHrs(gUnsaved) + '</td><td>' + gSess + '</td><td>' + gTouch + '</td><td></td></tr>';
+    $totalsBody.innerHTML = tHtml;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: DONUT (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function renderDonut() {
+  if (!$donutSvg) return;
+  var totalHrs = 0;
+  ROLES.forEach(function(r) { totalHrs += touchData[r].hours; });
+  if (totalHrs === 0) {
+    $donutSvg.innerHTML = '<text x="80" y="80" text-anchor="middle" class="donut-center">No data</text>';
+    if ($donutLegend) $donutLegend.innerHTML = '';
+    return;
+  }
+
+  var arcs = '', offset = 0, cx = 80, cy = 80, r = 55, innerR = 38;
+  ROLES.forEach(function(role) {
+    var h = touchData[role].hours;
+    if (h <= 0) return;
+    var pct = h / totalHrs;
+    var angle = pct * Math.PI * 2;
+    var x1 = cx + r * Math.sin(offset), y1 = cy - r * Math.cos(offset);
+    var x2 = cx + r * Math.sin(offset + angle), y2 = cy - r * Math.cos(offset + angle);
+    var ix1 = cx + innerR * Math.sin(offset), iy1 = cy - innerR * Math.cos(offset);
+    var ix2 = cx + innerR * Math.sin(offset + angle), iy2 = cy - innerR * Math.cos(offset + angle);
+    var large = angle > Math.PI ? 1 : 0;
+    arcs += '<path d="M' + x1 + ',' + y1 + ' A' + r + ',' + r + ' 0 ' + large + ' 1 ' + x2 + ',' + y2 + ' L' + ix2 + ',' + iy2 + ' A' + innerR + ',' + innerR + ' 0 ' + large + ' 0 ' + ix1 + ',' + iy1 + ' Z" fill="' + ROLE_COLORS[role] + '" opacity="0.85"><title>' + role + ': ' + h.toFixed(1) + 'h (' + (pct * 100).toFixed(1) + '%)</title></path>';
+    offset += angle;
+  });
+  arcs += '<text x="80" y="78" text-anchor="middle" class="donut-center" style="font-size:18px;font-weight:800;fill:var(--text-primary)">' + totalHrs.toFixed(1) + '</text>';
+  arcs += '<text x="80" y="92" text-anchor="middle" class="donut-center">hours</text>';
+  $donutSvg.innerHTML = arcs;
+
+  if ($donutLegend) {
+    var leg = '';
+    ROLES.forEach(function(role) { if (touchData[role].hours > 0) leg += '<span><span class="legend-swatch" style="background:' + ROLE_COLORS[role] + '"></span>' + role + ' ' + touchData[role].hours.toFixed(1) + 'h</span>'; });
+    $donutLegend.innerHTML = leg;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: TICKER (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function renderTicker() {
+  if (!$tickerContent) return;
+  if (tickerEvents.length === 0) { $tickerContent.innerHTML = '<div class="empty-state"><div class="icon">📡</div><p>Waiting for live events…</p></div>'; $tickerCount.textContent = '0 events'; return; }
+  var html = '';
+  tickerEvents.slice(0, 20).forEach(function(e) {
+    var t = e.time instanceof Date ? e.time : new Date(e.time);
+    html += '<div class="ticker-item"><span class="ticker-time">' + pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds()) + '</span><span class="ticker-action ' + esc(e.action) + '">' + esc(e.action) + '</span><span class="role-chip ' + esc(e.role) + '">' + esc(e.role) + '</span><span class="ticker-user">' + esc(e.user || '') + '</span><span class="ticker-detail">' + esc(e.detail || '') + '</span></div>';
+  });
+  $tickerContent.innerHTML = html;
+  $tickerCount.textContent = tickerEvents.length + ' events';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: TIMELINE (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function renderTimeline() {
+  if (!$timelineContent) return;
+  if (timelineEvents.length === 0) { $timelineContent.innerHTML = '<div class="empty-state"><div class="icon">📅</div><p>No timeline data yet</p></div>'; return; }
+  var sorted = timelineEvents.slice().sort(function(a, b) { return new Date(b.timestamp) - new Date(a.timestamp); });
+  var html = '';
+  sorted.slice(0, 50).forEach(function(e, i) {
+    var t = new Date(e.timestamp);
+    html += '<div class="tl-item"><div class="tl-dot-col"><div class="tl-dot"></div>' + (i < sorted.length - 1 ? '<div class="tl-line"></div>' : '') + '</div><div class="tl-body"><div class="tl-header"><span class="role-chip ' + esc(e.role || 'UU') + '">' + esc(e.role || 'UU') + '</span><span>' + esc(e.userName || e.userId || '') + '</span><span class="tl-time">' + t.toLocaleDateString() + ' ' + t.toLocaleTimeString() + '</span></div><div class="tl-desc">' + esc(e.action || '') + (e.detail ? ' — ' + esc(e.detail) : '') + '</div></div></div>';
+  });
+  $timelineContent.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: HANDOFF (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function renderHandoff() {
+  if (!$handoffTrack) return;
+  var html = '';
+  ROLES.forEach(function(r, i) {
+    var d = touchData[r];
+    var state = 'pending';
+    var stallMsg = '';
+    if (d.touches > 0) {
+      if (d.lastTouch && (Date.now() - d.lastTouch.getTime()) < 300000) {
+        state = 'active';
+      } else {
+        state = 'completed';
+        /* Stall detection: role holding file > 24h with unsaved work, or > 48h with no activity */
+        if (d.lastTouch) {
+          var hoursSince = (Date.now() - d.lastTouch.getTime()) / 3600000;
+          if (hoursSince > 24 && d.unsavedHours > 0.5) { state = 'stalled'; stallMsg = Math.floor(hoursSince) + 'h stalled'; }
+          else if (hoursSince > 48) { state = 'stalled'; stallMsg = Math.floor(hoursSince / 24) + 'd no activity'; }
+        }
+      }
+    }
+    html += '<div class="handoff-step"><div class="handoff-node ' + state + '" style="background:' + ROLE_COLORS[r] + '">' + r + '</div>';
+    if (i < ROLES.length - 1) html += '<div class="handoff-line' + (state === 'pending' ? '' : ' done') + '"></div>';
+    html += '<div class="handoff-label">' + ROLE_NAMES[r] + '</div>';
+    html += '<div class="handoff-hours">' + d.hours.toFixed(1) + 'h</div>';
+    if (stallMsg) html += '<div class="handoff-stall">⚠ ' + stallMsg + '</div>';
+    html += '</div>';
+  });
+  $handoffTrack.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: COMPARE (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function renderCompare() {
+  if (!compareData) return;
+  var cmpTouches = $('cmpTouches'), cmpHours = $('cmpHours'), cmpRoles = $('cmpRoles');
+  var cmpTouchesAvg = $('cmpTouchesAvg'), cmpHoursAvg = $('cmpHoursAvg'), cmpRolesAvg = $('cmpRolesAvg');
+  var cmpTouchesDelta = $('cmpTouchesDelta'), cmpHoursDelta = $('cmpHoursDelta'), cmpRolesDelta = $('cmpRolesDelta');
+
+  var totalTouches = 0, totalHrs = 0, activeRoles = 0;
+  ROLES.forEach(function(r) { totalTouches += touchData[r].touches; totalHrs += touchData[r].hours; if (touchData[r].touches > 0) activeRoles++; });
+
+  if (cmpTouches) cmpTouches.textContent = totalTouches;
+  if (cmpHours) cmpHours.textContent = totalHrs.toFixed(1) + 'h';
+  if (cmpRoles) cmpRoles.textContent = activeRoles;
+  if (cmpTouchesAvg) cmpTouchesAvg.textContent = compareData.avgTouches;
+  if (cmpHoursAvg) cmpHoursAvg.textContent = compareData.avgHours + 'h';
+  if (cmpRolesAvg) cmpRolesAvg.textContent = compareData.avgRoles;
+
+  renderCompareDelta(cmpTouchesDelta, totalTouches, compareData.avgTouches);
+  renderCompareDelta(cmpHoursDelta, totalHrs, compareData.avgHours);
+  renderCompareDelta(cmpRolesDelta, activeRoles, compareData.avgRoles);
+}
+
+function renderCompareDelta(el, val, avg) {
+  if (!el) return;
+  var diff = val - avg;
+  var cls;
+  if (diff > 0) cls = ' better';
+  else if (diff < 0) cls = ' worse';
+  else cls = ' same';
+  var sign = diff > 0 ? '+' : '';
+  el.className = 'compare-delta' + cls;
+  el.textContent = sign + diff.toFixed(1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: EVENT LOG (Website mode — tabbed by role)
+   ═══════════════════════════════════════════════════════════════ */
+function renderEventLog() {
+  if (!$sessionLogBody) return;
+  var filtered = activeLogTab === 'AU' ? eventHistory : eventHistory.filter(function(e) { return e.role === activeLogTab; });
+  if (filtered.length === 0) { $sessionLogBody.innerHTML = '<div class="empty-state"><div class="icon">📝</div><p>No events' + (activeLogTab === 'AU' ? '' : ' for ' + activeLogTab) + '</p></div>'; return; }
+  var html = '';
+  filtered.slice(0, 80).forEach(function(e) {
+    var t = new Date(e.time);
+    html += '<div class="log-entry"><span class="event-action ' + esc(e.action) + '">' + esc(e.action) + '</span><span class="role-chip ' + esc(e.role) + '">' + esc(e.role) + '</span><span>' + esc(e.user || '') + '</span><span class="ticker-time">' + pad(t.getHours()) + ':' + pad(t.getMinutes()) + ':' + pad(t.getSeconds()) + '</span></div>';
+  });
+  $sessionLogBody.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTTLENECK DETECTION (shared)
+   ═══════════════════════════════════════════════════════════════ */
+function checkBottlenecks() {
+  alerts = [];
+  var data = isEncompass ? touchData : roleTotals;
+  var totalHrs = 0, totalTouches = 0;
+  ROLES.forEach(function(r) {
+    totalHrs += isEncompass ? data[r].hours : (data[r].savedHours + data[r].unsavedHours);
+    totalTouches += isEncompass ? data[r].touches : (data[r].savedHours > 0 ? 1 : 0);
+  });
+
+  /* ── 1. Input Form Overhead: role sessions averaging > 60 min ── */
+  ROLES.forEach(function(r) {
+    var d = data[r];
+    var hrs = isEncompass ? d.hours : (d.savedHours + d.unsavedHours);
+    var touches = isEncompass ? d.touches : 1;
+    if (touches >= 3 && hrs > 0) {
+      var avgMin = (hrs / touches) * 60;
+      if (avgMin > 60) {
+        alerts.push({ severity: 'warning', icon: '📋', title: 'Input Form Overhead — ' + ROLE_NAMES[r],
+          message: touches + ' ' + ROLE_NAMES[r] + ' sessions averaging ' + fmtDur(avgMin) + '. Data entry fields may not be optimized for role. SP can deploy conditional-visibility input forms — typically reduces ' + r + ' time 20–25%.' });
+      }
+    }
+  });
+
+  /* ── 2. Unassigned Persona: sessions with no role mapping (UU) ── */
+  var uuD = data.UU || {};
+  var uuTouches = isEncompass ? (uuD.touches || 0) : ((uuD.savedHours || 0) + (uuD.unsavedHours || 0) > 0 ? 1 : 0);
+  if (uuTouches > 0) {
+    alerts.push({ severity: 'warning', icon: '👤', title: 'Unassigned Persona Detected',
+      message: uuTouches + ' active session(s) with no role assignment. Bypasses pipeline routing and compliance tracking. SP can map to correct persona and pipeline.' });
+  }
+
+  /* ── 3. Field Trigger Gaps: UW sessions with high avg time ── */
+  var uwD = data.UW || {};
+  var uwHrs = isEncompass ? uwD.hours : ((uwD.savedHours || 0) + (uwD.unsavedHours || 0));
+  var uwTouches = isEncompass ? uwD.touches : 1;
+  if (uwTouches >= 3 && uwHrs > 0) {
+    var uwAvg = (uwHrs / uwTouches) * 60;
+    if (uwAvg > 40) {
+      alerts.push({ severity: 'critical', icon: '⚡', title: 'Field Trigger Gaps — Underwriting',
+        message: uwTouches + ' UW sessions averaging ' + fmtDur(uwAvg) + '. Manual re-entry of calculated fields (DTI, LTV, AUS findings) likely. SP can configure field triggers to auto-compute — ~15% reduction.' });
+    }
+  }
+
+  /* ── 4. Milestone Automation: CL sessions with manual milestone updates ── */
+  var clD = data.CL || {};
+  var clTouches = isEncompass ? clD.touches : ((clD.savedHours || 0) + (clD.unsavedHours || 0) > 0 ? 1 : 0);
+  var clHrs = isEncompass ? clD.hours : ((clD.savedHours || 0) + (clD.unsavedHours || 0));
+  if (clTouches >= 3 && clHrs > 0) {
+    var clAvg = (clHrs / clTouches) * 60;
+    if (clAvg > 20) {
+      alerts.push({ severity: 'info', icon: '⚙', title: 'Milestone Automation — Closing',
+        message: clTouches + ' Closer sessions averaging ' + fmtDur(clAvg) + ' with manual milestone updates. SP can configure auto-milestone triggers (e.g., auto-set Clear to Close) — saves 8–12 min/loan.' });
+    }
+  }
+
+  /* ── 5. Pipeline Routing Imbalance: LP-to-UW ratio skew ── */
+  var lpTouches = isEncompass ? (data.LP || {}).touches || 0 : 1;
+  var uwT2 = isEncompass ? (data.UW || {}).touches || 0 : 1;
+  if (lpTouches > 0 && uwT2 > 0 && lpTouches / uwT2 > 1.5 && lpTouches >= 5) {
+    alerts.push({ severity: 'critical', icon: '🔀', title: 'Pipeline Routing Imbalance',
+      message: 'LP-to-UW ratio is ' + lpTouches + ':' + uwT2 + ' — loans likely queuing at underwriting. SP can configure capacity-based assignment rules to balance load across available underwriters.' });
+  }
+
+  /* ── 6. Document Template Gaps: long sessions without save ── */
+  ROLES.forEach(function(r) {
+    var d = data[r];
+    var unsaved = d.unsavedHours || 0;
+    var saved = d.savedHours || 0;
+    var ts = isEncompass ? d.touches : 1;
+    if (unsaved > 0.67 && ts >= 2 && (saved === 0 || unsaved > saved * 2)) {
+      alerts.push({ severity: 'warning', icon: '📄', title: 'Document Template Gaps — ' + ROLE_NAMES[r],
+        message: ts + ' ' + r + ' session(s) open 40+ min without save — indicates incomplete document packages. SP can configure auto-populated templates and required-field checklists to reduce manual assembly.' });
+    }
+  });
+
+  /* ── 7. Concentration Risk (original check) ── */
+  ROLES.forEach(function(r) {
+    var hrs = isEncompass ? data[r].hours : ((data[r].savedHours || 0) + (data[r].unsavedHours || 0));
+    var pct = totalHrs > 0 ? (hrs / totalHrs) * 100 : 0;
+    if (pct > 45 && hrs > 0.5) {
+      alerts.push({ severity: 'critical', icon: '📊', title: 'Concentration Risk — ' + ROLE_NAMES[r],
+        message: ROLE_NAMES[r] + ' consuming ' + pct.toFixed(1) + '% of total effort (' + hrs.toFixed(1) + 'h). Single-role dependency creates compliance and capacity risk. SP can redistribute via role-based workflow automation.' });
+    }
+  });
+
+  /* ── 8. Stale Hand-off: role holding file too long ── */
+  if (isEncompass) {
+    ROLES.forEach(function(r) {
+      var d = data[r];
+      if (d.lastTouch) {
+        var stalledH = (Date.now() - d.lastTouch.getTime()) / 3600000;
+        if (stalledH > 48 && d.touches > 0) {
+          alerts.push({ severity: 'critical', icon: '⏱', title: 'Stale Hand-off — ' + ROLE_NAMES[r],
+            message: ROLE_NAMES[r] + ' last touched ' + Math.floor(stalledH / 24) + 'd ago with no hand-off. Loan may be stalled. SP can configure SLA alerts and auto-escalation rules.' });
+        }
+      }
+    });
+  }
+
+  /* Deduplicate: keep first alert per title to avoid noise */
+  var seen = {};
+  alerts = alerts.filter(function(a) { if (seen[a.title]) return false; seen[a.title] = true; return true; });
+
+  renderAlerts();
+}
+
+function fmtDur(min) {
+  var h = Math.floor(min / 60), m = Math.round(min % 60);
+  return (h > 0 ? h + ':' : '') + (m < 10 && h > 0 ? '0' : '') + m + ':00';
+}
+
+function renderAlerts() {
+  var targets = isEncompass ? [$alertsContentEncompass] : [$alertsContent];
+  targets.forEach(function(el) {
+    if (!el) return;
+    if (alerts.length === 0) { el.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>No bottlenecks detected</p></div>'; return; }
+    el.innerHTML = alerts.map(function(a) {
+      return '<div class="alert-card ' + (a.severity || 'info') + '">' +
+        '<div class="alert-icon">' + (a.icon || '⚠') + '</div>' +
+        '<div class="alert-body"><h4>' + esc(a.title || 'Alert') + '</h4>' +
+        '<p>' + esc(a.message) + '</p></div></div>';
+    }).join('');
+  });
+  if (isEncompass) updateStatusPill();
+}
+
+function updateStatusPill() {
+  if (!$statusPill) return;
+  var hasCrit = alerts.some(function(a) { return a.severity === 'critical'; });
+  var hasWarn = alerts.some(function(a) { return a.severity === 'warning'; });
+  var pillCls, pillText;
+  if (hasCrit) { pillCls = 'critical'; pillText = 'Critical'; }
+  else if (hasWarn) { pillCls = 'warning'; pillText = 'Warning'; }
+  else if (signalRConnected) { pillCls = 'healthy'; pillText = 'Connected'; }
+  else { pillCls = 'offline'; pillText = 'Offline'; }
+  $statusPill.className = 'status-pill ' + pillCls;
+  $statusLabel.textContent = pillText;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPUTE SAVED/UNSAVED FROM TIMELINE EVENTS
+   ═══════════════════════════════════════════════════════════════ */
+function computeSavedUnsaved() {
+  /* Reset */
+  ROLES.forEach(function(r) { touchData[r].savedHours = 0; touchData[r].unsavedHours = 0; });
+  timelineEvents.forEach(function(ev) {
+    var r = ev.role || 'UU';
+    if (!touchData[r]) return;
+    var hrs = (ev.elapsed || 0) / 3600;
+    if (ev.action === 'save') { touchData[r].savedHours += hrs; }
+    else { touchData[r].unsavedHours += hrs; }
+  });
+  /* Fallback: if timeline had no detail, split remainder proportionally */
+  ROLES.forEach(function(r) {
+    var d = touchData[r];
+    if (d.hours > 0 && d.savedHours === 0 && d.unsavedHours === 0) {
+      d.savedHours = d.hours; /* treat CX-only totals as saved */
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUILD USER BREAKDOWN FROM TIMELINE EVENTS
+   ═══════════════════════════════════════════════════════════════ */
+function buildUserBreakdown() {
+  userBreakdown = {};
+  timelineEvents.forEach(function(ev) {
+    var uid = ev.userId || ev.userName || 'unknown';
+    if (!userBreakdown[uid]) {
+      userBreakdown[uid] = { name: ev.userName || ev.userId || 'Unknown', role: ev.role || 'UU', touches: 0, saves: 0, lastTouch: null };
+    }
+    userBreakdown[uid].touches++;
+    if (ev.action === 'save') userBreakdown[uid].saves++;
+    var t = ev.timestamp ? new Date(ev.timestamp) : null;
+    if (t && (!userBreakdown[uid].lastTouch || t > userBreakdown[uid].lastTouch)) userBreakdown[uid].lastTouch = t;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: LOAN PACE (Encompass mode — days-to-close projection)
+   ═══════════════════════════════════════════════════════════════ */
+function renderLoanPace() {
+  var badge = document.getElementById('loanTypeBadge');
+  var dIn = document.getElementById('paceDaysIn'), dInSub = document.getElementById('paceDaysInSub');
+  var dLeft = document.getElementById('paceDaysLeft'), dLeftSub = document.getElementById('paceDaysLeftSub');
+  var pFill = document.getElementById('paceFill');
+  var pStat = document.getElementById('paceStatus'), pStatSub = document.getElementById('paceStatusSub');
+
+  if (!badge) return;
+
+  /* Loan type badge */
+  if (loanPurpose && BENCHMARKS[loanPurpose]) {
+    badge.className = 'loan-type-badge ' + loanPurpose;
+    badge.textContent = loanPurpose.toUpperCase();
+  } else { badge.textContent = ''; }
+
+  var now = new Date();
+  var bench = BENCHMARKS[loanPurpose] || BENCHMARKS['default'];
+
+  /* Days in process */
+  if (applicationDate) {
+    var daysIn = Math.floor((now - applicationDate) / 86400000);
+    dIn.textContent = daysIn;
+    dInSub.textContent = 'since ' + applicationDate.toLocaleDateString();
+  }
+
+  /* Days to close + pace bar */
+  if (expectedCloseDate) {
+    var daysLeft = Math.ceil((expectedCloseDate - now) / 86400000);
+    dLeft.textContent = daysLeft > 0 ? daysLeft : 0;
+    dLeftSub.textContent = 'target ' + expectedCloseDate.toLocaleDateString();
+    /* Progress bar: how far through the estimated timeline */
+    if (applicationDate) {
+      var totalSpan = (expectedCloseDate - applicationDate) / 86400000;
+      var elapsed = (now - applicationDate) / 86400000;
+      var pctDone = totalSpan > 0 ? Math.min(Math.round((elapsed / totalSpan) * 100), 100) : 0;
+      pFill.style.width = pctDone + '%';
+      /* Pace status */
+      var touchPace = 0, touchTotal = 0;
+      ROLES.forEach(function(r) { touchTotal += touchData[r].touches; });
+      if (totalSpan > 0 && elapsed > 0) touchPace = (touchTotal / elapsed) * totalSpan;
+      var cls, label;
+      if (daysLeft < 0) { cls = 'behind'; label = 'OVERDUE'; }
+      else if (touchPace >= bench.touches * 0.9) { cls = 'on-track'; label = 'ON TRACK'; }
+      else if (touchPace >= bench.touches * 0.6) { cls = 'at-risk'; label = 'AT RISK'; }
+      else { cls = 'behind'; label = 'BEHIND'; }
+      pFill.className = 'pace-fill ' + cls;
+      pStat.innerHTML = '<span class="pace-status ' + cls + '">' + label + '</span>';
+      pStatSub.textContent = Math.round(touchPace) + '/' + bench.touches + ' projected touches';
+    }
+  }
+
+  /* Lock expiration warning */
+  if (lockExpiration) {
+    var lockDays = Math.ceil((lockExpiration - now) / 86400000);
+    if (lockDays <= 7 && lockDays > 0) {
+      pStatSub.textContent += ' | Lock expires in ' + lockDays + 'd';
+    } else if (lockDays <= 0) {
+      pStatSub.textContent += ' | LOCK EXPIRED';
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DRILL-DOWN: Per-user breakdown for a role
+   ═══════════════════════════════════════════════════════════════ */
+function drillRole(role) {
+  var drillEl = document.getElementById('userDrill');
+  if (!drillEl) return;
+  if (activeDrill === role) { drillEl.classList.remove('visible'); activeDrill = null; return; }
+  activeDrill = role;
+  var users = [];
+  Object.keys(userBreakdown).forEach(function(uid) {
+    if (userBreakdown[uid].role === role) users.push(userBreakdown[uid]);
+  });
+  if (users.length === 0) { drillEl.classList.remove('visible'); activeDrill = null; return; }
+  users.sort(function(a, b) { return b.touches - a.touches; });
+  var html = '<div class="user-drill-row"><span class="user-drill-hdr">User</span><span class="user-drill-hdr">Touches</span><span class="user-drill-hdr">Saves</span><span class="user-drill-hdr">Save%</span><span class="user-drill-hdr">Last</span></div>';
+  users.forEach(function(u) {
+    var savePct = u.touches > 0 ? Math.round((u.saves / u.touches) * 100) : 0;
+    html += '<div class="user-drill-row">';
+    html += '<span class="user-drill-name">' + esc(u.name) + '</span>';
+    html += '<span class="user-drill-stat">' + u.touches + '</span>';
+    html += '<span class="user-drill-stat">' + u.saves + '</span>';
+    html += '<span class="user-drill-stat">' + savePct + '%</span>';
+    html += '<span class="user-drill-stat">' + (u.lastTouch ? timeSince(u.lastTouch) : '—') + '</span>';
+    html += '</div>';
+  });
+  drillEl.innerHTML = '<div style="font-weight:700;margin-bottom:6px;font-size:12px">' + (ROLE_NAMES[role] || role) + ' — User Breakdown</div>' + html;
+  drillEl.classList.add('visible');
+}
+
+function timeSince(date) {
+  var s = Math.floor((Date.now() - date.getTime()) / 1000);
+  if (s < 60) return s + 's ago';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT REPORT (Encompass mode — formatted text to clipboard + download)
+   ═══════════════════════════════════════════════════════════════ */
+function exportReport() {
+  var lines = [];
+  lines.push('UNIVERSAL TRACKER — LOAN REPORT');
+  lines.push('Generated: ' + new Date().toLocaleString());
+  lines.push('Loan: ' + (loanNumber || '—') + '  Borrower: ' + (borrowerName || '—'));
+  if (loanPurpose) lines.push('Type: ' + loanPurpose.toUpperCase());
+  if (applicationDate) lines.push('Application: ' + applicationDate.toLocaleDateString());
+  if (expectedCloseDate) lines.push('Est. Close: ' + expectedCloseDate.toLocaleDateString());
+  if (lockExpiration) lines.push('Lock Exp.: ' + lockExpiration.toLocaleDateString());
+  lines.push('');
+  lines.push('ROLE SUMMARY');
+  lines.push(padR('Role', 6) + padR('Touches', 10) + padR('Hours', 8) + padR('Saved', 8) + padR('Unsaved', 8));
+  lines.push('-'.repeat(40));
+  var tTouches = 0, tHrs = 0, tSaved = 0, tUnsaved = 0;
+  ROLES.forEach(function(r) {
+    var d = touchData[r];
+    tTouches += d.touches; tHrs += d.hours; tSaved += d.savedHours; tUnsaved += d.unsavedHours;
+    lines.push(padR(r, 6) + padR(String(d.touches), 10) + padR(d.hours.toFixed(1), 8) + padR(d.savedHours.toFixed(1), 8) + padR(d.unsavedHours.toFixed(1), 8));
+  });
+  lines.push('-'.repeat(40));
+  lines.push(padR('TOTAL', 6) + padR(String(tTouches), 10) + padR(tHrs.toFixed(1), 8) + padR(tSaved.toFixed(1), 8) + padR(tUnsaved.toFixed(1), 8));
+  lines.push('');
+
+  /* Stall alerts */
+  var stalls = [];
+  ROLES.forEach(function(r) {
+    var d = touchData[r];
+    if (d.lastTouch) {
+      var h = (Date.now() - d.lastTouch.getTime()) / 3600000;
+      if (h > 24 && d.unsavedHours > 0.5) stalls.push(r + ': ' + Math.floor(h) + 'h stalled (unsaved work)');
+      else if (h > 48) stalls.push(r + ': ' + Math.floor(h / 24) + 'd no activity');
+    }
+  });
+  if (stalls.length) { lines.push('STALL ALERTS'); stalls.forEach(function(s) { lines.push('  ⚠ ' + s); }); lines.push(''); }
+
+  if (aiResult) { lines.push('AI INSIGHT'); lines.push(aiResult); lines.push(''); }
+
+  var report = lines.join('\n');
+
+  /* Copy to clipboard */
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(report);
+  }
+
+  /* Download as text file */
+  var blob = new Blob([report], { type: 'text/plain' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'loan-report-' + (loanNumber || 'unknown') + '.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function padR(s, n) { while (s.length < n) s += ' '; return s; }
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER ALL (Encompass)
+   ═══════════════════════════════════════════════════════════════ */
+function renderAll() {
+  if (isEncompass) {
+    renderKPIsEncompass(); renderRoleBars(); renderDonut(); renderTicker(); renderTimeline(); renderHandoff(); renderCompare(); renderLoanPace(); checkBottlenecks();
+  } else {
+    renderKPIsWebsite(); renderRoleBars(); renderConsoleCharts(); renderEventLog(); checkBottlenecks();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER: CONSOLE CHARTS (Website mode — 5 charts)
+   ═══════════════════════════════════════════════════════════════ */
+function renderConsoleCharts() {
+  if (!$chartGrid || !chartData[activeConsoleTab]) return;
+  var d = chartData[activeConsoleTab];
+  var html = '';
+  var weeklyTotal = d.daily.reduce(function(a, b) { return a + b; }, 0);
+  var dailyAvg = (weeklyTotal / 7).toFixed(1);
+  var ytdTotal = d.monthly.reduce(function(a, b) { return a + b; }, 0);
+
+  /* 1. Daily Performance — full-height bar chart with KPIs top-right */
+  var maxD = Math.max.apply(null, d.daily);
+  html += '<div class="chart-card"><div class="chart-card-header"><span>DAILY PERFORMANCE</span><div class="chart-kpis"><div class="chart-kpi"><span class="chart-kpi-v">' + weeklyTotal + '</span><span class="chart-kpi-l">today</span></div><div class="chart-kpi"><span class="chart-kpi-v accent">+' + ((maxD / (dailyAvg > 0 ? dailyAvg : 1) - 1) * 100).toFixed(0) + '%</span><span class="chart-kpi-l">vs avg</span></div></div></div><div class="mini-bars">';
+  d.daily.forEach(function(v, i) {
+    var pct = maxD > 0 ? (v / maxD) * 100 : 0;
+    html += '<div class="mini-bar-col"><div class="bar-area"><div class="mini-bar" style="height:' + pct + '%;width:100%"></div></div><div class="mini-bar-label">' + DAYS[i] + '</div></div>';
+  });
+  html += '</div></div>';
+
+  /* 2. By Branch — large conic donut with legend */
+  var branchKeys = Object.keys(d.branches);
+  var branchTotal = branchKeys.reduce(function(a, k) { return a + d.branches[k]; }, 0);
+  var branchColors = ['#00d4ff','#f97316','#22c55e','#eab308','#a855f7','#14b8a6','#ef4444'];
+  var conicParts = [], cumulP = 0;
+  branchKeys.forEach(function(k, i) {
+    var p = branchTotal > 0 ? (d.branches[k] / branchTotal) * 100 : 0;
+    conicParts.push(branchColors[i % 7] + ' ' + cumulP.toFixed(1) + '% ' + (cumulP + p).toFixed(1) + '%');
+    cumulP += p;
+  });
+  html += '<div class="chart-card"><div class="chart-card-header"><span>BY BRANCH</span></div><div class="mini-donut-wrap"><div class="mini-donut" style="background:conic-gradient(' + conicParts.join(',') + ')"><div class="mini-donut-hole">' + branchKeys.length + '<br><span style="font-size:9px;font-weight:400;color:var(--text-dim)">branches</span></div></div><div class="mini-donut-legend">';
+  branchKeys.forEach(function(k, i) {
+    var pct = branchTotal > 0 ? ((d.branches[k] / branchTotal) * 100).toFixed(0) : 0;
+    html += '<span><span class="swatch" style="background:' + branchColors[i % 7] + '"></span><b>' + esc(k) + '</b> ' + pct + '%</span>';
+  });
+  html += '</div></div></div>';
+
+  /* 3. Monthly Trend — full-width area chart with YTD badge */
+  var maxM = Math.max.apply(null, d.monthly);
+  var svgW = 460, svgH = 160, padL = 5, padR = 5, padT = 15, padB = 22;
+  var plotW = svgW - padL - padR, plotH = svgH - padT - padB;
+  html += '<div class="chart-card wide"><div class="chart-card-header"><span>MONTHLY TREND</span><div class="chart-kpis"><div class="chart-kpi"><span class="chart-kpi-v">' + ytdTotal + '</span><span class="chart-kpi-l">YTD</span></div></div></div>';
+  html += '<svg viewBox="0 0 ' + svgW + ' ' + svgH + '" preserveAspectRatio="none" style="width:100%;flex:1;min-height:0;display:block">';
+  html += '<defs><linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--brand-accent)" stop-opacity="0.35"/><stop offset="1" stop-color="var(--brand-accent)" stop-opacity="0.02"/></linearGradient></defs>';
+  var pts = d.monthly.map(function(v, i) {
+    var x = padL + (i / (d.monthly.length - 1)) * plotW;
+    var y = padT + plotH - (maxM > 0 ? (v / maxM) * plotH : 0);
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  });
+  var baseline = (padT + plotH);
+  html += '<polygon points="' + padL + ',' + baseline + ' ' + pts.join(' ') + ' ' + (padL + plotW) + ',' + baseline + '" fill="url(#trendFill)"/>';
+  html += '<polyline points="' + pts.join(' ') + '" fill="none" stroke="var(--brand-accent)" stroke-width="2"/>';
+  d.monthly.forEach(function(v, i) {
+    var x = padL + (i / (d.monthly.length - 1)) * plotW;
+    var y = padT + plotH - (maxM > 0 ? (v / maxM) * plotH : 0);
+    html += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3" fill="var(--brand-accent)"><title>' + MONTHS[i] + ': ' + v + '</title></circle>';
+    html += '<text x="' + x.toFixed(1) + '" y="' + (svgH - 4) + '" text-anchor="middle" fill="var(--text-dim)" font-size="9">' + MONTHS[i].charAt(0) + '</text>';
+  });
+  html += '</svg></div>';
+
+  /* 4. Annual Comparison — paired bars with legend */
+  var last6 = d.monthly.slice(-6);
+  var prev6 = d.monthly.slice(0, 6);
+  var maxComp = Math.max.apply(null, last6.concat(prev6));
+  html += '<div class="chart-card"><div class="chart-card-header"><span>ANNUAL COMPARISON</span><div style="display:flex;gap:12px;font-size:10px;align-items:center"><span style="color:#22c55e;font-weight:700">● This Year</span><span style="color:var(--text-dim)">● Last Year</span></div></div><div class="mini-bars">';
+  last6.forEach(function(v, i) {
+    var pH = maxComp > 0 ? (prev6[i] / maxComp) * 100 : 0;
+    var cH = maxComp > 0 ? (v / maxComp) * 100 : 0;
+    html += '<div class="mini-bar-col"><div class="bar-area" style="gap:2px"><div class="mini-bar" style="height:' + pH + '%;width:45%;background:var(--text-dim);opacity:0.35;border-radius:2px 2px 0 0;flex:none"></div><div class="mini-bar" style="height:' + cH + '%;width:45%;flex:none"></div></div><div class="mini-bar-label">' + MONTHS[i + 6] + '</div></div>';
+  });
+  html += '</div></div>';
+
+  /* 5. Forecast — horizontal progress with % and status badge */
+  var pctOfTarget = d.forecast.target > 0 ? ((d.forecast.actual / d.forecast.target) * 100).toFixed(0) : 0;
+  var onTrack = pctOfTarget >= 80;
+  html += '<div class="chart-card wide"><div class="chart-card-header"><span>FORECAST</span><div class="forecast-kpis"><div class="chart-kpi"><span class="forecast-kpi-v ' + (onTrack ? 'green' : 'red') + '">' + pctOfTarget + '%</span><span class="chart-kpi-l">of target</span></div><div class="chart-kpi"><span class="forecast-kpi-v ' + (onTrack ? 'green' : 'red') + '">' + (onTrack ? 'On Track' : 'Behind') + '</span><span class="chart-kpi-l">status</span></div></div></div>';
+  html += '<div class="forecast-bar-wrap">';
+  html += '<div class="forecast-row"><span>Actual</span><div class="forecast-track"><div class="forecast-fill actual" style="width:' + Math.min(pctOfTarget, 100) + '%"></div></div><span class="forecast-value">' + d.forecast.actual + '</span></div>';
+  html += '<div class="forecast-row"><span>Target</span><div class="forecast-track"><div class="forecast-fill target" style="width:100%"></div></div><span class="forecast-value">' + d.forecast.target + '</span></div>';
+  html += '</div></div>';
+
+  $chartGrid.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UI TOGGLES + EXPORTS
+   ═══════════════════════════════════════════════════════════════ */
+function _switchConsoleTab(tab) {
+  activeConsoleTab = tab;
+  document.querySelectorAll('.console-tab').forEach(function(el) { el.classList.toggle('active', el.dataset.tab === tab); });
+  if ($consoleBreadcrumb) $consoleBreadcrumb.textContent = 'Console › ' + tab.charAt(0).toUpperCase() + tab.slice(1);
+  renderConsoleCharts();
+}
+
+function _setShowFilter(f) {
+  showFilter = f;
+  document.querySelectorAll('.show-filter-btn').forEach(function(el) { el.classList.toggle('active', el.dataset.filter === f); });
+  renderRoleBars();
+}
+function _setTimeFormat(f) {
+  timeFormat = f;
+  document.querySelectorAll('.time-toggle-btn').forEach(function(el) { el.classList.toggle('active', el.dataset.fmt === f); });
+  renderRoleBars();
+}
+function _setLogTab(r) {
+  activeLogTab = r;
+  document.querySelectorAll('.session-log-tab').forEach(function(el) { el.classList.toggle('active', el.dataset.role === r); });
+  renderEventLog();
+}
+
+function _exportRoleCSV() {
+  var rows = [['Role','Hours','%','Saved','Unsaved','Sessions','Touches','Status']];
+  var grand = 0; ROLES.forEach(function(r) { grand += roleTotals[r].savedHours + roleTotals[r].unsavedHours; });
+  ROLES.forEach(function(r) { var t = roleTotals[r].savedHours + roleTotals[r].unsavedHours; var pctStr = grand > 0 ? ((t / grand) * 100).toFixed(1) + '%' : '0%'; var statusFlag = Number.parseFloat(pctStr) > 35 ? 'BOTTLENECK' : 'OK'; rows.push([r, t.toFixed(1), pctStr, roleTotals[r].savedHours.toFixed(1), roleTotals[r].unsavedHours.toFixed(1), roleTotals[r].sessions, Object.keys(sessions).filter(function(k) { return sessions[k].role === r; }).length, statusFlag]); });
+  rows.push(['ALL', grand.toFixed(1), '100%', '', '', '', '', '']);
+  _downloadCSV('usertouches-roles-' + new Date().toISOString().slice(0, 10) + '.csv', rows);
+}
+
+function _exportSessionLogCSV() {
+  var filtered = activeLogTab === 'AU' ? eventHistory : eventHistory.filter(function(e) { return e.role === activeLogTab; });
+  var rows = [['Time','Action','Role','User','Loan']];
+  filtered.forEach(function(e) { rows.push([e.time, e.action, e.role, e.user, e.loan || '']); });
+  _downloadCSV('usertouches-log-' + activeLogTab + '-' + new Date().toISOString().slice(0, 10) + '.csv', rows);
+}
+
+function _downloadCSV(filename, rows) {
+  var csv = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replaceAll('"', '""') + '"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+}
+
+/* Encompass CSV export — branded 5-col loan report */
+function exportCSVEncompass() {
+  var rows = [['UserTouches™ — Loan Touch Report'], ['Loan: ' + loanNumber, 'Borrower: ' + borrowerName, 'Date: ' + new Date().toLocaleDateString()], [], ['Role', 'Touches', 'Hours', 'Percentage', 'Status']];
+  var totalT = 0, totalH = 0;
+  ROLES.forEach(function(r) { totalT += touchData[r].touches; totalH += touchData[r].hours; });
+  ROLES.forEach(function(r) {
+    var pct = totalH > 0 ? ((touchData[r].hours / totalH) * 100).toFixed(1) + '%' : '0%';
+    rows.push([ROLE_NAMES[r] + ' (' + r + ')', touchData[r].touches, touchData[r].hours.toFixed(2), pct, Number.parseFloat(pct) > 35 ? 'BOTTLENECK' : 'OK']);
+  });
+  rows.push(['TOTAL', totalT, totalH.toFixed(2), '100%', '']);
+  if (alerts.length > 0) { rows.push([], ['ALERTS']); alerts.forEach(function(a) { rows.push([a.severity.toUpperCase(), a.message]); }); }
+  _downloadCSV('usertouches-loan-' + (loanNumber || 'unknown') + '-' + new Date().toISOString().slice(0, 10) + '.csv', rows);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VIEW HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+function showNoLoan() {
+  if ($noLoan) $noLoan.style.display = '';
+  if ($dashboard) $dashboard.classList.add('hidden');
+  trackingActive = false;
+  if ($trackingBadge) $trackingBadge.classList.remove('visible');
+}
+function showDashboard() {
+  if ($noLoan) $noLoan.style.display = 'none';
+  if ($dashboard) $dashboard.classList.remove('hidden');
+}
+
+function toggleCompact() {
+  compact = !compact;
+  document.body.classList.toggle('compact', compact);
+  if ($compactBtn) $compactBtn.textContent = compact ? '⊞ Expand' : '⊟ Compact';
+}
+
+function refreshTimeline() { loadTimeline(); }
+
+/* ═══════════════════════════════════════════════════════════════
+   API LOADERS (Encompass mode)
+   ═══════════════════════════════════════════════════════════════ */
+function loadTimeline() {
+  if (!loanNumber) return;
+  fetchAPI('/api/touch-summary?loanId=' + encodeURIComponent(loanNumber) + '&days=90').then(function(data) {
+    if (data.events) timelineEvents = data.events;
+    if (data.byRole) {
+      ROLES.forEach(function(r) {
+        if (data.byRole[r]) {
+          touchData[r].touches = data.byRole[r].touches || touchData[r].touches;
+          touchData[r].hours = data.byRole[r].hours || touchData[r].hours;
+        }
+      });
+    }
+    /* Compute real saved/unsaved from timeline events */
+    computeSavedUnsaved();
+    /* Build user breakdown from timeline */
+    buildUserBreakdown();
+    renderAll();
+  }).catch(function() {});
+}
+
+function loadCompareData() {
+  if (!loanNumber) return;
+  var benchKey = (loanPurpose && BENCHMARKS[loanPurpose]) ? loanPurpose : 'default';
+  var bench = BENCHMARKS[benchKey];
+  fetchAPI('/api/touch-summary?loanId=' + encodeURIComponent(loanNumber) + '&summary=1&days=90').then(function(data) {
+    if (data.avg) { compareData = { avgTouches: data.avg.touches || bench.touches, avgHours: data.avg.hours || bench.hours, avgRoles: data.avg.roles || bench.roles }; }
+    else { compareData = { avgTouches: bench.touches, avgHours: bench.hours, avgRoles: bench.roles }; }
+    renderCompare(); renderKPIsEncompass();
+  }).catch(function() {
+    /* Offline: use loan-type benchmarks */
+    compareData = { avgTouches: bench.touches, avgHours: bench.hours, avgRoles: bench.roles };
+    renderCompare(); renderKPIsEncompass();
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AI ANALYSIS (Encompass mode — GPT-4.1)
+   ═══════════════════════════════════════════════════════════════ */
+function runAiAnalysis() {
+  if (aiLoading) return;
+  aiLoading = true;
+  if ($aiBtn) { $aiBtn.disabled = true; $aiBtn.innerHTML = '<span class="ai-spinner"></span> Analyzing…'; }
+
+  var totalT = 0, totalH = 0, breakdown = {};
+  ROLES.forEach(function(r) { totalT += touchData[r].touches; totalH += touchData[r].hours; breakdown[ROLE_NAMES[r]] = { touches: touchData[r].touches, hours: touchData[r].hours }; });
+
+  var prompt = 'Analyze loan touch data for ' + (borrowerName || 'this loan') + ' (Loan #' + loanNumber + ').\n\nBreakdown:\n' + JSON.stringify(breakdown, null, 2) + '\n\nTotal: ' + totalT + ' touches, ' + totalH.toFixed(1) + ' hours, ' + alerts.length + ' alerts.\n\nRecent timeline: ' + timelineEvents.slice(0, 5).map(function(e) { return e.role + ' ' + e.action; }).join(', ') + '\n\nProvide: 1) Health score 0-100, 2) Top 3 issues, 3) Top 3 recommendations. Return JSON: { score, issues: [{title, detail, type}], recommendations: [{title, detail}] }';
+
+  fetchAPI('/api/ai-insight', { method: 'POST', body: JSON.stringify({ loanNumber: loanNumber, prompt: prompt }) })
+    .then(function(data) { aiResult = data; renderAiResults(); })
+    .catch(function() { if ($aiContent) $aiContent.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>AI analysis unavailable</p></div>'; })
+    .then(function() {
+      aiLoading = false;
+      if ($aiBtn) { $aiBtn.disabled = false; $aiBtn.innerHTML = '🤖 Analyze'; }
+    });
+}
+
+function renderAiResults() {
+  if (!$aiContent || !aiResult) return;
+  var score = aiResult.score || 0;
+  var circ = 2 * Math.PI * 38;
+  var offset = circ * (1 - score / 100);
+  var color;
+  if (score >= 70) color = '#22c55e';
+  else if (score >= 40) color = '#eab308';
+  else color = '#ef4444';
+
+  var html = '<div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap">';
+  html += '<div class="ai-health-ring"><svg viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="38" stroke="rgba(255,255,255,0.1)" stroke-width="6" fill="none"/><circle cx="50" cy="50" r="38" stroke="' + color + '" stroke-width="6" fill="none" stroke-dasharray="' + circ + '" stroke-dashoffset="' + offset + '" stroke-linecap="round" transform="rotate(-90 50 50)"/><text x="50" y="48" text-anchor="middle" fill="' + color + '" font-size="20" font-weight="800">' + score + '</text><text x="50" y="62" text-anchor="middle" fill="var(--text-dim)" font-size="9">health</text></svg></div>';
+  html += '<div style="flex:1;min-width:200px">';
+
+  if (aiResult.issues && aiResult.issues.length) {
+    html += '<div class="ai-section"><strong>Issues</strong>';
+    var typeIcons = { concentration: '🔴', activity: '📉', timing: '⏰', quality: '⚡', risk: '⚠️' };
+    aiResult.issues.forEach(function(issue) { html += '<div class="ai-issue-item"><span>' + (typeIcons[issue.type] || '•') + '</span><div><strong>' + esc(issue.title) + '</strong><br><span style="color:var(--text-dim)">' + esc(issue.detail) + '</span></div></div>'; });
+    html += '</div>';
+  }
+  if (aiResult.recommendations && aiResult.recommendations.length) {
+    html += '<div class="ai-section"><strong>Recommendations</strong>';
+    aiResult.recommendations.forEach(function(rec) { html += '<div class="ai-rec-item"><span>💡</span><div><strong>' + esc(rec.title) + '</strong><br><span style="color:var(--text-dim)">' + esc(rec.detail) + '</span></div></div>'; });
+    html += '</div>';
+  }
+  html += '</div></div>';
+  $aiContent.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DEMO MODE (Website — 3-phase with gear loader)
+   ═══════════════════════════════════════════════════════════════ */
+var demoUsers = [
+  { name: 'Sarah Chen', role: 'LP', loans: ['2026-001234','2026-001235'] },
+  { name: 'Mike Johnson', role: 'LP', loans: ['2026-001236','2026-001237'] },
+  { name: 'Emily Davis', role: 'LP', loans: ['2026-001238'] },
+  { name: 'James Wilson', role: 'LP', loans: ['2026-001239','2026-001240'] },
+  { name: 'Ana Martinez', role: 'LP', loans: ['2026-001241'] },
+  { name: 'Robert Taylor', role: 'LO', loans: ['2026-001234','2026-001238'] },
+  { name: 'Lisa Anderson', role: 'LO', loans: ['2026-001235','2026-001241'] },
+  { name: 'David Kim', role: 'UW', loans: ['2026-001234','2026-001236'] },
+  { name: 'Jennifer Lee', role: 'UW', loans: ['2026-001237'] },
+  { name: 'Chris Brown', role: 'CL', loans: ['2026-001234','2026-001235'] },
+  { name: 'Maria Garcia', role: 'FS', loans: ['2026-001238','2026-001240'] },
+  { name: 'Tom Harris', role: 'LA', loans: ['2026-001236','2026-001237'] },
+  { name: 'Amy White', role: 'PC', loans: ['2026-001234'] },
+  { name: 'Kevin Scott', role: 'LD', loans: ['2026-001234','2026-001235','2026-001236'] }
+];
+
+function enableDemoMode() {
+  /* Phase 1: Opening burst — staggered loan opens */
+  var actions = ['open','focus','save','heartbeat','close'];
+  var openIdx = 0;
+  function fireOpen() {
+    if (openIdx >= demoUsers.length) {
+      /* Phase 2: Ongoing activity */
+      setInterval(function() {
+        var u = demoUsers[Math.floor(Math.random() * demoUsers.length)];
+        var act = actions[Math.floor(Math.random() * actions.length)];
+        var ln = u.loans[Math.floor(Math.random() * u.loans.length)];
+        handleEvent({ userName: u.name, userId: u.name, role: u.role, action: act, loanNumber: ln, elapsed: Math.random() * 7200 });
+      }, 3000);
+      renderConsoleCharts();
+      return;
+    }
+    var u = demoUsers[openIdx++];
+    u.loans.forEach(function(ln) {
+      handleEvent({ userName: u.name, userId: u.name, role: u.role, action: 'open', loanNumber: ln, elapsed: Math.random() * 3600 });
+    });
+    setTimeout(fireOpen, 250);
+  }
+  fireOpen();
+}
+
+/* Encompass demo data (offline fallback) */
+function loadDemoData(delay) {
+  setTimeout(function() {
+    touchData.LP = { touches: 42, hours: 18.3, savedHours: 12.8, unsavedHours: 5.5, lastTouch: new Date() };
+    touchData.UW = { touches: 28, hours: 12.1, savedHours: 8.5, unsavedHours: 3.6, lastTouch: new Date(Date.now() - 300000) };
+    touchData.LO = { touches: 15, hours: 6.4, savedHours: 4.5, unsavedHours: 1.9, lastTouch: new Date(Date.now() - 600000) };
+    touchData.CL = { touches: 8, hours: 3.2, savedHours: 2.2, unsavedHours: 1, lastTouch: new Date(Date.now() - 900000) };
+    touchData.FS = { touches: 4, hours: 1.8, savedHours: 1.3, unsavedHours: 0.5, lastTouch: new Date(Date.now() - 1200000) };
+    touchData.LA = { touches: 3, hours: 1.1, savedHours: 0.8, unsavedHours: 0.3, lastTouch: null };
+    touchData.PC = { touches: 2, hours: 0.6, savedHours: 0.4, unsavedHours: 0.2, lastTouch: null };
+    touchData.LD = { touches: 1, hours: 0.3, savedHours: 0.2, unsavedHours: 0.1, lastTouch: null };
+    touchData.UU = { touches: 0, hours: 0, savedHours: 0, unsavedHours: 0, lastTouch: null };
+    loanNumber = '2026-001234'; borrowerName = 'Johnson, Michael & Sarah';
+    if ($topbarLoan) $topbarLoan.textContent = loanNumber;
+    if ($borrowerName) $borrowerName.textContent = borrowerName;
+
+    /* Demo loan context for Loan Pace */
+    loanPurpose = 'purchase';
+    applicationDate = new Date(Date.now() - 25 * 86400000);
+    expectedCloseDate = new Date(Date.now() + 17 * 86400000);
+    lockExpiration = new Date(Date.now() + 12 * 86400000);
+
+    compareData = { avgTouches: BENCHMARKS.purchase.touches, avgHours: BENCHMARKS.purchase.hours, avgRoles: BENCHMARKS.purchase.roles };
+    timelineEvents = [
+      { timestamp: new Date().toISOString(), role: 'LP', userName: 'Sarah Chen', action: 'save', detail: 'Updated conditions' },
+      { timestamp: new Date(Date.now() - 180000).toISOString(), role: 'UW', userName: 'David Kim', action: 'focus', detail: 'Reviewing file' },
+      { timestamp: new Date(Date.now() - 360000).toISOString(), role: 'LP', userName: 'Sarah Chen', action: 'open', detail: 'Opened for edit' },
+      { timestamp: new Date(Date.now() - 600000).toISOString(), role: 'LO', userName: 'Robert Taylor', action: 'save', detail: 'Updated URLA' },
+      { timestamp: new Date(Date.now() - 900000).toISOString(), role: 'UW', userName: 'David Kim', action: 'open', detail: 'Initial review' },
+      { timestamp: new Date(Date.now() - 1800000).toISOString(), role: 'LP', userName: 'Mike Johnson', action: 'save', detail: 'Submitted to UW' },
+      { timestamp: new Date(Date.now() - 3600000).toISOString(), role: 'LO', userName: 'Robert Taylor', action: 'open', detail: 'Lock confirmed' },
+      { timestamp: new Date(Date.now() - 7200000).toISOString(), role: 'FS', userName: 'Maria Garcia', action: 'save', detail: 'File started' },
+      { timestamp: new Date(Date.now() - 10800000).toISOString(), role: 'LA', userName: 'Tom Harris', action: 'open', detail: 'Imported docs' },
+      { timestamp: new Date(Date.now() - 14400000).toISOString(), role: 'CL', userName: 'Chris Brown', action: 'focus', detail: 'Prepping CDs' },
+      { timestamp: new Date(Date.now() - 18000000).toISOString(), role: 'LP', userName: 'Emily Davis', action: 'heartbeat', detail: 'Active session' },
+      { timestamp: new Date(Date.now() - 21600000).toISOString(), role: 'LD', userName: 'Kevin Scott', action: 'open', detail: 'QC review' },
+      { timestamp: new Date(Date.now() - 25200000).toISOString(), role: 'PC', userName: 'Amy White', action: 'open', detail: 'Post-close check' }
+    ];
+    /* Ticker demo */
+    var tickerUsers = ['Sarah Chen','David Kim','Robert Taylor'];
+    var tickerIdx = 0;
+    setInterval(function() {
+      var u = tickerUsers[tickerIdx++ % tickerUsers.length];
+      tickerEvents.unshift({ time: new Date(), action: actions[Math.floor(Math.random() * actions.length)], role: touchData.LP.touches > touchData.UW.touches ? 'LP' : 'UW', user: u, detail: loanNumber });
+      if (tickerEvents.length > 50) tickerEvents.length = 50;
+      renderTicker();
+    }, 4000);
+    showDashboard();
+    buildUserBreakdown();
+    renderAll();
+    renderLoanPace();
+  }, delay || 500);
+}
+var actions = ['open','focus','save','heartbeat','close','blur'];
+
+/* ═══════════════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════════════ */
+function init() {
+  initDomRefs();
+
+  if (isEncompass) {
+    document.body.classList.add('encompass-mode');
+    showNoLoan();
+    initSSF();
+  } else {
+    /* Website / standalone mode — show data immediately */
+    showDashboard();
+    renderRoleBars();
+    initSignalR();
+    setTimeout(function() {
+      if (!signalRConnected) {
+        enableDemoMode();
+      }
+    }, 3000);
+  }
+}
+
+/* Kick off */
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+
+/* Expose functions for onclick handlers */
+globalThis.toggleCompact = toggleCompact;
+globalThis.exportCSVEncompass = exportCSVEncompass;
+globalThis.runAiAnalysis = runAiAnalysis;
+globalThis.refreshTimeline = refreshTimeline;
+globalThis.exportReport = exportReport;
+globalThis.drillRole = drillRole;
+globalThis._switchConsoleTab = _switchConsoleTab;
+globalThis._setShowFilter = _setShowFilter;
+globalThis._setTimeFormat = _setTimeFormat;
+globalThis._setLogTab = _setLogTab;
+globalThis._exportRoleCSV = _exportRoleCSV;
+globalThis._exportSessionLogCSV = _exportSessionLogCSV;
+
+})();
+</script>
+<div class="version-badge" id="versionBadge">v2026.0315.2</div>
+<script>console.log('%c UserTouches™ v2026.0315.2 loaded ', 'background:#0fa;color:#000;font-weight:bold;padding:2px 6px;border-radius:3px;');</script>
+</body>
+</html>
